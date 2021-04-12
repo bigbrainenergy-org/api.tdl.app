@@ -1,0 +1,10 @@
+---
+ja:
+  activerecord:
+    errors:
+      models:
+        rule:
+          redundant_rule: "%{task_i_title}はすでに%{task_ii_title}の後に来ています"
+          tasks_must_differ: タスクはそれ自身の事前または投稿にすることはできません
+        task:
+          list_and_task_owner_match: リストとタスクは同じユーザーに属している必要があります。

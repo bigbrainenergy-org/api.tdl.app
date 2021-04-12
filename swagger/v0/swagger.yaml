@@ -1,0 +1,331 @@
+---
+openapi: 3.0.1
+info:
+  title: TDL App API
+  version: v0
+  description: 'Provides a REST API backend for arbitrary TDL App front-ends.
+
+    '
+  contact:
+    name: TDL App Support
+    email: support@tdl.app
+servers:
+- url: https://api.tdl.app/v0
+  description: Production Server
+- url: https://sandbox.tdl.app/v0
+  description: 'Sandbox server (that resets daily? not implementing until it''s useful)
+
+    '
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    ArrayOfLists:
+      type: array
+      items:
+        "$ref": "#/components/schemas/List"
+      uniqueItems: true
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+      - error
+    Username:
+      type: object
+      properties:
+        username:
+          type: string
+      required:
+      - username
+    List:
+      type: object
+      properties:
+        id:
+          type: integer
+        order:
+          type: integer
+        title:
+          type: string
+      required:
+      - id
+      - order
+      - title
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+      - username
+      - password
+    SessionToken:
+      type: object
+      properties:
+        session_token:
+          type: string
+      required:
+      - session_token
+  responses:
+    BadRequest:
+      description: You did a dumb dumb
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    PaymentRequired:
+      description: Your subscription has expired, app in readonly mode
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    UnprocessableEntity:
+      description: The changes requested could not be processed
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    Unauthorized:
+      description: Access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    Forbidden:
+      description: You don't have permission to do that
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    NotImplemented:
+      description: Endpoint not implemented yet
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    ServiceUnavailable:
+      description: API is currently unavailable
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+security:
+- bearerAuth: []
+paths:
+  "/health":
+    get:
+      summary: Returns API health status
+      tags:
+      - Health
+      responses:
+        '200':
+          description: API is healthy
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+          description: API is currently unavailable
+      security: []
+  "/lists":
+    get:
+      summary: Returns an array of the current user's lists.
+      tags:
+      - Lists
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ArrayOfLists"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+    post:
+      summary: Create a new list for the current user.
+      tags:
+      - Lists
+      requestBody:
+        description: List to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/List"
+      responses:
+        '200':
+          description: Successfully created new list
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/List"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+          description: Missing parameters
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+          description: Failed to process list
+      parameters: []
+  "/lists/{id}":
+    get:
+      summary: Returns the information for a specific list.
+      tags:
+      - Lists
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/List"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+          description: Not authorized
+        '404':
+          "$ref": "#/components/responses/NotFound"
+          description: Not Found
+    patch:
+      summary: Update an existing list.
+      tags:
+      - Lists
+      requestBody:
+        description: Updates for existing list
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/List"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/List"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+          description: Missing parameters
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+          description: Not authorized
+        '404':
+          "$ref": "#/components/responses/NotFound"
+          description: Not Found
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+          description: Failed to process list
+      parameters: []
+    delete:
+      summary: Destroy a list.
+      tags:
+      - Lists
+      responses:
+        '200':
+          description: Success
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+          description: Not authorized
+        '404':
+          "$ref": "#/components/responses/NotFound"
+          description: Not Found
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+          description: Failed to process list
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  "/login":
+    post:
+      summary: Creates a session token
+      tags:
+      - Authentication
+      security: []
+      requestBody:
+        description: Username and password
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Login"
+      responses:
+        '200':
+          description: Logged in successfully
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SessionToken"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+          description: Bad login
+      parameters: []
+  "/logout":
+    delete:
+      summary: Destroys a session token
+      tags:
+      - Authentication
+      responses:
+        '200':
+          description: Logged out successfully
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+  "/verify/token":
+    post:
+      summary: Verifies 2FA via hardware token
+      tags:
+      - Authentication
+      responses:
+        '501':
+          "$ref": "#/components/responses/NotImplemented"
+          description: Not implemented yet
+      security: []
+  "/verify/app":
+    post:
+      summary: Verifies 2FA via authy app
+      tags:
+      - Authentication
+      responses:
+        '501':
+          "$ref": "#/components/responses/NotImplemented"
+          description: Not implemented yet
+      security: []
+  "/username":
+    get:
+      summary: Retrieves a user's username
+      tags:
+      - Settings
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Username"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authorized

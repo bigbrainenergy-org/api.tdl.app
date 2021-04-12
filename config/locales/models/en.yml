@@ -1,0 +1,10 @@
+---
+en:
+  activerecord:
+    errors:
+      models:
+        rule:
+          redundant_rule: "%{task_i_title} is already a postrequisite of %{task_ii_title}"
+          tasks_must_differ: A Task cannot be its own pre/post
+        task:
+          list_and_task_owner_match: List and Task must belong to the same user.

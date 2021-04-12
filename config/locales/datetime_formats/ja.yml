@@ -1,0 +1,20 @@
+---
+ja:
+  date:
+    formats:
+      date_filename: "%^b-%d-%Y"
+      date_full: "%Y年%-m月%-d日"
+      date_iso_8601: "%Y-%m-%d"
+      date_standard: "%Y/%-m/%-d"
+  time:
+    formats:
+      date_filename: "%^b-%d-%Y"
+      date_full: "%Y年%-m月%-d日"
+      date_iso_8601: "%Y-%m-%d"
+      date_standard: "%Y/%-m/%-d"
+      datetime_human_readable: "%Y年%-m月%-d日 - %T"
+      default: "%Y年%-m月%-d日"
+      iso_8601: "%FT%T%:z"
+      time_12_hours: "%r"
+      time_24_hours: "%T"
+      time_zone: "%Z"

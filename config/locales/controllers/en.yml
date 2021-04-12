@@ -1,0 +1,14 @@
+---
+en:
+  access_requests:
+    create:
+      recaptcha_failed: Failed to verify recaptcha!
+  user_sessions:
+    create:
+      failed: Failed to login
+      invalid_params: You must provide a username and password to login
+    verify_auth_token:
+      pending_implementation: Pending WebAuthn support in Sorcery
+    verify_authy_app:
+      failed: That OTP was invalid or expired
+      pending_implementation: Pending API support in Sorcery

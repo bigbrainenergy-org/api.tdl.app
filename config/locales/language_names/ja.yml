@@ -1,0 +1,7 @@
+---
+ja:
+  language: 日本語
+  languages:
+    en: 英語
+    ja: 日本語
+    unknown: 不明な言語

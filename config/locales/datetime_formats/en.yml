@@ -1,0 +1,20 @@
+---
+en:
+  date:
+    formats:
+      date_filename: "%^b-%d-%Y"
+      date_full: "%B %-d, %Y"
+      date_iso_8601: "%Y-%m-%d"
+      date_standard: "%-m/%-d/%Y"
+  time:
+    formats:
+      date_filename: "%^b-%d-%Y"
+      date_full: "%B %-d, %Y"
+      date_iso_8601: "%Y-%m-%d"
+      date_standard: "%-m/%-d/%Y"
+      datetime_human_readable: "%B %-d, %Y - %T"
+      default: "%B %-d, %Y"
+      iso_8601: "%FT%T%:z"
+      time_12_hours: "%r"
+      time_24_hours: "%T"
+      time_zone: "%Z"

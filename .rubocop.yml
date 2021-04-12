@@ -1,0 +1,63 @@
+inherit_gem:
+  rubocop-athix:
+    - config/rails.yml
+
+##
+# Merge instead of overwriting. For more details, see:
+# https://docs.rubocop.org/rubocop/configuration.html#merging-arrays-using-inherit_mode
+#
+inherit_mode:
+  merge:
+    - Exclude
+
+AllCops:
+  TargetRubyVersion: 3.0.1
+
+###########
+## RSpec ##
+###########
+
+# Known issue with RSpec rubocop, remove when fixed
+# RSpec/DescribeClass:
+#   Exclude:
+#     - 'spec/requests/**/*'
+#     - 'spec/system/**/*'
+# FIXME: This complains about the way we nest the model specs.
+RSpec/NestedGroups:
+  Max: 4
+
+##
+# RSwag does not play nice with RuboCop RSpec
+#
+RSpec:
+  Exclude:
+    - 'spec/api/**/*'
+
+###########
+## Style ##
+###########
+
+# Look upon thy field of fucks, and see that it is barren.
+Style/FrozenStringLiteralComment:
+  Enabled: false
+# Might re-enable this later, but for now it's just annoying.
+Style/Documentation:
+  Enabled: false
+
+#############
+## Metrics ##
+#############
+
+# TODO: Is there a good way to break up specs without it getting unwieldy?
+Metrics/BlockLength:
+  IgnoredMethods:
+    - 'describe'
+    - 'context'
+    - 'configure'
+    - 'path'
+    - 'patch'
+    - 'post'
+
+Layout/LineLength:
+  IgnoredPatterns: ['it { should', 'I18n.t']
+  Max: 80
