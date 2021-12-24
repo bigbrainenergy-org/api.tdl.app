@@ -8,53 +8,65 @@ Rails.application.routes.draw do
 
   # Default to json for all requests
   defaults format: :json do
-    # Sync Ordering
-    patch 'lists/sync-ordering' => 'lists#sync_ordering'
-    patch 'tags/sync-ordering' => 'tags#sync_ordering'
-    patch 'tasks/sync-ordering' => 'tasks#sync_ordering'
-    # Bulk updates
-    patch 'tasks/bulk' => 'tasks#bulk'
+    ###################
+    ## Meta Requests ##
+    ###################
 
-    # Server health check
+    # FIXME: Cloudflare might be caching this, defeating the purpose.
+    # Server Health Status
     get 'health' => 'health#health'
+    # List of available Time Zones
+    get 'time-zones' => 'time_zones#index'
+    # List of available Locales
+    get 'locales' => 'locales#index'
 
-    # For details on the DSL available within this file, see https://guides.rubyonrails.org/routing.html
+    ###################
+    ## Sync Ordering ##
+    ###################
+
+    patch 'projects/sync-ordering' => 'projects#sync_ordering'
+    patch 'next-actions/sync-ordering' => 'next_actions#sync_ordering'
+    patch 'waiting-fors/sync-ordering' => 'waiting_fors#sync_ordering'
+    patch 'contexts/sync-ordering' => 'contexts#sync_ordering'
+    patch 'subtasks/sync-ordering' => 'subtasks#sync_ordering'
+
+    #############
+    # Sessions ##
+    #############
+
     post 'login'    => 'user_sessions#create'
     delete 'logout' => 'user_sessions#destroy'
-
-    # MFA
+    # MFA (to be implemented)
     post 'verify/token' => 'user_sessions#verify_auth_token'
     post 'verify/app' => 'user_sessions#verify_authy_app'
 
-    # Access requests
+    #####################
+    ## Access requests ##
+    #####################
+
     post 'access-request' => 'access_requests#create'
 
-    # Settings (merge with users controller?)
-    get 'username' => 'settings#username'
-    get 'time-zones' => 'settings#time_zones'
+    ##########
+    ## CRUD ##
+    ##########
 
-    # TODO: Nest inside resources :users
-    get 'time-zone' => 'users#time_zone'
-    patch 'time-zone' => 'users#update_time_zone'
+    resources :users, only: [:show, :update]
 
-    post 'tasks/clear-completed' => 'tasks#clear_completed'
+    resources :projects
+    resources :contexts
 
-    resources :lists
-    resources :tags
+    resources :inbox_items
+    resources :next_actions
+    resources :waiting_fors
 
-    resources :tasks do
-      patch 'mark-complete' => 'tasks#mark_complete'
-      patch 'mark-incomplete' => 'tasks#mark_incomplete'
-      patch 'tags' => 'tasks#update_tags'
-      patch 'list' => 'tasks#update_list'
-      patch 'pre' => 'tasks#add_prerequisite'
-      patch 'post' => 'tasks#add_postrequisite'
-      delete 'pre/:pre_task_id' => 'tasks#remove_prerequisite'
-      delete 'post/:post_task_id' => 'tasks#remove_postrequisite'
-    end
+    # TODO: How should this interact API-wise? Nest under next actions?
+    resources :subtasks
 
-    resources :rules
+    # Similarly, these are a little weird in nature
+    resources :project_relationships
+    resources :next_action_relationships
 
+    # FIXME: Is there a way to match any HTTP method and return 404?
     get '*unmatched_route', to: 'application#not_found'
     post '*unmatched_route', to: 'application#not_found'
     patch '*unmatched_route', to: 'application#not_found'

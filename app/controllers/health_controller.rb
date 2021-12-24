@@ -3,7 +3,7 @@ class HealthController < ApplicationController
 
   def health
     User.any? # Force a DB connection to see if the database is healthy
-    head :ok
+    render json: { status: 'healthy' }
   rescue StandardError
     service_unavailable
   end
