@@ -5,11 +5,11 @@ class UserPolicy < ApplicationPolicy
     end
   end
 
-  def time_zone?
-    user.present?
+  def show?
+    user == record
   end
 
-  def update_time_zone?
-    user.present?
+  def update?
+    user == record
   end
 end

@@ -56,39 +56,6 @@ class GtdRework < ActiveRecord::Migration[6.1]
       t.belongs_to :user,  null: false, foreign_key: true
       t.string     :title, null: false
       t.string     :notes
-      t.datetime   :review_by
-
-      t.timestamps
-    end
-
-    create_table :next_actions do |t|
-      t.belongs_to :user,    null: false, foreign_key: true
-      t.belongs_to :context, foreign_key: true
-      t.belongs_to :project, foreign_key: true
-      t.string     :title,   null: false
-      t.string     :notes
-      t.integer    :order,   null: false, default: 0
-
-      t.timestamps
-    end
-
-    create_table :next_action_relationships do |t|
-      t.belongs_to :first,  null: false
-      t.belongs_to :second, null: false
-      t.string     :kind,   null: false
-      t.string     :notes
-
-      t.timestamps
-    end
-
-    add_index :next_action_relationships, [:first, :second, :kind], unique: true
-
-    create_table :waiting_fors do |t|
-      t.belongs_to :user,            null: false, foreign_key: true
-      t.string     :title,           null: false
-      t.string     :notes
-      t.integer    :order,           null: false, default: 0
-      t.datetime   :next_checkin_at, null: false
 
       t.timestamps
     end
@@ -103,10 +70,64 @@ class GtdRework < ActiveRecord::Migration[6.1]
       t.timestamps
     end
 
-    add_index :contexts, :title, unique: true
+    add_index :contexts, [:title, :user_id], unique: true
+
+    create_table :projects do |t|
+      t.belongs_to :user,   null: false, foreign_key: true
+      t.string     :title,  null: false
+      t.string     :notes
+      t.integer    :order,  null: false, default: 0
+      t.string     :status, null: false, default: 'active'
+      t.datetime   :status_last_changed_at
+      t.datetime   :deadline_at
+      t.string     :estimated_time_to_complete
+
+      t.timestamps
+    end
+
+    add_index :projects, [:title, :user_id], unique: true
+
+    create_table :next_actions do |t|
+      t.belongs_to :user,      null: false, foreign_key: true
+      t.belongs_to :context,   foreign_key: true
+      t.belongs_to :project,   foreign_key: true
+      t.string     :title,     null: false
+      t.string     :notes
+      t.integer    :order,     null: false, default: 0
+      t.boolean    :completed, null: false, default: false
+      t.datetime   :remind_me_at
+
+      t.timestamps
+    end
+
+    create_table :next_action_relationships do |t|
+      t.belongs_to :first,  null: false
+      t.belongs_to :second, null: false
+      t.string     :kind,   null: false
+      t.string     :notes
+
+      t.timestamps
+    end
+
+    add_index :next_action_relationships, [:first_id, :second_id, :kind], unique: true, name: 'unique_next_action_relationships'
+
+    create_table :waiting_fors do |t|
+      t.belongs_to :user,            null: false, foreign_key: true
+      t.string     :title,           null: false
+      t.string     :notes
+      t.integer    :order,           null: false, default: 0
+      t.datetime   :next_checkin_at
+      t.datetime   :deadline_at
+      t.boolean    :completed,       null: false, default: false
+
+      t.timestamps
+    end
 
     # Simple bullet list for a next action. Anything more complicated should be
     # broken down as project(s)/next action(s)
+    #
+    # Maybe include a warning that these should just be components of a larger
+    # task?
     create_table :subtasks do |t|
       t.belongs_to :next_action, null: false, foreign_key: true
       t.string     :title,       null: false
@@ -115,17 +136,6 @@ class GtdRework < ActiveRecord::Migration[6.1]
 
       t.timestamps
     end
-
-    create_table :projects do |t|
-      t.belongs_to :user,  null: false, foreign_key: true
-      t.string     :title, null: false
-      t.string     :notes
-      t.integer    :order, null: false, default: 0
-
-      t.timestamps
-    end
-
-    add_index :projects, [:title, :user_id], unique: true
 
     create_table :project_relationships do |t|
       t.belongs_to :first,  null: false
@@ -136,7 +146,7 @@ class GtdRework < ActiveRecord::Migration[6.1]
       t.timestamps
     end
 
-    add_index :project_relationships, [:first, :second, :kind], unique: true
+    add_index :project_relationships, [:first_id, :second_id, :kind], unique: true, name: 'unique_project_relationships'
 
     ##################
     ## Migrate Data ##

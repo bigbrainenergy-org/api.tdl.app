@@ -1,12 +1,9 @@
-class Tag < ApplicationRecord
+class Context < ApplicationRecord
   belongs_to :user
 
-  has_many :taggings, dependent: :destroy
+  has_many :next_actions
 
-  has_many :tasks,
-    through: :taggings
-
-  validates :title,
+  validates :title, :icon,
     presence: true
 
   validates :color,

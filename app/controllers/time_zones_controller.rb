@@ -1,5 +1,5 @@
-class SettingsController < ApplicationController
-  def time_zones
+class TimeZonesController < ApplicationController
+  def index
     @time_zones = ActiveSupport::TimeZone.all.map do |time_zone|
       {
         name:  time_zone.name,
