@@ -201,19 +201,11 @@ class GtdRework < ActiveRecord::Migration[6.1]
       end
       # rubocop:enable Naming/VariableNumber
 
-      review_by =
-        [
-          task.remind_me_at,
-          task.prioritize_at,
-          task.deadline_at
-        ].compact.min
-
       InboxItem.create!(
         {
           user:      task.user,
           title:     task.title,
-          notes:     notes,
-          review_by: review_by
+          notes:     notes
         }
       )
     end
