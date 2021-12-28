@@ -33,7 +33,7 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.integer "order", default: 0, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["title"], name: "index_contexts_on_title", unique: true
+    t.index ["title", "user_id"], name: "index_contexts_on_title_and_user_id", unique: true
     t.index ["user_id"], name: "index_contexts_on_user_id"
   end
 
@@ -54,7 +54,6 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.bigint "user_id", null: false
     t.string "title", null: false
     t.string "notes"
-    t.datetime "review_by"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_inbox_items_on_user_id"
@@ -79,6 +78,8 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.string "title", null: false
     t.string "notes"
     t.integer "order", default: 0, null: false
+    t.boolean "completed", default: false, null: false
+    t.datetime "remind_me_at"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["context_id"], name: "index_next_actions_on_context_id"
@@ -103,6 +104,10 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.string "title", null: false
     t.string "notes"
     t.integer "order", default: 0, null: false
+    t.string "status", default: "active", null: false
+    t.datetime "status_last_changed_at"
+    t.datetime "deadline_at"
+    t.string "estimated_time_to_complete"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["title", "user_id"], name: "index_projects_on_title_and_user_id", unique: true
@@ -151,7 +156,9 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.string "title", null: false
     t.string "notes"
     t.integer "order", default: 0, null: false
-    t.datetime "next_checkin_at", null: false
+    t.datetime "next_checkin_at"
+    t.datetime "deadline_at"
+    t.boolean "completed", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["user_id"], name: "index_waiting_fors_on_user_id"

@@ -8,26 +8,10 @@ RSpec.describe InboxItem do
   end
 
   describe 'associations' do
-    # TODO: Add tests or remove placeholder
+    it { should belong_to(:user) }
   end
 
   describe 'validations' do
-    # TODO: Add tests or remove placeholder
-  end
-
-  describe 'callbacks' do
-    # TODO: Add tests or remove placeholder
-  end
-
-  describe 'scopes' do
-    # TODO: Add tests or remove placeholder
-  end
-
-  describe 'class method' do
-    # TODO: Add tests or remove placeholder
-  end
-
-  describe 'instance method' do
-    # TODO: Add tests or remove placeholder
+    it { should validate_presence_of(:title) }
   end
 end

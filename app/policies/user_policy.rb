@@ -6,10 +6,14 @@ class UserPolicy < ApplicationPolicy
   end
 
   def show?
+    return false unless user.present? && record.present?
+
     user == record
   end
 
   def update?
+    return false unless user.present? && record.present?
+
     user == record
   end
 end

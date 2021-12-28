@@ -86,4 +86,8 @@ class User < ApplicationRecord
 
     ActiveSupport::TimeZone[time_zone].tzinfo.name
   end
+
+  def owner_of?(record)
+    record&.user == self
+  end
 end

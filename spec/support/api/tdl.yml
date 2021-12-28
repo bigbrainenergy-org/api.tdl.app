@@ -11,9 +11,10 @@ info:
 servers:
   - url: https://api.tdl.app/v0
     description: Production Server
-  - url: https://sandbox.tdl.app/v0
-    description: >
-      Sandbox server (that resets daily? not implementing until it's useful)
+  # TODO: Is it worth implementing a sandbox server?
+  # - url: https://sandbox.tdl.app/v0
+  #   description: >
+  #     Sandbox server (that resets daily? not implementing until it's useful)
 
 components:
   securitySchemes:
@@ -22,7 +23,37 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
-    # Schema for error response body
+    # Schema for error response body. See components -> responses
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+        - error
+    #################
+    ## Inbox Items ##
+    #################
+    ArrayOfInboxItems:
+      type: array
+      items:
+        $ref: '#/components/schemas/InboxItem'
+      uniqueItems: true
+    InboxItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        notes:
+          type: string
+      required:
+        - id
+        - title
+    ###############
+    ## OLD STUFF ##
+    ###############
     ArrayOfLists:
       type: array
       items:
@@ -43,13 +74,6 @@ components:
       items:
         $ref: '#/components/schemas/Rule'
       uniqueItems: true
-    Error:
-      type: object
-      properties:
-        error:
-          type: string
-      required:
-        - error
     Username:
       type: object
       properties:
@@ -195,6 +219,106 @@ security:
   - bearerAuth: []
 
 paths:
+  /inbox_items:
+    get:
+      summary: Returns an array of the current user's inbox items.
+      tags:
+        - Inbox Items
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ArrayOfInboxItems'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      summary: Create a new inbox item for the current user.
+      tags:
+        - Inbox Items
+      requestBody:
+        description: Inbox Item to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InboxItem'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InboxItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+  /inbox_items/{id}:
+    get:
+      summary: Returns the information for a specific inbox item.
+      tags:
+        - Inbox Items
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InboxItem'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    patch:
+      summary: Update an existing inbox item.
+      tags:
+        - Inbox Items
+      requestBody:
+        description: Updates for existing inbox item
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/InboxItem'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InboxItem'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '422':
+          $ref: '#/components/responses/UnprocessableEntity'
+    delete:
+      summary: Destroy a inbox item.
+      tags:
+        - Inbox Items
+      responses:
+        '200':
+          description: OK
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '403':
+          $ref: '#/components/responses/Forbidden'
+        '404':
+          $ref: '#/components/responses/NotFound'
+  ###############
+  ## OLD STUFF ##
+  ###############
   /health:
     get:
       summary: Returns the current status of the API

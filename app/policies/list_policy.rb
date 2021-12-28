@@ -10,19 +10,19 @@ class ListPolicy < ApplicationPolicy
   end
 
   def show?
-    record_user_matches?
+    user_owns_record?
   end
 
   def create?
-    record_user_matches?
+    user_owns_record?
   end
 
   def update?
-    record_user_matches?
+    user_owns_record?
   end
 
   def destroy?
-    record_user_matches?
+    user_owns_record?
   end
 
   def sync_ordering?

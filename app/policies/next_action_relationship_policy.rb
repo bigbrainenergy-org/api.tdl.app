@@ -34,8 +34,8 @@ class NextActionRelationshipPolicy < ApplicationPolicy
 
     (
       record.first.user == record.second.user &&
-      record.first.user == user &&
-      record.second.user == user
+      user.owner_of?(record.first) &&
+      user.owner_of?(record.second)
     )
   end
   # rubocop:enable Metrics/AbcSize

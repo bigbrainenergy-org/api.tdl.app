@@ -6,10 +6,10 @@ class ApplicationPolicy
     @record = record
   end
 
-  def record_user_matches?
+  def user_owns_record?
     return false unless record.present? && user.present?
 
-    record.user == user
+    user.owner_of?(record)
   end
 
   # :nocov:
