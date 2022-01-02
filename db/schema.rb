@@ -60,13 +60,13 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
   end
 
   create_table "next_action_relationships", force: :cascade do |t|
+    t.string "type", null: false
     t.bigint "first_id", null: false
     t.bigint "second_id", null: false
-    t.string "kind", null: false
     t.string "notes"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["first_id", "second_id", "kind"], name: "unique_next_action_relationships", unique: true
+    t.index ["first_id", "second_id", "type"], name: "unique_next_action_relationships", unique: true
     t.index ["first_id"], name: "index_next_action_relationships_on_first_id"
     t.index ["second_id"], name: "index_next_action_relationships_on_second_id"
   end
@@ -88,13 +88,13 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
   end
 
   create_table "project_relationships", force: :cascade do |t|
+    t.string "type", null: false
     t.bigint "first_id", null: false
     t.bigint "second_id", null: false
-    t.string "kind", null: false
     t.string "notes"
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
-    t.index ["first_id", "second_id", "kind"], name: "unique_project_relationships", unique: true
+    t.index ["first_id", "second_id", "type"], name: "unique_project_relationships", unique: true
     t.index ["first_id"], name: "index_project_relationships_on_first_id"
     t.index ["second_id"], name: "index_project_relationships_on_second_id"
   end

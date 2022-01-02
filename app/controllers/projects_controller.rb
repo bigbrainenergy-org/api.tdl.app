@@ -4,7 +4,10 @@ class ProjectsController < ApplicationController
   def index
     authorize Project
 
-    @projects = policy_scope(Project).order(order: :asc, title: :asc)
+    @projects = policy_scope(Project)
+      .includes(:superprojects)
+      .includes(:subprojects)
+      .order(order: :asc, title: :asc)
   end
 
   def show
@@ -38,7 +41,7 @@ class ProjectsController < ApplicationController
     head :ok
   end
 
-  def bulk_update
+  def bulk_update_same_values
     authorize Project
 
     permitted_ids = policy_scope(Project).select(:id)
@@ -48,6 +51,10 @@ class ProjectsController < ApplicationController
     @projects = Project.bulk_update!(permitted_attributes(Project))
 
     render :index
+  end
+
+  def bulk_update_unique_values
+
   end
 
   # FIXME: This level of complexity is a code smell, fix it.
@@ -95,6 +102,6 @@ class ProjectsController < ApplicationController
   end
 
   def bulk_project_update_params
-    params.require(:projects).permit()
+    params.require(:projects).permit(:title, :notes)
   end
 end

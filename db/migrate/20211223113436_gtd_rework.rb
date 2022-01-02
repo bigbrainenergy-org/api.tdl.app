@@ -101,15 +101,15 @@ class GtdRework < ActiveRecord::Migration[6.1]
     end
 
     create_table :next_action_relationships do |t|
+      t.string     :type,   null: false
       t.belongs_to :first,  null: false
       t.belongs_to :second, null: false
-      t.string     :kind,   null: false
       t.string     :notes
 
       t.timestamps
     end
 
-    add_index :next_action_relationships, [:first_id, :second_id, :kind], unique: true, name: 'unique_next_action_relationships'
+    add_index :next_action_relationships, [:first_id, :second_id, :type], unique: true, name: 'unique_next_action_relationships'
 
     create_table :waiting_fors do |t|
       t.belongs_to :user,            null: false, foreign_key: true
@@ -138,19 +138,23 @@ class GtdRework < ActiveRecord::Migration[6.1]
     end
 
     create_table :project_relationships do |t|
+      t.string     :type,   null: false
       t.belongs_to :first,  null: false
       t.belongs_to :second, null: false
-      t.string     :kind,   null: false
       t.string     :notes
 
       t.timestamps
     end
 
-    add_index :project_relationships, [:first_id, :second_id, :kind], unique: true, name: 'unique_project_relationships'
+    add_index :project_relationships, [:first_id, :second_id, :type], unique: true, name: 'unique_project_relationships'
 
     ##################
     ## Migrate Data ##
     ##################
+
+    User.all.find_each do |user|
+      user.prepopulate_contexts!
+    end
 
     Task.all.includes(
       :user,

@@ -13,6 +13,13 @@ class Context < ApplicationRecord
   validates :title,
     uniqueness: { case_sensitive: false, scope: :user_id }
 
+  before_validation :randomize_by_default, only: [:create]
+
+  def randomize_icon!
+    # Chosen by fair dice roll, guaranteed to be random.
+    self.icon = 'local_offer'
+  end
+
   def randomize_color!
     temp = color.presence || ' '
     self.color = temp
@@ -22,5 +29,10 @@ class Context < ApplicationRecord
     # ''      | #random
     # nil     | #random
     # #any    | #random
+  end
+
+  def randomize_by_default
+    randomize_icon! if icon.nil?
+    randomize_color! if color.nil?
   end
 end

@@ -1,4 +1,4 @@
-class ProjectPolicy < ApplicationPolicy
+class WaitingForPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       scope.where(user: user)
@@ -6,7 +6,7 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:title, :notes, :order]
+    [:title, :notes]
   end
 
   def index?
@@ -27,9 +27,5 @@ class ProjectPolicy < ApplicationPolicy
 
   def destroy?
     user_owns_record?
-  end
-
-  def sync_ordering?
-    user.present?
   end
 end
