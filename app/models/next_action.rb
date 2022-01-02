@@ -22,4 +22,7 @@ class NextAction < ApplicationRecord
     class_name: 'NextAction',
     through: :hard_post_relationships,
     source: :post
+
+  validates :title,
+    presence: true
 end
