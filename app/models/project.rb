@@ -55,4 +55,44 @@ class Project < ApplicationRecord
     paused: 'paused',
     completed: 'completed'
   }
+
+  def all_superprojects
+    recursive_relationship_find(
+      klass: Project,
+      join_table: 'project_relationships',
+      join_type: 'ProjectNesting',
+      starting_id: id,
+      finding: :first
+    )
+  end
+
+  def all_subprojects
+    recursive_relationship_find(
+      klass: Project,
+      join_table: 'project_relationships',
+      join_type: 'ProjectNesting',
+      starting_id: id,
+      finding: :second
+    )
+  end
+
+  def all_hard_prereqs
+    recursive_relationship_find(
+      klass: Project,
+      join_table: 'project_relationships',
+      join_type: 'ProjectHardRequisite',
+      starting_id: id,
+      finding: :first
+    )
+  end
+
+  def all_hard_postreqs
+    recursive_relationship_find(
+      klass: Project,
+      join_table: 'project_relationships',
+      join_type: 'ProjectHardRequisite',
+      starting_id: id,
+      finding: :second
+    )
+  end
 end

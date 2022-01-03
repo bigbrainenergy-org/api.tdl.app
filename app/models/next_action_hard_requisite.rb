@@ -11,4 +11,10 @@ class NextActionHardRequisite < NextActionRelationship
 
   validates :pre, uniqueness: { scope: :second_id }
   validates :post, uniqueness: { scope: :first_id }
+
+  validates_with AcyclicRelationship,
+    first: :pre,
+    second: :post,
+    all_firsts: :all_pres,
+    all_seconds: :all_seconds
 end

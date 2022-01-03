@@ -25,4 +25,24 @@ class NextAction < ApplicationRecord
 
   validates :title,
     presence: true
+
+  def all_hard_prereqs
+    recursive_relationship_find(
+      klass: NextAction,
+      join_table: 'next_action_relationships',
+      join_type: 'NextActionHardRequisite',
+      starting_id: id,
+      finding: :first
+    )
+  end
+
+  def all_hard_postreqs
+    recursive_relationship_find(
+      klass: NextAction,
+      join_table: 'next_action_relationships',
+      join_type: 'NextActionHardRequisite',
+      starting_id: id,
+      finding: :second
+    )
+  end
 end
