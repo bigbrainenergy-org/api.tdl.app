@@ -11,10 +11,14 @@ en:
       unavailable: is not available currently
     password_complexity:
       not_enough_complexity: 'is not complex enough (must include 3 out of 4 of the following: A-Z, a-z, 0-9, Special characters e.g. @#$%)'
-    rule:
-      duplicate_rule: This rule already exists
-      pre_and_post_cant_be_same: Pre and post can't be the same
-      redundant_rule: "%{task_i_title} is already a postrequisite of %{task_ii_title}"
+    acyclic_relationship:
+      invalid: "%{first_title} would cause a cyclic relationship with %{second_title}"
+    unique_relationship:
+      invalid: This relationship already exists
+    useless_relationship:
+      invalid: This relationship would be self-referential and useless
+    redundant_relationship:
+      invalid: "%{first_title} is already a %{relationship} of %{second_title}"
     time_zone:
       invalid: is not a valid time zone
     username_formatting:

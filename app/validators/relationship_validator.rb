@@ -14,7 +14,7 @@ class RelationshipValidator < ActiveModel::Validator
 
   protected
 
-  def relationship_persisted?
+  def relationship_persisted?(record)
     record.try(@first)&.persisted? && record.try(@second)&.persisted?
   end
 end
