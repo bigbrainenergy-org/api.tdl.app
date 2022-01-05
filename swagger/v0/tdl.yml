@@ -1,0 +1,869 @@
+---
+openapi: 3.0.1
+info:
+  title: TDL App API
+  version: v0
+  description: Provides a REST API backend for arbitrary TDL App front-ends.
+  contact:
+    name: TDL App Support
+    email: support@tdl.app
+servers:
+- url: https://api.tdl.app/v0
+  description: Production Server
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+      - error
+    ArrayOfInboxItems:
+      type: array
+      items:
+        "$ref": "#/components/schemas/InboxItem"
+      uniqueItems: true
+    InboxItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        notes:
+          type: string
+          nullable: true
+      required:
+      - id
+      - title
+    ArrayOfLists:
+      type: array
+      items:
+        "$ref": "#/components/schemas/List"
+      uniqueItems: true
+    ArrayOfTags:
+      type: array
+      items:
+        "$ref": "#/components/schemas/Tag"
+      uniqueItems: true
+    ArrayOfTasks:
+      type: array
+      items:
+        "$ref": "#/components/schemas/Task"
+      uniqueItems: true
+    ArrayOfRules:
+      type: array
+      items:
+        "$ref": "#/components/schemas/Rule"
+      uniqueItems: true
+    Username:
+      type: object
+      properties:
+        username:
+          type: string
+      required:
+      - username
+    List:
+      type: object
+      properties:
+        id:
+          type: integer
+        order:
+          type: integer
+        title:
+          type: string
+      required:
+      - id
+      - order
+      - title
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        order:
+          type: integer
+        title:
+          type: string
+        color:
+          type: string
+      required:
+      - id
+      - order
+      - title
+      - color
+    Task:
+      type: object
+      properties:
+        id:
+          type: integer
+        list_id:
+          type: integer
+        title:
+          type: string
+        order:
+          type: integer
+        notes:
+          type: string
+        completed_at:
+          type: string
+        deadline_at:
+          type: string
+        prioritize_at:
+          type: string
+        remind_me_at:
+          type: string
+        review_at_at:
+          type: string
+      required:
+      - id
+      - list_id
+      - title
+      - order
+    Rule:
+      type: object
+      properties:
+        id:
+          type: integer
+        pre_id:
+          type: integer
+        post_id:
+          type: integer
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+      - username
+      - password
+    SessionToken:
+      type: object
+      properties:
+        session_token:
+          type: string
+      required:
+      - session_token
+  responses:
+    BadRequest:
+      description: Missing parameters
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    PaymentRequired:
+      description: Your subscription has expired, app in readonly mode
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    UnprocessableEntity:
+      description: The changes requested could not be processed
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    Unauthorized:
+      description: Access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    Forbidden:
+      description: You don't have permission to do that
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    NotImplemented:
+      description: Endpoint not implemented yet
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    ServiceUnavailable:
+      description: API is currently unavailable
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+security:
+- bearerAuth: []
+paths:
+  "/inbox_items":
+    post:
+      requestBody:
+        description: Inbox Item to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/InboxItem"
+      summary: Create new inbox item
+      tags:
+      - Inbox Items
+      description: Create a new inbox item for the current user.
+      parameters: []
+      responses:
+        '200':
+          description: Successfully created new inbox item
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/InboxItem"
+        '400':
+          description: Missing parameters
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '422':
+          description: The changes requested could not be processed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    get:
+      summary: Get inbox items
+      tags:
+      - Inbox Items
+      description: Returns an array of the current user's inbox items.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ArrayOfInboxItems"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/inbox_items/{id}":
+    patch:
+      requestBody:
+        description: Updates for existing inbox item
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/InboxItem"
+      summary: Update inbox item
+      tags:
+      - Inbox Items
+      description: Update an existing inbox_item.
+      parameters: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Missing parameters
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized
+        '404':
+          description: Not Found
+        '422':
+          description: Failed to process inbox item
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show inbox item
+      tags:
+      - Inbox Items
+      description: Returns the information for a specific inbox item.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/InboxItem"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    delete:
+      summary: Destroy inbox item
+      tags:
+      - Inbox Items
+      description: Destroy a inbox item.
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/health":
+    get:
+      summary: API Health Status
+      tags:
+      - Health
+      responses:
+        '200':
+          description: API is healthy
+        '503':
+          "$ref": "#/components/responses/ServiceUnavailable"
+          description: API is currently unavailable
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+      description: Returns API health status
+      security: []
+  "/rules":
+    get:
+      summary: Returns an array of the current user's rules.
+      tags:
+      - Rules
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ArrayOfRules"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+  "/tags":
+    get:
+      summary: Returns an array of the current user's tags.
+      tags:
+      - Tags
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ArrayOfTags"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+    post:
+      summary: Create a new tag for the current user.
+      tags:
+      - Tags
+      requestBody:
+        description: Tag to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Tag"
+      responses:
+        '200':
+          description: Successfully created new tag
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Tag"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+          description: Missing parameters
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+          description: Failed to process tag
+      parameters: []
+  "/tags/sync-ordering":
+    patch:
+      summary: Update the ordering for current user's tags.
+      tags:
+      - Tags
+      responses:
+        '200':
+          description: Success
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+          description: Not authorized
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+          description: Failed to process tag
+      parameters: []
+  "/tags/{id}":
+    get:
+      summary: Returns the information for a specific tag.
+      tags:
+      - Tags
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Tag"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+          description: Not authorized
+        '404':
+          "$ref": "#/components/responses/NotFound"
+          description: Not Found
+    patch:
+      summary: Update an existing tag.
+      tags:
+      - Tags
+      requestBody:
+        description: Updates for existing tag
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Tag"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Tag"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+          description: Missing parameters
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+          description: Not authorized
+        '404':
+          "$ref": "#/components/responses/NotFound"
+          description: Not Found
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+          description: Failed to process tag
+      parameters: []
+    delete:
+      summary: Destroy a tag.
+      tags:
+      - Tags
+      responses:
+        '200':
+          description: Success
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+          description: Not authorized
+        '404':
+          "$ref": "#/components/responses/NotFound"
+          description: Not Found
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  "/tasks":
+    get:
+      summary: Returns an array of the current user's tasks.
+      tags:
+      - Tasks
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ArrayOfTasks"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+    post:
+      summary: Create a new task for the current user.
+      tags:
+      - Tasks
+      requestBody:
+        description: Task to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/List"
+      responses:
+        '200':
+          description: Successfully created new task
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Task"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+          description: Missing parameters
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+          description: Not authorized
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+          description: Failed to process task
+      parameters: []
+  "/tasks/{id}":
+    get:
+      summary: Returns the information for a specific list.
+      tags:
+      - Tasks
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Task"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+          description: Not authorized
+        '404':
+          "$ref": "#/components/responses/NotFound"
+          description: Not Found
+    patch:
+      summary: Update an existing task.
+      tags:
+      - Tasks
+      requestBody:
+        description: Updates for existing task
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Task"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Task"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+          description: Missing parameters
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+          description: Not authorized
+        '404':
+          "$ref": "#/components/responses/NotFound"
+          description: Not Found
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+          description: Failed to process task
+      parameters: []
+    delete:
+      summary: Destroy a task.
+      tags:
+      - Tasks
+      responses:
+        '200':
+          description: Success
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+          description: Not authorized
+        '404':
+          "$ref": "#/components/responses/NotFound"
+          description: Not Found
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  "/lists":
+    get:
+      summary: Returns an array of the current user's lists.
+      tags:
+      - Lists
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ArrayOfLists"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+    post:
+      summary: Create a new list for the current user.
+      tags:
+      - Lists
+      requestBody:
+        description: List to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/List"
+      responses:
+        '200':
+          description: Successfully created new list
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/List"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+          description: Missing parameters
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+          description: Failed to process list
+      parameters: []
+  "/lists/sync-ordering":
+    patch:
+      summary: Update the ordering for current user's lists.
+      tags:
+      - Lists
+      responses:
+        '200':
+          description: Success
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+          description: Not authorized
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+          description: Failed to process list
+      parameters: []
+  "/lists/{id}":
+    get:
+      summary: Returns the information for a specific list.
+      tags:
+      - Lists
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/List"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+          description: Not authorized
+        '404':
+          "$ref": "#/components/responses/NotFound"
+          description: Not Found
+    patch:
+      summary: Update an existing list.
+      tags:
+      - Lists
+      requestBody:
+        description: Updates for existing list
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/List"
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/List"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+          description: Missing parameters
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+          description: Not authorized
+        '404':
+          "$ref": "#/components/responses/NotFound"
+          description: Not Found
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+          description: Failed to process list
+      parameters: []
+    delete:
+      summary: Destroy a list.
+      tags:
+      - Lists
+      responses:
+        '200':
+          description: Success
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+        '403':
+          "$ref": "#/components/responses/Forbidden"
+          description: Not authorized
+        '404':
+          "$ref": "#/components/responses/NotFound"
+          description: Not Found
+        '422':
+          "$ref": "#/components/responses/UnprocessableEntity"
+          description: Failed to process list
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+  "/login":
+    post:
+      summary: Creates a session token
+      tags:
+      - Authentication
+      security: []
+      requestBody:
+        description: Username and password
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Login"
+      responses:
+        '200':
+          description: Logged in successfully
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SessionToken"
+        '400':
+          "$ref": "#/components/responses/BadRequest"
+          description: Bad login
+      parameters: []
+  "/logout":
+    delete:
+      summary: Destroys a session token
+      tags:
+      - Authentication
+      responses:
+        '200':
+          description: Logged out successfully
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authenticated
+  "/verify/token":
+    post:
+      summary: Verifies 2FA via hardware token
+      tags:
+      - Authentication
+      responses:
+        '501':
+          "$ref": "#/components/responses/NotImplemented"
+          description: Not implemented yet
+      security: []
+  "/verify/app":
+    post:
+      summary: Verifies 2FA via authy app
+      tags:
+      - Authentication
+      responses:
+        '501':
+          "$ref": "#/components/responses/NotImplemented"
+          description: Not implemented yet
+      security: []
+  "/username":
+    get:
+      summary: Retrieves a user's username
+      tags:
+      - Settings
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Username"
+        '401':
+          "$ref": "#/components/responses/Unauthorized"
+          description: Not authorized
+  "/tasks/sync-ordering":
+    patch:
+      summary: Update the ordering for current user's tasks.
+      parameters: []
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized
+        '422':
+          description: Failed to process list

@@ -6,7 +6,15 @@ class ProjectPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:title, :notes, :order]
+    [
+      :title,
+      :notes,
+      :order,
+      :superproject_ids,
+      :subproject_ids,
+      :hard_prereq_ids,
+      :hard_postreq_ids
+    ]
   end
 
   def index?

@@ -15,7 +15,7 @@ RSpec.configure do |config|
   # to the the root example_group in your specs, e.g.
   # describe '...', swagger_doc: 'v2/swagger.json'
   config.swagger_docs = {
-    'v0/swagger.yaml' => HashWithIndifferentAccess.new(
+    'v0/tdl.yml' => HashWithIndifferentAccess.new(
       YAML.safe_load(File.read(Rails.root.join('spec/support/api/tdl.yml')))
     )
   }

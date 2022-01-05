@@ -6,7 +6,12 @@ class NextActionPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:title, :notes]
+    [
+      :title,
+      :notes,
+      :hard_prereq_ids,
+      :hard_postreq_ids
+    ]
   end
 
   def index?

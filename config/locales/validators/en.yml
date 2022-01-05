@@ -4,6 +4,10 @@ en:
     email_formatting:
       invalid_format: is not in a valid email format
       must_be_lowercase: is not lowercase
+    icon_formatting:
+      invalid_icon: is not a valid icon
+    same_user:
+      invalid: "user does not match %{record_class} user"
     hex_color_formatting:
       invalid_format: wrong format for css rgb colorcode
       must_be_prefixed_with_octothorpe: 'colorcode must begin with #'
@@ -17,6 +21,8 @@ en:
       invalid: This relationship already exists
     useless_relationship:
       invalid: This relationship would be self-referential and useless
+    same_users_relationship:
+      invalid: This relationship does not have the same user for both records
     redundant_relationship:
       invalid: "%{first_title} is already a %{relationship} of %{second_title}"
     time_zone:

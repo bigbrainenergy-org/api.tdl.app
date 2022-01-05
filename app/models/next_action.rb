@@ -26,6 +26,9 @@ class NextAction < ApplicationRecord
   validates :title,
     presence: true
 
+  validates :context, :project,
+    same_user: true
+
   def all_hard_prereqs
     recursive_relationship_find(
       klass: NextAction,

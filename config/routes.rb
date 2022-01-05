@@ -1,5 +1,5 @@
-# rubocop:disable Metrics/BlockLength
 # FIXME: block length max is set to 25
+# rubocop:disable Metrics/BlockLength
 Rails.application.routes.draw do
   mount Rswag::Ui::Engine  => '/docs'
   mount Rswag::Api::Engine => '/docs'
@@ -14,11 +14,11 @@ Rails.application.routes.draw do
 
     # FIXME: Cloudflare might be caching this, defeating the purpose.
     # Server Health Status
-    get 'health' => 'health#health'
+    get 'health' => 'meta#health'
     # List of available Time Zones
-    get 'time-zones' => 'time_zones#index'
+    get 'time-zones' => 'meta#time_zones'
     # List of available Locales
-    get 'locales' => 'locales#index'
+    get 'locales' => 'meta#locales'
 
     ###################
     ## Sync Ordering ##
@@ -66,11 +66,15 @@ Rails.application.routes.draw do
     resources :project_relationships
     resources :next_action_relationships
 
+    #########
+    ## 404 ##
+    #########
+
     # FIXME: Is there a way to match any HTTP method and return 404?
     get '*unmatched_route', to: 'application#not_found'
     post '*unmatched_route', to: 'application#not_found'
     patch '*unmatched_route', to: 'application#not_found'
     delete '*unmatched_route', to: 'application#not_found'
   end
-  # rubocop:enable Metrics/BlockLength
 end
+# rubocop:enable Metrics/BlockLength

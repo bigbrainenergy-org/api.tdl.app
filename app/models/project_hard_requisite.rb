@@ -28,4 +28,8 @@ class ProjectHardRequisite < ProjectRelationship
   validates_with UniqueRelationshipValidator,
     first: :pre,
     second: :post
+
+  validates_with SameUsersRelationshipValidator,
+    first: :pre,
+    second: :post
 end

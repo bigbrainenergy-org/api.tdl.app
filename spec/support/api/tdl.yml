@@ -2,8 +2,7 @@ openapi: 3.0.1
 info:
   title: TDL App API
   version: v0
-  description: >
-    Provides a REST API backend for arbitrary TDL App front-ends.
+  description: Provides a REST API backend for arbitrary TDL App front-ends.
   contact:
     name: TDL App Support
     email: support@tdl.app
@@ -23,6 +22,9 @@ components:
       scheme: bearer
       bearerFormat: JWT
   schemas:
+    #########################
+    ## Error Response Body ##
+    #########################
     # Schema for error response body. See components -> responses
     Error:
       type: object
@@ -48,9 +50,22 @@ components:
           type: string
         notes:
           type: string
+          nullable: true
       required:
         - id
         - title
+    ##################
+    ## Next Actions ##
+    ##################
+    ##################
+    ## Waiting Fors ##
+    ##################
+    ##############
+    ## Projects ##
+    ##############
+    ##############
+    ## Contexts ##
+    ##############
     ###############
     ## OLD STUFF ##
     ###############
@@ -166,7 +181,7 @@ components:
         - session_token
   responses:
     BadRequest:
-      description: You did a dumb dumb
+      description: Missing parameters
       content:
         application/json:
           schema:
@@ -218,25 +233,10 @@ components:
 security:
   - bearerAuth: []
 
+# FIXME: RSwag doesn't support requestBody description
 paths:
   /inbox_items:
-    get:
-      summary: Returns an array of the current user's inbox items.
-      tags:
-        - Inbox Items
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ArrayOfInboxItems'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
     post:
-      summary: Create a new inbox item for the current user.
-      tags:
-        - Inbox Items
       requestBody:
         description: Inbox Item to be created
         required: true
@@ -244,41 +244,8 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/InboxItem'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InboxItem'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
   /inbox_items/{id}:
-    get:
-      summary: Returns the information for a specific inbox item.
-      tags:
-        - Inbox Items
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InboxItem'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
     patch:
-      summary: Update an existing inbox item.
-      tags:
-        - Inbox Items
       requestBody:
         description: Updates for existing inbox item
         required: true
@@ -286,36 +253,6 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/InboxItem'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/InboxItem'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-    delete:
-      summary: Destroy a inbox item.
-      tags:
-        - Inbox Items
-      responses:
-        '200':
-          description: OK
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
   ###############
   ## OLD STUFF ##
   ###############

@@ -1,6 +1,8 @@
 FactoryBot.define do
-  factory :list do
+  factory :project do
     user
+
     title { "a#{Faker::String.random}" }
+    notes { [Faker::Lorem.paragraphs.join, nil].sample }
   end
 end

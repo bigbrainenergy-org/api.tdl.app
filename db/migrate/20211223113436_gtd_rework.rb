@@ -113,11 +113,12 @@ class GtdRework < ActiveRecord::Migration[6.1]
 
     create_table :waiting_fors do |t|
       t.belongs_to :user,            null: false, foreign_key: true
+      t.belongs_to :project,         foreign_key: true
       t.string     :title,           null: false
       t.string     :notes
       t.integer    :order,           null: false, default: 0
       t.datetime   :next_checkin_at
-      t.datetime   :deadline_at
+      t.string     :delegated_to
       t.boolean    :completed,       null: false, default: false
 
       t.timestamps

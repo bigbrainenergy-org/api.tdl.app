@@ -1,8 +1,12 @@
-class TagPolicy < ApplicationPolicy
+class ContextPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       scope.where(user: user)
     end
+  end
+
+  def permitted_attributes
+    [:title, :color, :icon, :order]
   end
 
   def index?
@@ -10,22 +14,18 @@ class TagPolicy < ApplicationPolicy
   end
 
   def show?
-    record_user_matches?
+    user_owns_record?
   end
 
   def create?
-    record_user_matches?
+    user_owns_record?
   end
 
   def update?
-    record_user_matches?
+    user_owns_record?
   end
 
   def destroy?
-    record_user_matches?
-  end
-
-  def sync_ordering?
-    user.present?
+    user_owns_record?
   end
 end

@@ -28,4 +28,8 @@ class ProjectNesting < ProjectRelationship
   validates_with UniqueRelationshipValidator,
     first: :superproject,
     second: :subproject
+
+  validates_with SameUsersRelationshipValidator,
+    first: :superproject,
+    second: :subproject
 end

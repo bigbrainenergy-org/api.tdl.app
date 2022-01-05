@@ -1,17 +1,23 @@
 class Context < ApplicationRecord
   belongs_to :user
 
-  has_many :next_actions
+  has_many :next_actions, dependent: :restrict_with_exception
 
-  validates :title, :icon,
-    presence: true
+  validates :title,
+    presence: true,
+    uniqueness: { case_sensitive: false, scope: :user_id }
+
+  validates :icon,
+    presence: true,
+    icon_formatting: true
 
   validates :color,
     presence:             true,
     hex_color_formatting: true
 
-  validates :title,
-    uniqueness: { case_sensitive: false, scope: :user_id }
+  # TODO: Validate that order is an int >= 0
+  validates :order,
+    presence: true
 
   before_validation :randomize_by_default, only: [:create]
 

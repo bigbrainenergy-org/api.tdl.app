@@ -21,5 +21,5 @@
 
 ## Commands
 
-* `rake rswag`
+* `RAILS_ENV=test rake rswag`
   * Generates specs from OpenAPI docs
