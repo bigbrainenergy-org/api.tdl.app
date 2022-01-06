@@ -1,55 +1,57 @@
 require 'rails_helper'
 
-RSpec.describe TaskPolicy do
+RSpec.describe NextActionPolicy do
   describe 'scope' do
     subject(:resolved_scope) do
-      described_class::Scope.new(user, Task).resolve
+      described_class::Scope.new(user, NextAction).resolve
     end
 
-    let!(:other_task) { create :task }
+    let!(:other_next_action) { create :next_action }
 
     context 'when a visitor' do
       let(:user) { nil }
 
-      it { should_not include(other_task) }
+      it { should_not include(other_next_action) }
     end
 
     context 'when a user' do
       let(:user) { create :user }
-      let(:task) { create :task, user: user }
+      let(:next_action) { create :next_action, user: user }
 
-      it { should include(task) }
-      it { should_not include(other_task) }
+      it { should include(next_action) }
+      it { should_not include(other_next_action) }
     end
   end
 
+  describe 'permitted_attributes' do
+    # TODO: What's the ideal way to test permitted attributes?
+    # For reference, see: https://github.com/chrisalley/pundit-matchers#testing-the-mass-assignment-of-attributes-for-particular-actions
+  end
+
   describe 'actions' do
-    subject { described_class.new(user, task) }
+    subject { described_class.new(user, next_action) }
 
     let(:crud_actions) { [:show, :create, :update, :destroy] }
     let(:user) { create :user }
-    let(:task) { create :task }
+    let(:next_action) { create :next_action }
 
     context 'when a visitor' do
       let(:user) { nil }
 
       it { should forbid_action(:index) }
       it { should forbid_actions(crud_actions) }
-      it { should forbid_action(:sync_ordering) }
     end
 
     context 'when another user' do
       it { should permit_action(:index) }
       it { should forbid_actions(crud_actions) }
-      it { should permit_action(:sync_ordering) }
     end
 
     context 'when the record user' do
-      let(:task) { create :task, user: user }
+      let(:next_action) { create :next_action, user: user }
 
       it { should permit_action(:index) }
       it { should permit_actions(crud_actions) }
-      it { should permit_action(:sync_ordering) }
     end
   end
 end

@@ -118,7 +118,7 @@ class GtdRework < ActiveRecord::Migration[6.1]
       t.string     :notes
       t.integer    :order,           null: false, default: 0
       t.datetime   :next_checkin_at
-      t.string     :delegated_to
+      t.string     :delegated_to,    null: false
       t.boolean    :completed,       null: false, default: false
 
       t.timestamps

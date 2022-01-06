@@ -1,8 +1,13 @@
 class UserPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
-      scope.where(user: user)
+      # FIXME: This seems a bit dumb
+      scope.where(id: user&.id)
     end
+  end
+
+  def permitted_attributes
+    [:locale, :time_zone]
   end
 
   def show?

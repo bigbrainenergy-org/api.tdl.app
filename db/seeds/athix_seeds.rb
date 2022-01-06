@@ -134,7 +134,8 @@ end
   WaitingFor.create!(
     user: athix,
     title: "#{random_waiting_for_title} - #{n}",
-    notes: random_waiting_for_notes
+    notes: random_waiting_for_notes,
+    delegated_to: Faker::Name.name
   )
 end
 

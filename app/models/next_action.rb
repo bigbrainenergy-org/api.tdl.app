@@ -23,7 +23,7 @@ class NextAction < ApplicationRecord
     through: :hard_post_relationships,
     source: :post
 
-  validates :title,
+  validates :title, :order,
     presence: true
 
   validates :context, :project,

@@ -6,7 +6,14 @@ class WaitingForPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:title, :notes]
+    [
+      :title,
+      :notes,
+      :order,
+      :next_checkin_at,
+      :delegated_to,
+      :completed
+    ]
   end
 
   def index?

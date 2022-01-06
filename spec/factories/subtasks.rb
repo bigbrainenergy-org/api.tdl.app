@@ -1,9 +1,8 @@
 FactoryBot.define do
-  factory :next_action do
-    user
+  factory :subtask do
+    next_action
 
     title { "a#{Faker::String.random}" }
-    notes { [Faker::Lorem.paragraphs, nil].sample }
     completed { [true, false].sample }
   end
 end

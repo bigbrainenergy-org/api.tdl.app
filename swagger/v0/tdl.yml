@@ -8,8 +8,10 @@ info:
     name: TDL App Support
     email: support@tdl.app
 servers:
-- url: https://api.tdl.app/v0
+- url: https://api.tdl.app
   description: Production Server
+- url: http://localhost:3000
+  description: Localhost Server
 components:
   securitySchemes:
     bearerAuth:
@@ -42,99 +44,136 @@ components:
       required:
       - id
       - title
-    ArrayOfLists:
+    ArrayOfNextActions:
       type: array
       items:
-        "$ref": "#/components/schemas/List"
+        "$ref": "#/components/schemas/NextAction"
       uniqueItems: true
-    ArrayOfTags:
-      type: array
-      items:
-        "$ref": "#/components/schemas/Tag"
-      uniqueItems: true
-    ArrayOfTasks:
-      type: array
-      items:
-        "$ref": "#/components/schemas/Task"
-      uniqueItems: true
-    ArrayOfRules:
-      type: array
-      items:
-        "$ref": "#/components/schemas/Rule"
-      uniqueItems: true
-    Username:
-      type: object
-      properties:
-        username:
-          type: string
-      required:
-      - username
-    List:
+    NextAction:
       type: object
       properties:
         id:
-          type: integer
-        order:
           type: integer
         title:
           type: string
+        notes:
+          type: string
+          nullable: true
+        order:
+          type: integer
+        completed:
+          type: boolean
+        remind_me_at:
+          type: string
+          nullable: true
       required:
       - id
-      - order
       - title
-    Tag:
+      - order
+      - completed
+    ArrayOfWaitingFors:
+      type: array
+      items:
+        "$ref": "#/components/schemas/WaitingFor"
+      uniqueItems: true
+    WaitingFor:
       type: object
       properties:
         id:
           type: integer
+        title:
+          type: string
+        notes:
+          type: string
+          nullable: true
         order:
+          type: integer
+        next_checkin_at:
+          type: string
+          nullable: true
+        delegated_to:
+          type: string
+        completed:
+          type: boolean
+      required:
+      - id
+      - title
+      - order
+      - delegated_to
+      - completed
+    ArrayOfProjects:
+      type: array
+      items:
+        "$ref": "#/components/schemas/Project"
+      uniqueItems: true
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        order:
+          type: integer
+        status:
+          type: string
+        status_last_changed_at:
+          type: string
+          nullable: true
+        deadline_at:
+          type: string
+          nullable: true
+        estimated_time_to_complete:
+          type: string
+          nullable: true
+      required:
+      - id
+      - title
+      - order
+      - status
+    ArrayOfContexts:
+      type: array
+      items:
+        "$ref": "#/components/schemas/Context"
+      uniqueItems: true
+    Context:
+      type: object
+      properties:
+        id:
           type: integer
         title:
           type: string
         color:
           type: string
-      required:
-      - id
-      - order
-      - title
-      - color
-    Task:
-      type: object
-      properties:
-        id:
-          type: integer
-        list_id:
-          type: integer
-        title:
+        icon:
           type: string
         order:
           type: integer
-        notes:
-          type: string
-        completed_at:
-          type: string
-        deadline_at:
-          type: string
-        prioritize_at:
-          type: string
-        remind_me_at:
-          type: string
-        review_at_at:
-          type: string
       required:
       - id
-      - list_id
       - title
+      - color
+      - icon
       - order
-    Rule:
+    User:
       type: object
       properties:
         id:
           type: integer
-        pre_id:
-          type: integer
-        post_id:
-          type: integer
+        username:
+          type: string
+        locale:
+          type: string
+        time_zone:
+          type: string
+      required:
+      - id
+      - username
+      - locale
+      - time_zone
     Login:
       type: object
       properties:
@@ -350,446 +389,655 @@ paths:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
-  "/health":
-    get:
-      summary: API Health Status
+  "/next_actions":
+    post:
+      requestBody:
+        description: Next Action to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NextAction"
+      summary: Create new next action
       tags:
-      - Health
+      - Next Actions
+      description: Create a new next action for the current user.
+      parameters: []
       responses:
         '200':
-          description: API is healthy
-        '503':
-          "$ref": "#/components/responses/ServiceUnavailable"
-          description: API is currently unavailable
+          description: Successfully created new next action
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NextAction"
+        '400':
+          description: Missing parameters
           content:
             application/json:
               schema:
                 "$ref": "#/components/schemas/Error"
-      description: Returns API health status
-      security: []
-  "/rules":
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '422':
+          description: The changes requested could not be processed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
     get:
-      summary: Returns an array of the current user's rules.
+      summary: Get next actions
       tags:
-      - Rules
+      - Next Actions
+      description: Returns an array of the current user's next actions.
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ArrayOfRules"
+                "$ref": "#/components/schemas/ArrayOfNextActions"
         '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
-  "/tags":
-    get:
-      summary: Returns an array of the current user's tags.
-      tags:
-      - Tags
-      responses:
-        '200':
-          description: Success
+          description: Access token is missing or invalid
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ArrayOfTags"
-        '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
-    post:
-      summary: Create a new tag for the current user.
-      tags:
-      - Tags
+                "$ref": "#/components/schemas/Error"
+  "/next_actions/{id}":
+    patch:
       requestBody:
-        description: Tag to be created
+        description: Updates for existing next action
         required: true
         content:
           application/json:
             schema:
-              "$ref": "#/components/schemas/Tag"
+              "$ref": "#/components/schemas/NextAction"
+      summary: Update next action
+      tags:
+      - Next Actions
+      description: Update an existing next_action.
+      parameters: []
       responses:
         '200':
-          description: Successfully created new tag
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/Tag"
+          description: Success
         '400':
-          "$ref": "#/components/responses/BadRequest"
           description: Missing parameters
         '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
-        '422':
-          "$ref": "#/components/responses/UnprocessableEntity"
-          description: Failed to process tag
-      parameters: []
-  "/tags/sync-ordering":
-    patch:
-      summary: Update the ordering for current user's tags.
-      tags:
-      - Tags
-      responses:
-        '200':
-          description: Success
-        '401':
-          "$ref": "#/components/responses/Unauthorized"
           description: Not authenticated
         '403':
-          "$ref": "#/components/responses/Forbidden"
-          description: Not authorized
-        '422':
-          "$ref": "#/components/responses/UnprocessableEntity"
-          description: Failed to process tag
-      parameters: []
-  "/tags/{id}":
-    get:
-      summary: Returns the information for a specific tag.
-      tags:
-      - Tags
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/Tag"
-        '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
-        '403':
-          "$ref": "#/components/responses/Forbidden"
           description: Not authorized
         '404':
-          "$ref": "#/components/responses/NotFound"
-          description: Not Found
-    patch:
-      summary: Update an existing tag.
-      tags:
-      - Tags
-      requestBody:
-        description: Updates for existing tag
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/Tag"
-      responses:
-        '200':
-          description: Success
-          content:
-            application/json:
-              schema:
-                "$ref": "#/components/schemas/Tag"
-        '400':
-          "$ref": "#/components/responses/BadRequest"
-          description: Missing parameters
-        '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
-        '403':
-          "$ref": "#/components/responses/Forbidden"
-          description: Not authorized
-        '404':
-          "$ref": "#/components/responses/NotFound"
           description: Not Found
         '422':
-          "$ref": "#/components/responses/UnprocessableEntity"
-          description: Failed to process tag
-      parameters: []
-    delete:
-      summary: Destroy a tag.
-      tags:
-      - Tags
-      responses:
-        '200':
-          description: Success
-        '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
-        '403':
-          "$ref": "#/components/responses/Forbidden"
-          description: Not authorized
-        '404':
-          "$ref": "#/components/responses/NotFound"
-          description: Not Found
+          description: Failed to process next action
     parameters:
     - name: id
       in: path
       required: true
       schema:
         type: string
-  "/tasks":
     get:
-      summary: Returns an array of the current user's tasks.
+      summary: Show next action
       tags:
-      - Tasks
+      - Next Actions
+      description: Returns the information for a specific next action.
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ArrayOfTasks"
+                "$ref": "#/components/schemas/NextAction"
         '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
-    post:
-      summary: Create a new task for the current user.
-      tags:
-      - Tasks
-      requestBody:
-        description: Task to be created
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/List"
-      responses:
-        '200':
-          description: Successfully created new task
+          description: Access token is missing or invalid
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Task"
-        '400':
-          "$ref": "#/components/responses/BadRequest"
-          description: Missing parameters
-        '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
+                "$ref": "#/components/schemas/Error"
         '403':
-          "$ref": "#/components/responses/Forbidden"
-          description: Not authorized
-        '422':
-          "$ref": "#/components/responses/UnprocessableEntity"
-          description: Failed to process task
-      parameters: []
-  "/tasks/{id}":
-    get:
-      summary: Returns the information for a specific list.
-      tags:
-      - Tasks
-      responses:
-        '200':
-          description: Success
+          description: You don't have permission to do that
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Task"
-        '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
-        '403':
-          "$ref": "#/components/responses/Forbidden"
-          description: Not authorized
+                "$ref": "#/components/schemas/Error"
         '404':
-          "$ref": "#/components/responses/NotFound"
-          description: Not Found
-    patch:
-      summary: Update an existing task.
-      tags:
-      - Tasks
-      requestBody:
-        description: Updates for existing task
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/Task"
-      responses:
-        '200':
-          description: Success
+          description: The specified resource was not found
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Task"
-        '400':
-          "$ref": "#/components/responses/BadRequest"
-          description: Missing parameters
-        '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
-        '403':
-          "$ref": "#/components/responses/Forbidden"
-          description: Not authorized
-        '404':
-          "$ref": "#/components/responses/NotFound"
-          description: Not Found
-        '422':
-          "$ref": "#/components/responses/UnprocessableEntity"
-          description: Failed to process task
-      parameters: []
+                "$ref": "#/components/schemas/Error"
     delete:
-      summary: Destroy a task.
+      summary: Destroy next action
       tags:
-      - Tasks
+      - Next Actions
+      description: Destroy a next action.
       responses:
         '200':
           description: Success
         '401':
-          "$ref": "#/components/responses/Unauthorized"
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/waiting_fors":
+    post:
+      requestBody:
+        description: Waiting For to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/WaitingFor"
+      summary: Create new waiting for
+      tags:
+      - Waiting Fors
+      description: Create a new waiting for for the current user.
+      parameters: []
+      responses:
+        '200':
+          description: Successfully created new waiting for
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/WaitingFor"
+        '400':
+          description: Missing parameters
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '422':
+          description: The changes requested could not be processed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    get:
+      summary: Get waiting fors
+      tags:
+      - Waiting Fors
+      description: Returns an array of the current user's waiting fors.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ArrayOfWaitingFors"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/waiting_fors/{id}":
+    patch:
+      requestBody:
+        description: Updates for existing waiting for
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/WaitingFor"
+      summary: Update waiting for
+      tags:
+      - Waiting Fors
+      description: Update an existing waiting_for.
+      parameters: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Missing parameters
+        '401':
           description: Not authenticated
         '403':
-          "$ref": "#/components/responses/Forbidden"
           description: Not authorized
         '404':
-          "$ref": "#/components/responses/NotFound"
           description: Not Found
+        '422':
+          description: Failed to process waiting for
     parameters:
     - name: id
       in: path
       required: true
       schema:
         type: string
-  "/lists":
     get:
-      summary: Returns an array of the current user's lists.
+      summary: Show waiting for
       tags:
-      - Lists
+      - Waiting Fors
+      description: Returns the information for a specific waiting for.
       responses:
         '200':
           description: Success
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/ArrayOfLists"
+                "$ref": "#/components/schemas/WaitingFor"
         '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
-    post:
-      summary: Create a new list for the current user.
-      tags:
-      - Lists
-      requestBody:
-        description: List to be created
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/List"
-      responses:
-        '200':
-          description: Successfully created new list
+          description: Access token is missing or invalid
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/List"
-        '400':
-          "$ref": "#/components/responses/BadRequest"
-          description: Missing parameters
-        '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
-        '422':
-          "$ref": "#/components/responses/UnprocessableEntity"
-          description: Failed to process list
-      parameters: []
-  "/lists/sync-ordering":
-    patch:
-      summary: Update the ordering for current user's lists.
-      tags:
-      - Lists
-      responses:
-        '200':
-          description: Success
-        '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
+                "$ref": "#/components/schemas/Error"
         '403':
-          "$ref": "#/components/responses/Forbidden"
-          description: Not authorized
-        '422':
-          "$ref": "#/components/responses/UnprocessableEntity"
-          description: Failed to process list
-      parameters: []
-  "/lists/{id}":
-    get:
-      summary: Returns the information for a specific list.
-      tags:
-      - Lists
-      responses:
-        '200':
-          description: Success
+          description: You don't have permission to do that
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/List"
-        '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
-        '403':
-          "$ref": "#/components/responses/Forbidden"
-          description: Not authorized
+                "$ref": "#/components/schemas/Error"
         '404':
-          "$ref": "#/components/responses/NotFound"
-          description: Not Found
-    patch:
-      summary: Update an existing list.
-      tags:
-      - Lists
-      requestBody:
-        description: Updates for existing list
-        required: true
-        content:
-          application/json:
-            schema:
-              "$ref": "#/components/schemas/List"
-      responses:
-        '200':
-          description: Success
+          description: The specified resource was not found
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/List"
-        '400':
-          "$ref": "#/components/responses/BadRequest"
-          description: Missing parameters
-        '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
-        '403':
-          "$ref": "#/components/responses/Forbidden"
-          description: Not authorized
-        '404':
-          "$ref": "#/components/responses/NotFound"
-          description: Not Found
-        '422':
-          "$ref": "#/components/responses/UnprocessableEntity"
-          description: Failed to process list
-      parameters: []
+                "$ref": "#/components/schemas/Error"
     delete:
-      summary: Destroy a list.
+      summary: Destroy waiting for
       tags:
-      - Lists
+      - Waiting Fors
+      description: Destroy a waiting for.
       responses:
         '200':
           description: Success
         '401':
-          "$ref": "#/components/responses/Unauthorized"
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/projects":
+    post:
+      requestBody:
+        description: Project to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Project"
+      summary: Create new project
+      tags:
+      - Projects
+      description: Create a new project for the current user.
+      parameters: []
+      responses:
+        '200':
+          description: Successfully created new project
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Project"
+        '400':
+          description: Missing parameters
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '422':
+          description: The changes requested could not be processed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    get:
+      summary: Get projects
+      tags:
+      - Projects
+      description: Returns an array of the current user's projects.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ArrayOfProjects"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/projects/{id}":
+    patch:
+      requestBody:
+        description: Updates for existing project
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Project"
+      summary: Update project
+      tags:
+      - Projects
+      description: Update an existing project.
+      parameters: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Missing parameters
+        '401':
           description: Not authenticated
         '403':
-          "$ref": "#/components/responses/Forbidden"
           description: Not authorized
         '404':
-          "$ref": "#/components/responses/NotFound"
           description: Not Found
         '422':
-          "$ref": "#/components/responses/UnprocessableEntity"
-          description: Failed to process list
+          description: Failed to process project
     parameters:
     - name: id
       in: path
       required: true
       schema:
         type: string
+    get:
+      summary: Show project
+      tags:
+      - Projects
+      description: Returns the information for a specific project.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Project"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    delete:
+      summary: Destroy project
+      tags:
+      - Projects
+      description: Destroy a project.
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/contexts":
+    post:
+      requestBody:
+        description: Context to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Context"
+      summary: Create new context
+      tags:
+      - Contexts
+      description: Create a new context for the current user.
+      parameters: []
+      responses:
+        '200':
+          description: Successfully created new context
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Context"
+        '400':
+          description: Missing parameters
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '422':
+          description: The changes requested could not be processed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    get:
+      summary: Get contexts
+      tags:
+      - Contexts
+      description: Returns an array of the current user's contexts.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ArrayOfContexts"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/contexts/{id}":
+    patch:
+      requestBody:
+        description: Updates for existing context
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Context"
+      summary: Update context
+      tags:
+      - Contexts
+      description: Update an existing context.
+      parameters: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Missing parameters
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized
+        '404':
+          description: Not Found
+        '422':
+          description: Failed to process context
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show context
+      tags:
+      - Contexts
+      description: Returns the information for a specific context.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Context"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    delete:
+      summary: Destroy context
+      tags:
+      - Contexts
+      description: Destroy a context.
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/users/{id}":
+    patch:
+      requestBody:
+        description: Updates for existing user
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/User"
+      summary: Update user
+      tags:
+      - Users
+      description: Update an existing user.
+      parameters: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Missing parameters
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized
+        '404':
+          description: Not Found
+        '422':
+          description: Failed to process user
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show user
+      tags:
+      - Users
+      description: Returns the information for a specific user.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/User"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
   "/login":
     post:
-      summary: Creates a session token
-      tags:
-      - Authentication
-      security: []
       requestBody:
         description: Username and password
         required: true
@@ -797,6 +1045,12 @@ paths:
           application/json:
             schema:
               "$ref": "#/components/schemas/Login"
+      summary: Creates a session token
+      tags:
+      - Authentication
+      description: Takes login credentials, and returns a JWT session token if successful.
+      parameters: []
+      security: []
       responses:
         '200':
           description: Logged in successfully
@@ -805,65 +1059,67 @@ paths:
               schema:
                 "$ref": "#/components/schemas/SessionToken"
         '400':
-          "$ref": "#/components/responses/BadRequest"
-          description: Bad login
-      parameters: []
-  "/logout":
-    delete:
-      summary: Destroys a session token
-      tags:
-      - Authentication
-      responses:
-        '200':
-          description: Logged out successfully
-        '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authenticated
+          description: Failed to login
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
   "/verify/token":
     post:
       summary: Verifies 2FA via hardware token
       tags:
       - Authentication
+      description: 2FA verification using a hardware token.
+      security: []
       responses:
         '501':
-          "$ref": "#/components/responses/NotImplemented"
           description: Not implemented yet
-      security: []
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
   "/verify/app":
     post:
       summary: Verifies 2FA via authy app
       tags:
       - Authentication
+      description: 2FA verification using an authy app.
+      security: []
       responses:
         '501':
-          "$ref": "#/components/responses/NotImplemented"
           description: Not implemented yet
-      security: []
-  "/username":
-    get:
-      summary: Retrieves a user's username
-      tags:
-      - Settings
-      responses:
-        '200':
-          description: Success
           content:
             application/json:
               schema:
-                "$ref": "#/components/schemas/Username"
-        '401':
-          "$ref": "#/components/responses/Unauthorized"
-          description: Not authorized
-  "/tasks/sync-ordering":
-    patch:
-      summary: Update the ordering for current user's tasks.
-      parameters: []
+                "$ref": "#/components/schemas/Error"
+  "/logout":
+    delete:
+      summary: Destroys a session token
+      tags:
+      - Authentication
+      description: Logs out your current session by revoking the JWT token server-side.
       responses:
         '200':
-          description: Success
+          description: Logged out successfully
         '401':
           description: Not authenticated
-        '403':
-          description: Not authorized
-        '422':
-          description: Failed to process list
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/health":
+    get:
+      summary: API Health Status
+      tags:
+      - Meta
+      description: Returns API health status
+      security: []
+      responses:
+        '200':
+          description: API is healthy
+        '503':
+          description: API is currently unavailable
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"

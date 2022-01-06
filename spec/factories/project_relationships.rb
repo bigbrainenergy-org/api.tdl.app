@@ -1,11 +1,21 @@
 FactoryBot.define do
   factory :project_nesting do
-    association :superproject, factory: :task
-    association :subproject,   factory: :task
+    # FIXME: This code is shit, do not use it as an example.
+    transient do
+      user { build :user }
+    end
+
+    superproject { build :project, user: user }
+    subproject { build :project, user: user }
   end
 
   factory :project_hard_requisite do
-    association :pre,  factory: :task
-    association :post, factory: :task
+    # FIXME: This code is shit, do not use it as an example.
+    transient do
+      user { build :user }
+    end
+
+    pre { build :project, user: user }
+    post { build :project, user: user }
   end
 end

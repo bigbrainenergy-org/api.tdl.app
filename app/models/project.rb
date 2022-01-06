@@ -47,7 +47,7 @@ class Project < ApplicationRecord
     presence:   true,
     uniqueness: { case_sensitive: false, scope: :user_id }
 
-  validates :order,
+  validates :order, :status,
     presence: true
 
   enum status: {

@@ -28,7 +28,7 @@ class ProjectsController < ApplicationController
   def update
     authorize @project
 
-    @project.update!(project_params)
+    @project.update!(permitted_attributes(Project))
 
     render :show
   end
@@ -41,6 +41,8 @@ class ProjectsController < ApplicationController
     head :ok
   end
 
+  # TODO: Figure out bulk editing in a way that is more DRY
+  # :nocov:
   def bulk_update_same_values
     authorize Project
 
@@ -66,14 +68,11 @@ class ProjectsController < ApplicationController
 
     # TODO: Find the best way to test these edge cases / move them into the
     #       model so it can be unit tested.
-    # :nocov:
     raise ActionController::ParameterMissing, :projects if params[:projects].blank?
 
     unless params[:projects].is_a?(Array)
       raise ArgumentError, 'Projects must be an array'
     end
-
-    # :nocov:
 
     Project.transaction do
       params[:projects].each do |project_order|
@@ -93,6 +92,7 @@ class ProjectsController < ApplicationController
     not_processable(e)
   end
   # rubocop:enable Metrics
+  # :nocov:
 
   private
 
@@ -101,7 +101,10 @@ class ProjectsController < ApplicationController
     @project = Project.find(project_id)
   end
 
+  # TODO: Figure out bulk editing in a way that is more DRY
+  # :nocov:
   def bulk_project_update_params
     params.require(:projects).permit(:title, :notes)
   end
+  # :nocov:
 end

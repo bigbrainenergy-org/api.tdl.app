@@ -8,7 +8,7 @@ class UsersController < ApplicationController
   def update
     authorize @user
 
-    @user.update!(user_params)
+    @user.update!(permitted_attributes(@user))
 
     render :show
   end
@@ -20,9 +20,5 @@ class UsersController < ApplicationController
     @user = User.find(user_id)
     # @user = current_user
     # raise ActiveRecord::RecordNotFound if @user.nil?
-  end
-
-  def user_params
-    params.require(:user).permit(:time_zone)
   end
 end

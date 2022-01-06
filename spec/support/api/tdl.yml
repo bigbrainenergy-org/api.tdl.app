@@ -8,8 +8,13 @@ info:
     email: support@tdl.app
 
 servers:
-  - url: https://api.tdl.app/v0
+  - url: https://api.tdl.app
     description: Production Server
+  - url: http://localhost:3000
+    description: Localhost Server
+  # FIXME: RSwag doesn't play nicely with api versioning / route scopes
+  # - url: https://api.tdl.app/v0
+  #   description: Production Server
   # TODO: Is it worth implementing a sandbox server?
   # - url: https://sandbox.tdl.app/v0
   #   description: >
@@ -57,111 +62,151 @@ components:
     ##################
     ## Next Actions ##
     ##################
-    ##################
-    ## Waiting Fors ##
-    ##################
-    ##############
-    ## Projects ##
-    ##############
-    ##############
-    ## Contexts ##
-    ##############
-    ###############
-    ## OLD STUFF ##
-    ###############
-    ArrayOfLists:
+    ArrayOfNextActions:
       type: array
       items:
-        $ref: '#/components/schemas/List'
+        $ref: '#/components/schemas/NextAction'
       uniqueItems: true
-    ArrayOfTags:
-      type: array
-      items:
-        $ref: '#/components/schemas/Tag'
-      uniqueItems: true
-    ArrayOfTasks:
-      type: array
-      items:
-        $ref: '#/components/schemas/Task'
-      uniqueItems: true
-    ArrayOfRules:
-      type: array
-      items:
-        $ref: '#/components/schemas/Rule'
-      uniqueItems: true
-    Username:
-      type: object
-      properties:
-        username:
-          type: string
-      required:
-        - username
-    List:
+    NextAction:
       type: object
       properties:
         id:
-          type: integer
-        order:
           type: integer
         title:
           type: string
+        notes:
+          type: string
+          nullable: true
+        order:
+          type: integer
+        completed:
+          type: boolean
+        remind_me_at:
+          type: string
+          nullable: true
       required:
         - id
-        - order
         - title
-    Tag:
+        - order
+        - completed
+    ##################
+    ## Waiting Fors ##
+    ##################
+    ArrayOfWaitingFors:
+      type: array
+      items:
+        $ref: '#/components/schemas/WaitingFor'
+      uniqueItems: true
+    WaitingFor:
       type: object
       properties:
         id:
           type: integer
+        title:
+          type: string
+        notes:
+          type: string
+          nullable: true
         order:
+          type: integer
+        next_checkin_at:
+          type: string
+          nullable: true
+        delegated_to:
+          type: string
+        completed:
+          type: boolean
+      required:
+        - id
+        - title
+        - order
+        - delegated_to
+        - completed
+    ##############
+    ## Projects ##
+    ##############
+    ArrayOfProjects:
+      type: array
+      items:
+        $ref: '#/components/schemas/Project'
+      uniqueItems: true
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        order:
+          type: integer
+        status:
+          type: string
+        status_last_changed_at:
+          type: string
+          nullable: true
+        deadline_at:
+          type: string
+          nullable: true
+        estimated_time_to_complete:
+          type: string
+          nullable: true
+      required:
+        - id
+        - title
+        - order
+        - status
+    ##############
+    ## Contexts ##
+    ##############
+    ArrayOfContexts:
+      type: array
+      items:
+        $ref: '#/components/schemas/Context'
+      uniqueItems: true
+    Context:
+      type: object
+      properties:
+        id:
           type: integer
         title:
           type: string
         color:
           type: string
-      required:
-        - id
-        - order
-        - title
-        - color
-    Task:
-      type: object
-      properties:
-        id:
-          type: integer
-        list_id:
-          type: integer
-        title:
+        icon:
           type: string
         order:
           type: integer
-        notes:
-          type: string
-        completed_at:
-          type: string
-        deadline_at:
-          type: string
-        prioritize_at:
-          type: string
-        remind_me_at:
-          type: string
-        review_at_at:
-          type: string
       required:
         - id
-        - list_id
         - title
+        - color
+        - icon
         - order
-    Rule:
+    ###########
+    ## Users ##
+    ###########
+    User:
       type: object
       properties:
         id:
           type: integer
-        pre_id:
-          type: integer
-        post_id:
-          type: integer
+        username:
+          type: string
+        locale:
+          type: string
+        time_zone:
+          type: string
+      required:
+        - id
+        - username
+        - locale
+        - time_zone
+    ####################
+    ## Authentication ##
+    ####################
     Login:
       type: object
       properties:
@@ -253,363 +298,89 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/InboxItem'
-  ###############
-  ## OLD STUFF ##
-  ###############
-  /health:
-    get:
-      summary: Returns the current status of the API
-      tags:
-        - Health
-      responses:
-        '200':
-          description: OK
-        '503':
-          $ref: '#/components/responses/ServiceUnavailable'
-  /rules:
-    get:
-      summary: Returns an array of the current user's rules.
-      tags:
-        - Rules
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ArrayOfRules'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /tags:
-    get:
-      summary: Returns an array of the current user's tags.
-      tags:
-        - Tags
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ArrayOfTags'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+  /next_actions:
     post:
-      summary: Create a new tag for the current user.
-      tags:
-        - Tags
       requestBody:
-        description: Tag to be created
+        description: Next Action to be created
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Tag'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tag'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-  /tags/sync-ordering:
+              $ref: '#/components/schemas/NextAction'
+  /next_actions/{id}:
     patch:
-      summary: Update the ordering for current user's tags.
-      tags:
-        - Tags
-      responses:
-        '200':
-          description: OK
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-  /tags/{id}:
-    get:
-      summary: Returns the information for a specific tag.
-      tags:
-        - Tags
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tag'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-    patch:
-      summary: Update an existing tag.
-      tags:
-        - Tags
       requestBody:
-        description: Updates for existing tag
+        description: Updates for existing next action
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Tag'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Tag'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-    delete:
-      summary: Destroy a tag.
-      tags:
-        - Tags
-      responses:
-        '200':
-          description: OK
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /tasks:
-    get:
-      summary: Returns an array of the current user's tasks.
-      tags:
-        - Tasks
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ArrayOfTasks'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+              $ref: '#/components/schemas/NextAction'
+  /waiting_fors:
     post:
-      summary: Create a new task for the current user.
-      tags:
-        - Tasks
       requestBody:
-        description: Task to be created
+        description: Waiting For to be created
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Task'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-  /tasks/{id}:
-    get:
-      summary: Returns the information for a specific task.
-      tags:
-        - Tasks
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
+              $ref: '#/components/schemas/WaitingFor'
+  /waiting_fors/{id}:
     patch:
-      summary: Update an existing task.
-      tags:
-        - Tasks
       requestBody:
-        description: Updates for existing task
+        description: Updates for existing waiting for
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/Task'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Task'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-    delete:
-      summary: Destroy a task.
-      tags:
-        - Tasks
-      responses:
-        '200':
-          description: OK
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-  /lists:
-    get:
-      summary: Returns an array of the current user's lists.
-      tags:
-        - Lists
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ArrayOfLists'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
+              $ref: '#/components/schemas/WaitingFor'
+  /projects:
     post:
-      summary: Create a new list for the current user.
-      tags:
-        - Lists
       requestBody:
-        description: List to be created
+        description: Project to be created
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/List'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/List'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-  /lists/sync-ordering:
+              $ref: '#/components/schemas/Project'
+  /projects/{id}:
     patch:
-      summary: Update the ordering for current user's lists.
-      tags:
-        - Lists
-      responses:
-        '200':
-          description: OK
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-  /lists/{id}:
-    get:
-      summary: Returns the information for a specific list.
-      tags:
-        - Lists
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/List'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-    patch:
-      summary: Update an existing list.
-      tags:
-        - Lists
       requestBody:
-        description: Updates for existing list
+        description: Updates for existing project
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/List'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/List'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
-    delete:
-      summary: Destroy a list.
-      tags:
-        - Lists
-      responses:
-        '200':
-          description: OK
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-        '403':
-          $ref: '#/components/responses/Forbidden'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '422':
-          $ref: '#/components/responses/UnprocessableEntity'
+              $ref: '#/components/schemas/Project'
+  /contexts:
+    post:
+      requestBody:
+        description: Context to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Context'
+  /contexts/{id}:
+    patch:
+      requestBody:
+        description: Updates for existing context
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Context'
+  /users/{id}:
+    patch:
+      requestBody:
+        description: Updates for existing user
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
   /login:
     post:
-      summary: >
-        Takes login credentials, and returns a JWT session token if successful.
-      tags:
-        - Authentication
-      security: [] # Don't require login when logging in...
       requestBody:
         description: Username and password
         required: true
@@ -617,56 +388,3 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Login'
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/SessionToken'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-  /logout:
-    delete:
-      summary: >
-        Logs out your current session by revoking the JWT token server-side.
-      tags:
-        - Authentication
-      responses:
-        '200':
-          description: OK
-        '401':
-          $ref: '#/components/responses/Unauthorized'
-  /verify/token:
-    post:
-      summary: >
-        2FA verification using a hardware token.
-      tags:
-        - Authentication
-      responses:
-        '501':
-          $ref: '#/components/responses/NotImplemented'
-  /verify/app:
-    post:
-      summary: >
-        2FA verification using an authy app.
-      tags:
-        - Authentication
-      responses:
-        '501':
-          $ref: '#/components/responses/NotImplemented'
-  /username:
-    get:
-      summary: >
-        Retrieves the current user's username.
-      tags:
-        - Settings
-      responses:
-        '200':
-          description: OK
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Username'
-        '401':
-          $ref: '#/components/responses/Unauthorized'

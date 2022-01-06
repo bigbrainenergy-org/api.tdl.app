@@ -1,6 +1,6 @@
 require 'swagger_helper'
 
-RSpec.describe 'Contexts' do
+RSpec.describe 'Next Actions' do
   let(:user) { create :user }
   let(:user_session) { create :user_session, user: user }
   let(:token) do
@@ -10,17 +10,17 @@ RSpec.describe 'Contexts' do
     )
   end
   let(:Authorization) { "Bearer #{token}" }
-  let!(:user_context) { create :context, user: user }
-  let!(:other_context) { create :context }
+  let!(:user_next_action) { create :next_action, user: user }
+  let!(:other_next_action) { create :next_action }
 
-  path '/contexts' do
-    get 'Get contexts' do
-      tags 'Contexts'
-      description 'Returns an array of the current user\'s contexts.'
+  path '/next_actions' do
+    get 'Get next actions' do
+      tags 'Next Actions'
+      description 'Returns an array of the current user\'s next actions.'
       produces 'application/json'
 
       response '200', 'Success' do
-        schema({ '$ref' => '#/components/schemas/ArrayOfContexts'})
+        schema({ '$ref' => '#/components/schemas/ArrayOfNextActions'})
 
         run_test!
       end
@@ -34,19 +34,19 @@ RSpec.describe 'Contexts' do
       end
     end
 
-    post 'Create new context' do
-      tags 'Contexts'
-      description 'Create a new context for the current user.'
+    post 'Create new next action' do
+      tags 'Next Actions'
+      description 'Create a new next action for the current user.'
       produces 'application/json'
       consumes 'application/json'
-      parameter name: :context, in: :body, schema: {
-        '$ref' => '#/components/schemas/Context'
+      parameter name: :next_action, in: :body, schema: {
+        '$ref' => '#/components/schemas/NextAction'
       }, required: true
 
-      let(:context) { { title: Faker::String.random } }
+      let(:next_action) { { title: Faker::String.random } }
 
-      response '200', 'Successfully created new context' do
-        schema({ '$ref' => '#/components/schemas/Context'})
+      response '200', 'Successfully created new next action' do
+        schema({ '$ref' => '#/components/schemas/NextAction'})
 
         run_test!
       end
@@ -54,7 +54,7 @@ RSpec.describe 'Contexts' do
       response '400', 'Missing parameters' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:context) { nil }
+        let(:next_action) { nil }
 
         run_test!
       end
@@ -70,25 +70,25 @@ RSpec.describe 'Contexts' do
       response '422', 'The changes requested could not be processed' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:context) { { title: nil, notes: '1337 Notes' } }
+        let(:next_action) { { title: nil, notes: '1337 Notes' } }
 
         run_test!
       end
     end
   end
 
-  path '/contexts/{id}' do
+  path '/next_actions/{id}' do
     parameter name: :id, in: :path, type: :string
 
-    let(:id) { user_context.id }
+    let(:id) { user_next_action.id }
 
-    get 'Show context' do
-      tags 'Contexts'
-      description 'Returns the information for a specific context.'
+    get 'Show next action' do
+      tags 'Next Actions'
+      description 'Returns the information for a specific next action.'
       produces 'application/json'
 
       response '200', 'Success' do
-        schema({ '$ref' => '#/components/schemas/Context'})
+        schema({ '$ref' => '#/components/schemas/NextAction'})
 
         run_test!
       end
@@ -104,7 +104,7 @@ RSpec.describe 'Contexts' do
       response '403', 'You don\'t have permission to do that' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:id) { other_context.id }
+        let(:id) { other_next_action.id }
 
         run_test!
       end
@@ -118,16 +118,16 @@ RSpec.describe 'Contexts' do
       end
     end
 
-    patch 'Update context' do
-      tags 'Contexts'
-      description 'Update an existing context.'
+    patch 'Update next action' do
+      tags 'Next Actions'
+      description 'Update an existing next_action.'
 
-      parameter name: :context, in: :body, schema: {
-        '$ref' => '#/components/schemas/Context'
+      parameter name: :next_action, in: :body, schema: {
+        '$ref' => '#/components/schemas/NextAction'
       }
       consumes 'application/json'
 
-      let(:context) { { title: Faker::String.random } }
+      let(:next_action) { { title: Faker::String.random } }
 
       response '200', 'Success' do
         run_test!
@@ -136,7 +136,7 @@ RSpec.describe 'Contexts' do
       response '400', 'Missing parameters' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:context) { nil }
+        let(:next_action) { nil }
 
         run_test!
       end
@@ -152,7 +152,7 @@ RSpec.describe 'Contexts' do
       response '403', 'Not authorized' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:id) { other_context.id }
+        let(:id) { other_next_action.id }
 
         run_test!
       end
@@ -165,18 +165,18 @@ RSpec.describe 'Contexts' do
         run_test!
       end
 
-      response '422', 'Failed to process context' do
+      response '422', 'Failed to process next action' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:context) { { title: nil, notes: '1337 Notes' } }
+        let(:next_action) { { title: nil, notes: '1337 Notes' } }
 
         run_test!
       end
     end
 
-    delete 'Destroy context' do
-      tags 'Contexts'
-      description 'Destroy a context.'
+    delete 'Destroy next action' do
+      tags 'Next Actions'
+      description 'Destroy a next action.'
       produces 'application/json'
 
       response '200', 'Success' do
@@ -196,7 +196,7 @@ RSpec.describe 'Contexts' do
       response '403', 'You don\'t have permission to do that' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:id) { other_context.id }
+        let(:id) { other_next_action.id }
 
         run_test!
       end

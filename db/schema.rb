@@ -153,14 +153,16 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
 
   create_table "waiting_fors", force: :cascade do |t|
     t.bigint "user_id", null: false
+    t.bigint "project_id"
     t.string "title", null: false
     t.string "notes"
     t.integer "order", default: 0, null: false
     t.datetime "next_checkin_at"
-    t.datetime "deadline_at"
+    t.string "delegated_to", null: false
     t.boolean "completed", default: false, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
+    t.index ["project_id"], name: "index_waiting_fors_on_project_id"
     t.index ["user_id"], name: "index_waiting_fors_on_user_id"
   end
 
@@ -173,5 +175,6 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
   add_foreign_key "projects", "users"
   add_foreign_key "subtasks", "next_actions"
   add_foreign_key "user_sessions", "users"
+  add_foreign_key "waiting_fors", "projects"
   add_foreign_key "waiting_fors", "users"
 end

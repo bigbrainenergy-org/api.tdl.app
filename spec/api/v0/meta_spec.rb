@@ -3,7 +3,7 @@ require 'swagger_helper'
 RSpec.describe 'Meta' do
   path '/health' do
     get 'API Health Status' do
-      tags 'Health'
+      tags 'Meta'
       description 'Returns API health status'
       produces 'application/json'
       security []
