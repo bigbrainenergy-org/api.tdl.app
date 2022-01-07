@@ -3,7 +3,7 @@ class UserSessionsController < ApplicationController
 
   def create
     if (session_token = login(params[:username], params[:password]))
-      render json: { session_token: session_token }
+      render json: { session_token: session_token, user_id: current_user.id }
     else
       render json: { error: I18n.t('user_sessions.create.failed') },
         status: :bad_request

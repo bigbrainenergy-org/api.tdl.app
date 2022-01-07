@@ -20,15 +20,24 @@ Rails.application.routes.draw do
     # List of available Locales
     get 'locales' => 'meta#locales'
 
-    ###################
-    ## Sync Ordering ##
-    ###################
+    ##########
+    ## Bulk ##
+    ##########
 
-    patch 'projects/sync-ordering' => 'projects#sync_ordering'
-    patch 'next-actions/sync-ordering' => 'next_actions#sync_ordering'
-    patch 'waiting-fors/sync-ordering' => 'waiting_fors#sync_ordering'
-    patch 'contexts/sync-ordering' => 'contexts#sync_ordering'
-    patch 'subtasks/sync-ordering' => 'subtasks#sync_ordering'
+    patch 'next-actions/bulk-all' => 'next_actions#bulk_all_same_vales'
+    patch 'next-actions/bulk-each' => 'next_actions#bulk_each_different_values'
+
+    patch 'waiting-fors/bulk-all' => 'waiting_fors#bulk_all_same_vales'
+    patch 'waiting-fors/bulk-each' => 'waiting_fors#bulk_each_different_values'
+
+    patch 'projects/bulk-all' => 'projects#bulk_all_same_vales'
+    patch 'projects/bulk-each' => 'projects#bulk_each_different_values'
+
+    patch 'contexts/bulk-all' => 'contexts#bulk_all_same_vales'
+    patch 'contexts/bulk-each' => 'contexts#bulk_each_different_values'
+
+    patch 'subtasks/bulk-all' => 'subtasks#bulk_all_same_vales'
+    patch 'subtasks/bulk-each' => 'subtasks#bulk_each_different_values'
 
     #############
     # Sessions ##

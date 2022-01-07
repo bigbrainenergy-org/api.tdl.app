@@ -125,6 +125,33 @@ components:
     ##############
     ## Projects ##
     ##############
+    ProjectBulkAll:
+      type: object
+      properties:
+        project_ids:
+          type: array
+          items:
+            type: integer
+        title:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        order:
+          type: integer
+        status:
+          type: string
+        status_last_changed_at:
+          type: string
+          nullable: true
+        deadline_at:
+          type: string
+          nullable: true
+        estimated_time_to_complete:
+          type: string
+          nullable: true
+      required:
+        - project_ids
     ArrayOfProjects:
       type: array
       items:
@@ -222,8 +249,11 @@ components:
       properties:
         session_token:
           type: string
+        user_id:
+          type: integer
       required:
         - session_token
+        - user_id
   responses:
     BadRequest:
       description: Missing parameters

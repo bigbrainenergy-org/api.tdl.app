@@ -6,7 +6,7 @@ class SubtaskPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:title]
+    [:title, :completed, :order]
   end
 
   def index?

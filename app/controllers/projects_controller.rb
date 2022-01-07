@@ -43,7 +43,8 @@ class ProjectsController < ApplicationController
 
   # TODO: Figure out bulk editing in a way that is more DRY
   # :nocov:
-  def bulk_update_same_values
+  # Same values for each record (e.g. next action context)
+  def bulk_all_same_values
     authorize Project
 
     permitted_ids = policy_scope(Project).select(:id)
@@ -55,7 +56,8 @@ class ProjectsController < ApplicationController
     render :index
   end
 
-  def bulk_update_unique_values
+  # Different values for each record (e.g. ordering)
+  def bulk_each_different_values
 
   end
 

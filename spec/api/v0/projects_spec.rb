@@ -210,4 +210,10 @@ RSpec.describe 'Projects' do
       end
     end
   end
+
+  path '/projects/{id}/bulk-all' do
+  end
+
+  path '/projects/{id}/bulk-each' do
+  end
 end
