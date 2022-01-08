@@ -6,7 +6,12 @@ class ContextPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:title, :color, :icon, :order]
+    [
+      :title,
+      :color,
+      :icon,
+      :order
+    ]
   end
 
   def index?

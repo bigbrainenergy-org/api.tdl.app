@@ -72,6 +72,12 @@ components:
       properties:
         id:
           type: integer
+        context_id:
+          type: integer
+          nullable: true
+        project_id:
+          type: integer
+          nullable: true
         title:
           type: string
         notes:

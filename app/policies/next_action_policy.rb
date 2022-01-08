@@ -7,8 +7,11 @@ class NextActionPolicy < ApplicationPolicy
 
   def permitted_attributes
     [
+      :context_id,
+      :project_id,
       :title,
       :notes,
+      :remind_me_at,
       :hard_prereq_ids,
       :hard_postreq_ids
     ]
