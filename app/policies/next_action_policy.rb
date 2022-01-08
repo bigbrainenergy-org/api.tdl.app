@@ -12,8 +12,8 @@ class NextActionPolicy < ApplicationPolicy
       :title,
       :notes,
       :remind_me_at,
-      :hard_prereq_ids,
-      :hard_postreq_ids
+      hard_prereq_ids: [],
+      hard_postreq_ids: []
     ]
   end
 

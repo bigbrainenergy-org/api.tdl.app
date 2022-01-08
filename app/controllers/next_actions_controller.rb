@@ -5,6 +5,8 @@ class NextActionsController < ApplicationController
     authorize NextAction
 
     @next_actions = policy_scope(NextAction)
+      .includes(:project)
+      .includes(:context)
       .includes(:hard_prereqs)
       .includes(:hard_postreqs)
       .order(created_at: :asc)
