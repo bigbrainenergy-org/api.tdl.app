@@ -29,6 +29,13 @@ class NextAction < ApplicationRecord
   validates :context, :project,
     same_user: true
 
+  validates :mental_energy_required, :physical_energy_required,
+    presence: true,
+    numericality: {
+      greater_than_or_equal_to: 0,
+      less_than_or_equal_to: 100
+    }
+
   def all_hard_prereqs
     recursive_relationship_find(
       klass: NextAction,

@@ -38,8 +38,8 @@ rule_count.times do |n|
     random_tasks =
       NextAction.uncached { NextAction.where(user: void_xxx).order('RANDOM()').first(2) }
     rule = NextActionHardRequisite.new(
-      first: random_tasks.first,
-      second: random_tasks.second
+      pre: random_tasks.first,
+      post: random_tasks.second
     )
 
     if rule.valid?

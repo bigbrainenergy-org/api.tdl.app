@@ -96,6 +96,8 @@ class GtdRework < ActiveRecord::Migration[6.1]
       t.integer    :order,     null: false, default: 0
       t.boolean    :completed, null: false, default: false
       t.datetime   :remind_me_at
+      t.integer    :mental_energy_required, null: false, default: 50
+      t.integer    :physical_energy_required, null: false, default: 50
 
       t.timestamps
     end

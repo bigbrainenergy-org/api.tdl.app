@@ -80,6 +80,8 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.integer "order", default: 0, null: false
     t.boolean "completed", default: false, null: false
     t.datetime "remind_me_at"
+    t.integer "mental_energy_required", default: 50, null: false
+    t.integer "physical_energy_required", default: 50, null: false
     t.datetime "created_at", precision: 6, null: false
     t.datetime "updated_at", precision: 6, null: false
     t.index ["context_id"], name: "index_next_actions_on_context_id"

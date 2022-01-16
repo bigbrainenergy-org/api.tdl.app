@@ -90,11 +90,17 @@ components:
         remind_me_at:
           type: string
           nullable: true
+        mental_energy_required:
+          type: integer
+        physical_energy_required:
+          type: integer
       required:
         - id
         - title
         - order
         - completed
+        - mental_energy_required
+        - physical_energy_required
     ##################
     ## Waiting Fors ##
     ##################

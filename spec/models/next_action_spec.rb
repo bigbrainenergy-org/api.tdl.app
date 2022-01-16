@@ -21,5 +21,11 @@ RSpec.describe NextAction do
   describe 'validations' do
     it { should validate_presence_of(:title) }
     it { should validate_presence_of(:order) }
+
+    it { should validate_presence_of(:mental_energy_required) }
+    it { should validate_numericality_of(:mental_energy_required).is_greater_than_or_equal_to(0).is_less_than_or_equal_to(100) }
+
+    it { should validate_presence_of(:physical_energy_required) }
+    it { should validate_numericality_of(:physical_energy_required).is_greater_than_or_equal_to(0).is_less_than_or_equal_to(100) }
   end
 end
