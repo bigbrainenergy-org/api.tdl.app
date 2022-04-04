@@ -8,8 +8,9 @@
 1. `git clone git@github.com:bigbrainenergy-llc/api.tdl.app`
 2. `rvm install 3.0.1`
 3. `rvm use 3.0.1`
-3. `rails db:create db:migrate db:seed` or to recreate: `rails db:drop db:create db:migrate db:seed`
-4. `rails s` to launch server
+4. `gem install rails`
+5. `rails db:create db:migrate db:seed` or to recreate: `rails db:drop db:create db:migrate db:seed`
+6. `rails s` to launch server
 
 
 ## TODO
