@@ -8,73 +8,147 @@ athix = User.create!(
   terms_and_conditions: Time.current
 )
 
-Struct.new('Tag', :title, :color)
+athix.prepopulate_contexts!
 
-tags = []
+def random_notes
+  return nil if [true, false].sample
 
-tags << Struct::Tag.new('Priority', '#fcf949')
-tags << Struct::Tag.new('Career',   '#b63ec1')
-tags << Struct::Tag.new('@Home',    '#63ed5a')
-tags << Struct::Tag.new('@Town',    '#f29010')
-tags << Struct::Tag.new('@Phone',   '#3295ff')
-tags << Struct::Tag.new('@Office',  '#ea2035')
-tags << Struct::Tag.new('@Laptop',  '#6ce2cf')
+  [
+    Faker::Lorem.paragraphs.join,
+    "#{Faker::Lorem.paragraphs.join}\n\n#{Faker::Markdown.ordered_list}"
+  ].sample
+end
 
-tags.each do |tag|
-  Tag.create!(
-    user:  athix,
-    title: tag.title,
-    color: tag.color
+def random_inbox_item_title
+  [
+    "Plan a vacation to #{
+      [Faker::Space.star, Faker::Address.country].sample
+    }",
+    "#{Faker::Company.catch_phrase} to #{Faker::Company.bs} for maximum #{Faker::Company.buzzword} value",
+    "Call #{Faker::Name.name} about the #{Faker::Space.launch_vehicle} mission",
+    "Check out the #{Faker::Science.tool}"
+  ].sample
+end
+
+def random_inbox_item_notes
+  random_notes
+end
+
+# TODO: Differentiate from inbox items
+def random_next_action_title
+  random_inbox_item_title
+end
+
+def random_next_action_notes
+  random_notes
+end
+
+def random_waiting_for_title
+  random_inbox_item_title
+end
+
+def random_waiting_for_notes
+  random_notes
+end
+
+# TODO: Add more
+def random_project_title
+  "Plan a vacation to #{
+    [Faker::Space.star, Faker::Address.country].sample
+  }"
+end
+
+def random_project_notes
+  random_notes
+end
+
+def populate_next_actions(project)
+  next_actions_count = [0, rand(1..3), rand(4..7), 69].sample
+
+  next_actions_count.times do |n|
+    NextAction.create!(
+      user: project.user,
+      project: project,
+      title: random_next_action_title,
+      notes: random_next_action_notes
+    )
+  end
+end
+
+# Recursive generation goes brrr
+def populate_subprojects(superproject, nesting = 0)
+  return if nesting >= 3
+  # There must be at least one zero, otherwise this will run indefinitely
+  subproject_count = [0, 0, 0, 1, 2, 3].sample
+
+  subproject_count.times do |n|
+    begin
+    subproject = Project.create!(
+      user: superproject.user,
+      title: "#{superproject.title} - #{n}",
+      notes: random_project_notes
+    )
+    rescue StandardError => e
+      byebug
+    end
+
+    ProjectNesting.create!(
+      superproject: superproject,
+      subproject: subproject
+    )
+
+    populate_next_actions(subproject)
+    populate_subprojects(subproject, nesting + 1)
+  end
+end
+
+#################
+## Inbox Items ##
+#################
+
+25.times do |n|
+  InboxItem.create!(
+    user: athix,
+    title: "#{random_inbox_item_title} - #{n}",
+    notes: random_inbox_item_notes
   )
 end
 
-lists = [
-  'Inbox',
-  'Grocery List',
-  'Action Pending',
-  'Shopping List',
-  'Clothes',
-  'Waiting',
-  'Blocked'
-]
+##################
+## Next Actions ##
+##################
 
-lists.each do |list|
-  List.create!(
-    user:  athix,
-    title: list
+20.times do |n|
+  NextAction.create!(
+    user: athix,
+    title: "#{random_next_action_title} - #{n}",
+    notes: random_next_action_notes
   )
 end
 
-inbox = athix.lists.find_by(title: 'Inbox')
-priority = athix.tags.find_by(title: 'Priority')
-career = athix.tags.find_by(title: 'Career')
+#################
+## Waiting For ##
+#################
 
-# TODO: Make this more realistic
+15.times do |n|
+  WaitingFor.create!(
+    user: athix,
+    title: "#{random_waiting_for_title} - #{n}",
+    notes: random_waiting_for_notes,
+    delegated_to: Faker::Name.name
+  )
+end
+
+##############
+## Projects ##
+##############
 
 10.times do |n|
-  task = Task.create!(
-    title: "Task #{n}",
-    list:  inbox,
-    user:  athix
+  superproject = Project.create!(
+    user: athix,
+    title: "#{random_project_title} - #{n}",
+    notes: random_project_notes
   )
-  Tagging.create!(task: task, tag: priority)
-  Tagging.create!(task: task, tag: career) if [true, false].sample
-  3.times do |m|
-    subtask = Task.create!(
-      title: "Set #{n} Subtask #{m}",
-      list:  inbox,
-      user:  athix
-    )
-    Rule.create!(pre: task, post: subtask)
-    Tagging.create!(task: subtask, tag: career) if [true, false].sample
-    2.times do |k|
-      subsub = Task.create!(
-        title: "Set #{n} Subset #{m} Subtask #{k}",
-        list:  inbox,
-        user:  athix
-      )
-      Rule.create!(pre: subtask, post: subsub)
-      Tagging.create!(task: subsub, tag: career) if [true, false].sample
-    end
-  end
+  populate_next_actions(superproject)
+  populate_subprojects(superproject)
 end

@@ -1,0 +1,1125 @@
+---
+openapi: 3.0.1
+info:
+  title: TDL App API
+  version: v0
+  description: Provides a REST API backend for arbitrary TDL App front-ends.
+  contact:
+    name: TDL App Support
+    email: support@tdl.app
+servers:
+- url: https://api.tdl.app
+  description: Production Server
+- url: http://localhost:3000
+  description: Localhost Server
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  schemas:
+    Error:
+      type: object
+      properties:
+        error:
+          type: string
+      required:
+      - error
+    ArrayOfInboxItems:
+      type: array
+      items:
+        "$ref": "#/components/schemas/InboxItem"
+      uniqueItems: true
+    InboxItem:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        notes:
+          type: string
+          nullable: true
+      required:
+      - id
+      - title
+    ArrayOfNextActions:
+      type: array
+      items:
+        "$ref": "#/components/schemas/NextAction"
+      uniqueItems: true
+    NextAction:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        order:
+          type: integer
+        completed:
+          type: boolean
+        remind_me_at:
+          type: string
+          nullable: true
+      required:
+      - id
+      - title
+      - order
+      - completed
+    ArrayOfWaitingFors:
+      type: array
+      items:
+        "$ref": "#/components/schemas/WaitingFor"
+      uniqueItems: true
+    WaitingFor:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        order:
+          type: integer
+        next_checkin_at:
+          type: string
+          nullable: true
+        delegated_to:
+          type: string
+        completed:
+          type: boolean
+      required:
+      - id
+      - title
+      - order
+      - delegated_to
+      - completed
+    ArrayOfProjects:
+      type: array
+      items:
+        "$ref": "#/components/schemas/Project"
+      uniqueItems: true
+    Project:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        order:
+          type: integer
+        status:
+          type: string
+        status_last_changed_at:
+          type: string
+          nullable: true
+        deadline_at:
+          type: string
+          nullable: true
+        estimated_time_to_complete:
+          type: string
+          nullable: true
+      required:
+      - id
+      - title
+      - order
+      - status
+    ArrayOfContexts:
+      type: array
+      items:
+        "$ref": "#/components/schemas/Context"
+      uniqueItems: true
+    Context:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        color:
+          type: string
+        icon:
+          type: string
+        order:
+          type: integer
+      required:
+      - id
+      - title
+      - color
+      - icon
+      - order
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        locale:
+          type: string
+        time_zone:
+          type: string
+      required:
+      - id
+      - username
+      - locale
+      - time_zone
+    Login:
+      type: object
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+      required:
+      - username
+      - password
+    SessionToken:
+      type: object
+      properties:
+        session_token:
+          type: string
+      required:
+      - session_token
+  responses:
+    BadRequest:
+      description: Missing parameters
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    PaymentRequired:
+      description: Your subscription has expired, app in readonly mode
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    NotFound:
+      description: The specified resource was not found
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    UnprocessableEntity:
+      description: The changes requested could not be processed
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    Unauthorized:
+      description: Access token is missing or invalid
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    Forbidden:
+      description: You don't have permission to do that
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    NotImplemented:
+      description: Endpoint not implemented yet
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+    ServiceUnavailable:
+      description: API is currently unavailable
+      content:
+        application/json:
+          schema:
+            "$ref": "#/components/schemas/Error"
+security:
+- bearerAuth: []
+paths:
+  "/inbox_items":
+    post:
+      requestBody:
+        description: Inbox Item to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/InboxItem"
+      summary: Create new inbox item
+      tags:
+      - Inbox Items
+      description: Create a new inbox item for the current user.
+      parameters: []
+      responses:
+        '200':
+          description: Successfully created new inbox item
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/InboxItem"
+        '400':
+          description: Missing parameters
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '422':
+          description: The changes requested could not be processed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    get:
+      summary: Get inbox items
+      tags:
+      - Inbox Items
+      description: Returns an array of the current user's inbox items.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ArrayOfInboxItems"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/inbox_items/{id}":
+    patch:
+      requestBody:
+        description: Updates for existing inbox item
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/InboxItem"
+      summary: Update inbox item
+      tags:
+      - Inbox Items
+      description: Update an existing inbox_item.
+      parameters: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Missing parameters
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized
+        '404':
+          description: Not Found
+        '422':
+          description: Failed to process inbox item
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show inbox item
+      tags:
+      - Inbox Items
+      description: Returns the information for a specific inbox item.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/InboxItem"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    delete:
+      summary: Destroy inbox item
+      tags:
+      - Inbox Items
+      description: Destroy a inbox item.
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/next_actions":
+    post:
+      requestBody:
+        description: Next Action to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NextAction"
+      summary: Create new next action
+      tags:
+      - Next Actions
+      description: Create a new next action for the current user.
+      parameters: []
+      responses:
+        '200':
+          description: Successfully created new next action
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NextAction"
+        '400':
+          description: Missing parameters
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '422':
+          description: The changes requested could not be processed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    get:
+      summary: Get next actions
+      tags:
+      - Next Actions
+      description: Returns an array of the current user's next actions.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ArrayOfNextActions"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/next_actions/{id}":
+    patch:
+      requestBody:
+        description: Updates for existing next action
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/NextAction"
+      summary: Update next action
+      tags:
+      - Next Actions
+      description: Update an existing next_action.
+      parameters: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Missing parameters
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized
+        '404':
+          description: Not Found
+        '422':
+          description: Failed to process next action
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show next action
+      tags:
+      - Next Actions
+      description: Returns the information for a specific next action.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/NextAction"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    delete:
+      summary: Destroy next action
+      tags:
+      - Next Actions
+      description: Destroy a next action.
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/waiting_fors":
+    post:
+      requestBody:
+        description: Waiting For to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/WaitingFor"
+      summary: Create new waiting for
+      tags:
+      - Waiting Fors
+      description: Create a new waiting for for the current user.
+      parameters: []
+      responses:
+        '200':
+          description: Successfully created new waiting for
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/WaitingFor"
+        '400':
+          description: Missing parameters
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '422':
+          description: The changes requested could not be processed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    get:
+      summary: Get waiting fors
+      tags:
+      - Waiting Fors
+      description: Returns an array of the current user's waiting fors.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ArrayOfWaitingFors"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/waiting_fors/{id}":
+    patch:
+      requestBody:
+        description: Updates for existing waiting for
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/WaitingFor"
+      summary: Update waiting for
+      tags:
+      - Waiting Fors
+      description: Update an existing waiting_for.
+      parameters: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Missing parameters
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized
+        '404':
+          description: Not Found
+        '422':
+          description: Failed to process waiting for
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show waiting for
+      tags:
+      - Waiting Fors
+      description: Returns the information for a specific waiting for.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/WaitingFor"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    delete:
+      summary: Destroy waiting for
+      tags:
+      - Waiting Fors
+      description: Destroy a waiting for.
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/projects":
+    post:
+      requestBody:
+        description: Project to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Project"
+      summary: Create new project
+      tags:
+      - Projects
+      description: Create a new project for the current user.
+      parameters: []
+      responses:
+        '200':
+          description: Successfully created new project
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Project"
+        '400':
+          description: Missing parameters
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '422':
+          description: The changes requested could not be processed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    get:
+      summary: Get projects
+      tags:
+      - Projects
+      description: Returns an array of the current user's projects.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ArrayOfProjects"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/projects/{id}":
+    patch:
+      requestBody:
+        description: Updates for existing project
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Project"
+      summary: Update project
+      tags:
+      - Projects
+      description: Update an existing project.
+      parameters: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Missing parameters
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized
+        '404':
+          description: Not Found
+        '422':
+          description: Failed to process project
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show project
+      tags:
+      - Projects
+      description: Returns the information for a specific project.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Project"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    delete:
+      summary: Destroy project
+      tags:
+      - Projects
+      description: Destroy a project.
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/contexts":
+    post:
+      requestBody:
+        description: Context to be created
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Context"
+      summary: Create new context
+      tags:
+      - Contexts
+      description: Create a new context for the current user.
+      parameters: []
+      responses:
+        '200':
+          description: Successfully created new context
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Context"
+        '400':
+          description: Missing parameters
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '422':
+          description: The changes requested could not be processed
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    get:
+      summary: Get contexts
+      tags:
+      - Contexts
+      description: Returns an array of the current user's contexts.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ArrayOfContexts"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/contexts/{id}":
+    patch:
+      requestBody:
+        description: Updates for existing context
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Context"
+      summary: Update context
+      tags:
+      - Contexts
+      description: Update an existing context.
+      parameters: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Missing parameters
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized
+        '404':
+          description: Not Found
+        '422':
+          description: Failed to process context
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show context
+      tags:
+      - Contexts
+      description: Returns the information for a specific context.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Context"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+    delete:
+      summary: Destroy context
+      tags:
+      - Contexts
+      description: Destroy a context.
+      responses:
+        '200':
+          description: Success
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/users/{id}":
+    patch:
+      requestBody:
+        description: Updates for existing user
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/User"
+      summary: Update user
+      tags:
+      - Users
+      description: Update an existing user.
+      parameters: []
+      responses:
+        '200':
+          description: Success
+        '400':
+          description: Missing parameters
+        '401':
+          description: Not authenticated
+        '403':
+          description: Not authorized
+        '404':
+          description: Not Found
+        '422':
+          description: Failed to process user
+    parameters:
+    - name: id
+      in: path
+      required: true
+      schema:
+        type: string
+    get:
+      summary: Show user
+      tags:
+      - Users
+      description: Returns the information for a specific user.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/User"
+        '401':
+          description: Access token is missing or invalid
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '403':
+          description: You don't have permission to do that
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+        '404':
+          description: The specified resource was not found
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/login":
+    post:
+      requestBody:
+        description: Username and password
+        required: true
+        content:
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/Login"
+      summary: Creates a session token
+      tags:
+      - Authentication
+      description: Takes login credentials, and returns a JWT session token if successful.
+      parameters: []
+      security: []
+      responses:
+        '200':
+          description: Logged in successfully
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SessionToken"
+        '400':
+          description: Failed to login
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/verify/token":
+    post:
+      summary: Verifies 2FA via hardware token
+      tags:
+      - Authentication
+      description: 2FA verification using a hardware token.
+      security: []
+      responses:
+        '501':
+          description: Not implemented yet
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/verify/app":
+    post:
+      summary: Verifies 2FA via authy app
+      tags:
+      - Authentication
+      description: 2FA verification using an authy app.
+      security: []
+      responses:
+        '501':
+          description: Not implemented yet
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/logout":
+    delete:
+      summary: Destroys a session token
+      tags:
+      - Authentication
+      description: Logs out your current session by revoking the JWT token server-side.
+      responses:
+        '200':
+          description: Logged out successfully
+        '401':
+          description: Not authenticated
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"
+  "/health":
+    get:
+      summary: API Health Status
+      tags:
+      - Meta
+      description: Returns API health status
+      security: []
+      responses:
+        '200':
+          description: API is healthy
+        '503':
+          description: API is currently unavailable
+          content:
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/Error"

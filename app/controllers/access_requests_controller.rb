@@ -1,3 +1,5 @@
+# TODO: Not an official part of the API, and I'm too lazy to write the specs atm.
+# :nodoc:
 class AccessRequestsController < ApplicationController
   skip_before_action :require_login
 
@@ -31,3 +33,4 @@ class AccessRequestsController < ApplicationController
     )
   end
 end
+# :nodoc:

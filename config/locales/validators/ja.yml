@@ -1,21 +1,31 @@
 ---
 ja:
   validators:
+    acyclic_relationship:
+      invalid: "%{first_title}は%{second_title}と周期的な関係を引き起こすでしょう"
     email_formatting:
       invalid_format: 有効なメールではありません
       must_be_lowercase: 小文字ではありません
     hex_color_formatting:
       invalid_format: CSSカラーの間違ったフォーマット
       must_be_prefixed_with_octothorpe: 色は＃から始める必要があります
+    icon_formatting:
+      invalid_icon: 有効なアイコンではありません
     locale_availability:
       unavailable: 現在利用できません
     password_complexity:
       not_enough_complexity: '十分に複雑ではありません (次の 4 つのうち 3 つを含める必要があります: A-Z、a-z、0-9、特殊文字、例: @#$%)'
-    rule:
-      duplicate_rule: ルールはすでに存在します
-      pre_and_post_cant_be_same: タスクは自分自身に依存できません
-      redundant_rule: "%{task_i_title}はすでに%{task_ii_title}の後に来ています"
+    redundant_relationship:
+      invalid: "%{first_title}はすでに%{relationship}の%{second_title}です。"
+    same_user:
+      invalid: userが%{record_class}ユーザーと一致しません
+    same_users_relationship:
+      invalid: この関係には両方のレコードに対して同じユーザーがありません
     time_zone:
       invalid: は有効なタイムゾーンではありません
+    unique_relationship:
+      invalid: この関係はすでに存在します
+    useless_relationship:
+      invalid: この関係は自己参照で役に立たないでしょう
     username_formatting:
       must_not_contain_spaces: スペースを含んではいけません

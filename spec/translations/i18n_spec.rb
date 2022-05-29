@@ -16,8 +16,6 @@ RSpec.describe I18n do
   end
 
   it 'does not have unused keys' do
-    # FIXME: figure out what to keep
-    pending 'still figuring out what to keep'
     error_message =
       "#{unused_keys.leaves.count} unused i18n keys.\n"\
       'Run `i18n-tasks unused` to show them.'

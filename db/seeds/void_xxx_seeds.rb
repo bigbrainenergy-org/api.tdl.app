@@ -16,11 +16,6 @@ User.create!(
   terms_and_conditions: DateTime.new(1970, 1, 2, 1)
 )
 
-inbox = List.create!(
-  user:  void_xxx,
-  title: 'Inbox'
-)
-
 # TODO: Do some seeds
 
 task_count = 100
@@ -29,9 +24,8 @@ print_interval = (task_count / 10)
 
 task_count.times do |n|
   puts "Creating task #{n + 1}" if ((n + 1) % print_interval).zero?
-  Task.create!(
+  NextAction.create!(
     title: "Task #{n}",
-    list:  inbox,
     user:  void_xxx
   )
 end
@@ -42,8 +36,11 @@ rule_count.times do |n|
   puts "Creating rule #{n + 1}" if ((n + 1) % print_interval).zero?
   loop do
     random_tasks =
-      Task.uncached { Task.where(user: void_xxx).order('RANDOM()').first(2) }
-    rule = Rule.new(pre: random_tasks.first, post: random_tasks.second)
+      NextAction.uncached { NextAction.where(user: void_xxx).order('RANDOM()').first(2) }
+    rule = NextActionHardRequisite.new(
+      pre: random_tasks.first,
+      post: random_tasks.second
+    )
 
     if rule.valid?
       rule.save!

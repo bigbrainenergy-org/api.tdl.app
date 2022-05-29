@@ -5,13 +5,18 @@ RSpec.describe 'Authentication' do
 
   path '/login' do
     post 'Creates a session token' do
-      security []
+      tags 'Authentication'
+      description 'Takes login credentials, and returns a JWT session token if successful.'
+      consumes 'application/json'
+      produces 'application/json'
       parameter name: :login, in: :body, schema: {
         '$ref' => '#/components/schemas/Login'
       }
-      consumes 'application/json'
+      security []
 
       response '200', 'Logged in successfully' do
+        schema({ '$ref' => '#/components/schemas/SessionToken'})
+
         let(:login) do
           { username: user.username, password: 'correcthorsebatterystaple' }
         end
@@ -20,12 +25,16 @@ RSpec.describe 'Authentication' do
       end
 
       response '400', 'Invalid params' do
+        schema({ '$ref' => '#/components/schemas/Error'})
+
         let(:login) { nil }
 
         run_test!
       end
 
-      response '400', 'Bad login' do
+      response '400', 'Failed to login' do
+        schema({ '$ref' => '#/components/schemas/Error'})
+
         let(:login) { { username: user.username, password: 'wrong' } }
 
         run_test!
@@ -35,9 +44,14 @@ RSpec.describe 'Authentication' do
 
   path '/verify/token' do
     post 'Verifies 2FA via hardware token' do
+      tags 'Authentication'
+      description '2FA verification using a hardware token.'
+      produces 'application/json'
       security []
 
       response '501', 'Not implemented yet' do
+        schema({ '$ref' => '#/components/schemas/Error'})
+
         run_test!
       end
     end
@@ -45,9 +59,14 @@ RSpec.describe 'Authentication' do
 
   path '/verify/app' do
     post 'Verifies 2FA via authy app' do
+      tags 'Authentication'
+      description '2FA verification using an authy app.'
+      produces 'application/json'
       security []
 
       response '501', 'Not implemented yet' do
+        schema({ '$ref' => '#/components/schemas/Error'})
+
         run_test!
       end
     end
@@ -55,6 +74,8 @@ RSpec.describe 'Authentication' do
 
   path '/logout' do
     delete 'Destroys a session token' do
+      tags 'Authentication'
+      description 'Logs out your current session by revoking the JWT token server-side.'
       produces 'application/json'
 
       response '200', 'Logged out successfully' do
@@ -71,6 +92,8 @@ RSpec.describe 'Authentication' do
       end
 
       response '401', 'Not authenticated' do
+        schema({ '$ref' => '#/components/schemas/Error'})
+
         let(:Authorization) { nil }
 
         run_test!

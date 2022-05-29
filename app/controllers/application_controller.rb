@@ -1,6 +1,6 @@
 class ApplicationController < ActionController::API
   # Load Pundit for Authorization
-  include Pundit
+  include Pundit::Authorization
 
   # Load Sorcery for Authentication
   authenticates_with_sorcery!
