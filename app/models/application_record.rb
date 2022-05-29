@@ -13,12 +13,7 @@ class ApplicationRecord < ActiveRecord::Base
   # rubocop:disable Metrics/MethodLength
   def recursive_relationship_find(klass:, klass_table: nil, join_table:, join_type:, starting_id:, finding:)
     # Allow overwriting table name if it doesn't follow convention
-    klass_table = sanitize_sql(klass.name.underscore.pluralize) if klass_table.nil?
-    # Sanitize all inputs
-    join_table = sanitize_sql(join_table)
-    join_type = sanitize_sql(join_type)
-    starting_id = sanitize_sql(starting_id)
-    finding = sanitize_sql(finding)
+    klass_table = klass.name.underscore.pluralize if klass_table.nil?
 
     # Make sure we don't accidentally use an invalid input
     raise ArgumentError if ![:first, :second].include?(finding)
