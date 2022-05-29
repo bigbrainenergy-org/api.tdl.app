@@ -10,6 +10,10 @@ class UserPolicy < ApplicationPolicy
     [:locale, :time_zone]
   end
 
+  def permitted_attributes_for_change_password
+    [:password]
+  end
+
   def show?
     return false unless user.present? && record.present?
 
@@ -20,5 +24,9 @@ class UserPolicy < ApplicationPolicy
     return false unless user.present? && record.present?
 
     user == record
+  end
+
+  def change_password?
+    update?
   end
 end

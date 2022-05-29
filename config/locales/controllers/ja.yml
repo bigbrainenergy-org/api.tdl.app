@@ -12,3 +12,8 @@ ja:
     verify_authy_app:
       failed: その OTP は無効または期限切れでした
       pending_implementation: Sorcery での保留中の API サポート
+  users:
+    change_password:
+      invalid_current_password: 指定した現在のパスワードが正しくありませんでした
+      missing_password: 現在のパスワードと希望する新しいパスワードの両方を入力してください
+      same_password: 古いパスワードと新しいパスワードは同じです。新しいパスワードを選択してください

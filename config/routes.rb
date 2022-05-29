@@ -55,6 +55,12 @@ Rails.application.routes.draw do
 
     post 'access-request' => 'access_requests#create'
 
+    ###########################
+    ## Change/Reset Password ##
+    ###########################
+
+    patch 'users/:user_id/change-password' => 'users#change_password'
+
     ##########
     ## CRUD ##
     ##########

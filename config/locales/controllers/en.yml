@@ -12,3 +12,8 @@ en:
     verify_authy_app:
       failed: That OTP was invalid or expired
       pending_implementation: Pending API support in Sorcery
+  users:
+    change_password:
+      invalid_current_password: The current password you provided was incorrect
+      missing_password: Please provide both your current password and your desired new password
+      same_password: The old and new passwords are the same, please choose a new password
