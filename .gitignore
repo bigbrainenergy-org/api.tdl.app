@@ -12,6 +12,9 @@
 /tmp/*
 !/log/.keep
 !/tmp/.keep
+pg_upgrade_server.log
+pg_upgrade_utility.log
+pg_upgrade_internal.log
 
 # Ignore generated coverage files
 /coverage
