@@ -1,18 +1,18 @@
 GIT
   remote: https://github.com/Sorcery/sorcery-rework.git
   revision: 2d4efc4a721ed6307e370e4a8029e88d9a6afbda
+  glob: sorcery-core/sorcery-core.gemspec
+  specs:
+    sorcery-core (0.0.0)
+
+GIT
+  remote: https://github.com/Sorcery/sorcery-rework.git
+  revision: 2d4efc4a721ed6307e370e4a8029e88d9a6afbda
   glob: sorcery-jwt/sorcery-jwt.gemspec
   specs:
     sorcery-jwt (0.0.0)
       jwt (~> 2.0)
       sorcery-core (= 0.0.0)
-
-GIT
-  remote: https://github.com/Sorcery/sorcery-rework.git
-  revision: 2d4efc4a721ed6307e370e4a8029e88d9a6afbda
-  glob: sorcery-core/sorcery-core.gemspec
-  specs:
-    sorcery-core (0.0.0)
 
 GEM
   remote: https://rubygems.org/
@@ -340,7 +340,7 @@ DEPENDENCIES
   validator-matchers
 
 RUBY VERSION
-   ruby 3.0.1p64
+   ruby 3.0.5p211
 
 BUNDLED WITH
-   2.2.15
+   2.2.33
