@@ -11,3 +11,5 @@ rails db:reset
 
 echo "POSTCREATE: rails s"
 rails s
+
+echo "FINISHED"
