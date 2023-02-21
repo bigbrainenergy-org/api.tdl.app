@@ -1,11 +1,14 @@
 source 'https://rubygems.org'
 git_source(:github) { |repo| "https://github.com/#{repo}.git" }
 
-ruby '3.0.5'
+ruby '3.1.3'
 
 ################
 ## Base Rails ##
 ################
+
+# moving to ruby 3.1.3 starts bugging me about this
+gem 'net-smtp'
 
 # Reduces boot times through caching; required in config/boot.rb
 gem 'bootsnap', '>= 1.4.4', require: false
@@ -69,7 +72,7 @@ group :development, :test do
   gem 'rubocop-rspec'
 
   # Prevent parser from yelling at us about mismatched ruby versions
-  gem 'parser', '~> 3.0.3.2'
+  gem 'parser', '~> 3.1.3.0'
 end
 
 group :development do
