@@ -14,7 +14,7 @@
 	"forwardPorts": [3000],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	"postCreateCommand": "bundle install && rails db:reset && rails s"
+	"postCreateCommand": "bash /workspaces/${localWorkspaceFolderBasename}/.devcontainer/postcreate.sh ${localWorkspaceFolderBasename}"
 
 	// Configure tool-specific properties.
 	// "customizations": {},

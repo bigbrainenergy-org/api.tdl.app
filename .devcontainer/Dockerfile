@@ -1,7 +1,8 @@
-FROM mcr.microsoft.com/devcontainers/ruby:3.0
+FROM mcr.microsoft.com/devcontainers/ruby:3.1
 
 # Install Rails
-RUN gem install rails webdrivers 
+RUN gem install rails webdrivers
+RUN gem install bundler
 
 # Default value to allow debug server to serve content over GitHub Codespace's port forwarding service
 # The value is a comma-separated list of allowed domains 
@@ -18,4 +19,4 @@ ENV RAILS_DEVELOPMENT_HOSTS=".githubpreview.dev,.preview.app.github.dev,.app.git
 # RUN su vscode -c "source /usr/local/share/nvm/nvm.sh && npm install -g <your-package-here>" 2>&1
 
 # FIXME too open for my liking.
-RUN chmod -R 777 /usr/local/rvm/gems
+# RUN chmod -R 777 /usr/local/rvm/gems
