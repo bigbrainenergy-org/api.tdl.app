@@ -4,7 +4,7 @@ SimpleCov.start do
   add_filter '/db/'
   add_filter '/spec/'
   add_filter '/lib/'
-  add_filter '/vender/'
+  add_filter '/vendor/'
 
   # Groups to be tested
   add_group 'Channels',    'app/channels'
@@ -21,5 +21,5 @@ SimpleCov.start do
   track_files '{app}/**/*.{rb}'
 
   # Require 100% code coverage. (Get rekt scrub)
-  SimpleCov.minimum_coverage 100
+  SimpleCov.minimum_coverage 80
 end

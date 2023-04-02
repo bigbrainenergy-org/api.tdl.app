@@ -5,7 +5,7 @@ class User < ApplicationRecord
   ## Constants ##
   ###############
 
-  DEFAULT_CONTEXTS = [
+  DEFAULT_LISTS = [
     { title: 'At Phone' },
     { title: 'At Computer' },
     { title: 'At Home' },

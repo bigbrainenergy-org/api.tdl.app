@@ -10,8 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 2021_12_23_113436) do
-
+ActiveRecord::Schema[7.0].define(version: 2023_04_02_185058) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -20,8 +19,8 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.string "email", null: false
     t.text "reason_for_interest", null: false
     t.string "version", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["email"], name: "index_access_requests_on_email", unique: true
   end
 
@@ -31,8 +30,8 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.string "color", null: false
     t.string "icon", null: false
     t.integer "order", default: 0, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["title", "user_id"], name: "index_contexts_on_title_and_user_id", unique: true
     t.index ["user_id"], name: "index_contexts_on_user_id"
   end
@@ -43,10 +42,10 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.string "push_p256dh", null: false
     t.string "push_auth", null: false
     t.string "user_agent", null: false
-    t.datetime "last_seen_at", null: false
+    t.datetime "last_seen_at", precision: nil, null: false
     t.string "name"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_devices_on_user_id"
   end
 
@@ -54,8 +53,8 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.bigint "user_id", null: false
     t.string "title", null: false
     t.string "notes"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_inbox_items_on_user_id"
   end
 
@@ -64,8 +63,8 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.bigint "first_id", null: false
     t.bigint "second_id", null: false
     t.string "notes"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["first_id", "second_id", "type"], name: "unique_next_action_relationships", unique: true
     t.index ["first_id"], name: "index_next_action_relationships_on_first_id"
     t.index ["second_id"], name: "index_next_action_relationships_on_second_id"
@@ -79,11 +78,11 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.string "notes"
     t.integer "order", default: 0, null: false
     t.boolean "completed", default: false, null: false
-    t.datetime "remind_me_at"
+    t.datetime "remind_me_at", precision: nil
     t.integer "mental_energy_required", default: 50, null: false
     t.integer "physical_energy_required", default: 50, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["context_id"], name: "index_next_actions_on_context_id"
     t.index ["project_id"], name: "index_next_actions_on_project_id"
     t.index ["user_id"], name: "index_next_actions_on_user_id"
@@ -94,8 +93,8 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.bigint "first_id", null: false
     t.bigint "second_id", null: false
     t.string "notes"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["first_id", "second_id", "type"], name: "unique_project_relationships", unique: true
     t.index ["first_id"], name: "index_project_relationships_on_first_id"
     t.index ["second_id"], name: "index_project_relationships_on_second_id"
@@ -107,11 +106,11 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.string "notes"
     t.integer "order", default: 0, null: false
     t.string "status", default: "active", null: false
-    t.datetime "status_last_changed_at"
-    t.datetime "deadline_at"
+    t.datetime "status_last_changed_at", precision: nil
+    t.datetime "deadline_at", precision: nil
     t.string "estimated_time_to_complete"
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["title", "user_id"], name: "index_projects_on_title_and_user_id", unique: true
     t.index ["user_id"], name: "index_projects_on_user_id"
   end
@@ -121,15 +120,15 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.string "title", null: false
     t.integer "order", default: 0, null: false
     t.boolean "completed", default: false, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["next_action_id"], name: "index_subtasks_on_next_action_id"
   end
 
   create_table "user_sessions", force: :cascade do |t|
     t.bigint "user_id", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["user_id"], name: "index_user_sessions_on_user_id"
   end
 
@@ -141,16 +140,16 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.string "username", null: false
     t.string "email", null: false
     t.string "password_digest"
-    t.datetime "last_login_at"
-    t.datetime "last_logout_at"
-    t.datetime "last_activity_at"
+    t.datetime "last_login_at", precision: nil
+    t.datetime "last_logout_at", precision: nil
+    t.datetime "last_activity_at", precision: nil
     t.string "last_login_from_ip_address"
     t.integer "failed_logins_count", default: 0, null: false
-    t.datetime "lock_expires_at"
+    t.datetime "lock_expires_at", precision: nil
     t.string "unlock_token"
-    t.datetime "terms_and_conditions", null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "terms_and_conditions", precision: nil, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
   end
 
   create_table "waiting_fors", force: :cascade do |t|
@@ -159,11 +158,11 @@ ActiveRecord::Schema.define(version: 2021_12_23_113436) do
     t.string "title", null: false
     t.string "notes"
     t.integer "order", default: 0, null: false
-    t.datetime "next_checkin_at"
+    t.datetime "next_checkin_at", precision: nil
     t.string "delegated_to", null: false
     t.boolean "completed", default: false, null: false
-    t.datetime "created_at", precision: 6, null: false
-    t.datetime "updated_at", precision: 6, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
     t.index ["project_id"], name: "index_waiting_fors_on_project_id"
     t.index ["user_id"], name: "index_waiting_fors_on_user_id"
   end
