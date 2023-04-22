@@ -1,25 +1,26 @@
 require 'rails_helper'
 
-RSpec.describe NextActionPolicy do
+RSpec.describe ListPolicy do
   describe 'scope' do
     subject(:resolved_scope) do
-      described_class::Scope.new(user, NextAction).resolve
+      described_class::Scope.new(user, List).resolve
     end
 
-    let!(:other_next_action) { create :next_action }
+    let(:list) { create :list }
+    let!(:other_list) { create :list }
 
     context 'when a visitor' do
       let(:user) { nil }
 
-      it { should_not include(other_next_action) }
+      it { should_not include(other_list) }
     end
 
     context 'when a user' do
       let(:user) { create :user }
-      let(:next_action) { create :next_action, user: user }
+      let(:list) { create :list, user: user }
 
-      it { should include(next_action) }
-      it { should_not include(other_next_action) }
+      it { should include(list) }
+      it { should_not include(other_list) }
     end
   end
 
@@ -29,11 +30,11 @@ RSpec.describe NextActionPolicy do
   end
 
   describe 'actions' do
-    subject { described_class.new(user, next_action) }
+    subject { described_class.new(user, list) }
 
     let(:crud_actions) { [:show, :create, :update, :destroy] }
     let(:user) { create :user }
-    let(:next_action) { create :next_action }
+    let(:list) { create :list }
 
     context 'when a visitor' do
       let(:user) { nil }
@@ -48,7 +49,7 @@ RSpec.describe NextActionPolicy do
     end
 
     context 'when the record user' do
-      let(:next_action) { create :next_action, user: user }
+      let(:list) { create :list, user: user }
 
       it { should permit_action(:index) }
       it { should permit_actions(crud_actions) }

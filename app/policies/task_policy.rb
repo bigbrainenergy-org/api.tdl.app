@@ -1,4 +1,4 @@
-class ProjectPolicy < ApplicationPolicy
+class TaskPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       scope.where(user: user)
@@ -7,13 +7,15 @@ class ProjectPolicy < ApplicationPolicy
 
   def permitted_attributes
     [
+      :context_id,
+      :project_id,
       :title,
       :notes,
-      :order,
-      :superproject_ids,
-      :subproject_ids,
-      :hard_prereq_ids,
-      :hard_postreq_ids
+      :remind_me_at,
+      :mental_energy_required,
+      :physical_energy_required,
+      hard_prereq_ids: [],
+      hard_postreq_ids: []
     ]
   end
 
@@ -35,9 +37,5 @@ class ProjectPolicy < ApplicationPolicy
 
   def destroy?
     user_owns_record?
-  end
-
-  def sync_ordering?
-    user.present?
   end
 end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
-RSpec.describe Context do
-  subject(:record) { build :context }
+RSpec.describe Status do
+  subject(:record) { build :status }
 
   it 'has valid factory' do
     expect(record).to be_valid
@@ -10,7 +10,7 @@ RSpec.describe Context do
   describe 'associations' do
     it { should belong_to(:user) }
 
-    it { should have_many(:next_actions).dependent(:restrict_with_exception) }
+    it { should have_many(:tasks).dependent(:restrict_with_exception) }
   end
 
   describe 'validations' do
@@ -30,9 +30,9 @@ RSpec.describe Context do
 
       context 'when color value is empty string' do
         subject(:color) do
-          context = build :context, color: ''
-          context.randomize_color!
-          context.color
+          status = build :status, color: ''
+          status.randomize_color!
+          status.color
         end
 
         it { should match(regex_hex_color) }
@@ -40,9 +40,9 @@ RSpec.describe Context do
 
       context 'when color value is nil' do
         subject(:color) do
-          context = build :context, color: nil
-          context.randomize_color!
-          context.color
+          status = build :status, color: nil
+          status.randomize_color!
+          status.color
         end
 
         it { should match(regex_hex_color) }
@@ -50,9 +50,9 @@ RSpec.describe Context do
 
       context 'when color value is already set' do
         subject(:color) do
-          context = build :context, color: a_random_color
-          context.randomize_color!
-          context.color
+          status = build :status, color: a_random_color
+          status.randomize_color!
+          status.color
         end
 
         let(:a_random_color) { Faker::Color.hex_color }

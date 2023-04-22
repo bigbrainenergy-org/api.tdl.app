@@ -1,7 +1,7 @@
 class SubtaskPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
-      scope.includes(:next_action).where(next_action: { user: user })
+      scope.joins(:task => :list).where(user: user )
     end
   end
 
@@ -32,8 +32,8 @@ class SubtaskPolicy < ApplicationPolicy
   private
 
   def user_owns_subtask?
-    return false unless record&.next_action.present? && user.present?
+    return false unless record&.task&.list.present? && user.present?
 
-    user.owner_of?(record.next_action)
+    user.owner_of?(record.task.list)
   end
 end

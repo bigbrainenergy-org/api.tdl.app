@@ -1,6 +1,6 @@
 require 'swagger_helper'
 
-RSpec.describe 'Inbox Items' do
+RSpec.describe 'Lists' do
   let(:user) { create :user }
   let(:user_session) { create :user_session, user: user }
   let(:token) do
@@ -10,17 +10,17 @@ RSpec.describe 'Inbox Items' do
     )
   end
   let(:Authorization) { "Bearer #{token}" }
-  let!(:user_inbox_item) { create :inbox_item, user: user }
-  let!(:other_inbox_item) { create :inbox_item }
+  let!(:user_list) { create :list, user: user }
+  let!(:other_list) { create :list }
 
-  path '/inbox_items' do
-    get 'Get inbox items' do
-      tags 'Inbox Items'
-      description 'Returns an array of the current user\'s inbox items.'
+  path '/lists' do
+    get 'Get lists' do
+      tags 'Lists'
+      description 'Returns an array of the current user\'s lists.'
       produces 'application/json'
 
       response '200', 'Success' do
-        schema({ '$ref' => '#/components/schemas/ArrayOfInboxItems'})
+        schema({ '$ref' => '#/components/schemas/ArrayOfLists'})
 
         run_test!
       end
@@ -34,19 +34,19 @@ RSpec.describe 'Inbox Items' do
       end
     end
 
-    post 'Create new inbox item' do
-      tags 'Inbox Items'
-      description 'Create a new inbox item for the current user.'
+    post 'Create new list' do
+      tags 'Lists'
+      description 'Create a new list for the current user.'
       produces 'application/json'
       consumes 'application/json'
-      parameter name: :inbox_item, in: :body, schema: {
-        '$ref' => '#/components/schemas/InboxItem'
+      parameter name: :list, in: :body, schema: {
+        '$ref' => '#/components/schemas/List'
       }, required: true
 
-      let(:inbox_item) { { title: Faker::String.random } }
+      let(:list) { { title: Faker::String.random } }
 
-      response '200', 'Successfully created new inbox item' do
-        schema({ '$ref' => '#/components/schemas/InboxItem'})
+      response '200', 'Successfully created new list' do
+        schema({ '$ref' => '#/components/schemas/List'})
 
         run_test!
       end
@@ -54,7 +54,7 @@ RSpec.describe 'Inbox Items' do
       response '400', 'Missing parameters' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:inbox_item) { nil }
+        let(:list) { nil }
 
         run_test!
       end
@@ -70,25 +70,25 @@ RSpec.describe 'Inbox Items' do
       response '422', 'The changes requested could not be processed' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:inbox_item) { { title: nil, notes: '1337 Notes' } }
+        let(:list) { { title: nil, notes: '1337 Notes' } }
 
         run_test!
       end
     end
   end
 
-  path '/inbox_items/{id}' do
+  path '/lists/{id}' do
     parameter name: :id, in: :path, type: :string
 
-    let(:id) { user_inbox_item.id }
+    let(:id) { user_list.id }
 
-    get 'Show inbox item' do
-      tags 'Inbox Items'
-      description 'Returns the information for a specific inbox item.'
+    get 'Show list' do
+      tags 'Lists'
+      description 'Returns the information for a specific list.'
       produces 'application/json'
 
       response '200', 'Success' do
-        schema({ '$ref' => '#/components/schemas/InboxItem'})
+        schema({ '$ref' => '#/components/schemas/List'})
 
         run_test!
       end
@@ -104,7 +104,7 @@ RSpec.describe 'Inbox Items' do
       response '403', 'You don\'t have permission to do that' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:id) { other_inbox_item.id }
+        let(:id) { other_list.id }
 
         run_test!
       end
@@ -118,16 +118,16 @@ RSpec.describe 'Inbox Items' do
       end
     end
 
-    patch 'Update inbox item' do
-      tags 'Inbox Items'
-      description 'Update an existing inbox_item.'
+    patch 'Update list' do
+      tags 'Lists'
+      description 'Update an existing list.'
 
-      parameter name: :inbox_item, in: :body, schema: {
-        '$ref' => '#/components/schemas/InboxItem'
+      parameter name: :list, in: :body, schema: {
+        '$ref' => '#/components/schemas/List'
       }
       consumes 'application/json'
-
-      let(:inbox_item) { { title: Faker::String.random } }
+      let(:id) { @list.id }
+      let(:list) { { title: Faker::String.random } }
 
       response '200', 'Success' do
         run_test!
@@ -136,7 +136,7 @@ RSpec.describe 'Inbox Items' do
       response '400', 'Missing parameters' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:inbox_item) { nil }
+        let(:list) { nil }
 
         run_test!
       end
@@ -152,7 +152,7 @@ RSpec.describe 'Inbox Items' do
       response '403', 'Not authorized' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:id) { other_inbox_item.id }
+        let(:id) { other_list.id }
 
         run_test!
       end
@@ -165,18 +165,18 @@ RSpec.describe 'Inbox Items' do
         run_test!
       end
 
-      response '422', 'Failed to process inbox item' do
+      response '422', 'Failed to process list' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:inbox_item) { { title: nil, notes: '1337 Notes' } }
+        let(:list) { { title: nil, notes: '1337 Notes' } }
 
         run_test!
       end
     end
 
-    delete 'Destroy inbox item' do
-      tags 'Inbox Items'
-      description 'Destroy a inbox item.'
+    delete 'Destroy list' do
+      tags 'Lists'
+      description 'Destroy a list.'
       produces 'application/json'
 
       response '200', 'Success' do
@@ -196,7 +196,7 @@ RSpec.describe 'Inbox Items' do
       response '403', 'You don\'t have permission to do that' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:id) { other_inbox_item.id }
+        let(:id) { other_list.id }
 
         run_test!
       end

@@ -16,8 +16,9 @@ RSpec.describe SubtaskPolicy do
 
     context 'when a user' do
       let(:user) { create :user }
-      let(:next_action) { create :next_action, user: user }
-      let(:subtask) { create :subtask, next_action: next_action }
+      let(:list) { create :list, user: user }
+      let(:task) { create :task, list: list }
+      let(:subtask) { create :subtask, task: task }
 
       it { should include(subtask) }
       it { should_not include(other_subtask) }
@@ -49,8 +50,8 @@ RSpec.describe SubtaskPolicy do
     end
 
     context 'when the record user' do
-      let(:next_action) { create :next_action, user: user }
-      let(:subtask) { create :subtask, next_action: next_action }
+      let(:task) { create :task, user: user }
+      let(:subtask) { create :subtask, task: task }
 
       it { should permit_action(:index) }
       it { should permit_actions(crud_actions) }

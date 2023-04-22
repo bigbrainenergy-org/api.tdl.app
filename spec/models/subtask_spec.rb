@@ -8,7 +8,7 @@ RSpec.describe Subtask do
   end
 
   describe 'associations' do
-    it { should belong_to(:next_action) }
+    it { should belong_to(:task) }
   end
 
   describe 'validations' do

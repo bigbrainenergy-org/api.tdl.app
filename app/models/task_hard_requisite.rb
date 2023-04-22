@@ -1,11 +1,11 @@
-class NextActionHardRequisite < NextActionRelationship
+class TaskHardRequisite < TaskRelationship
   belongs_to :pre,
-    class_name: 'NextAction',
+    class_name: 'Task',
     foreign_key: :first_id,
     inverse_of: :hard_post_relationships
 
   belongs_to :post,
-    class_name: 'NextAction',
+    class_name: 'Task',
     foreign_key: :second_id,
     inverse_of: :hard_pre_relationships
 

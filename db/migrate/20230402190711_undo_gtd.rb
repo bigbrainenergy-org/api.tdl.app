@@ -22,24 +22,23 @@ class UndoGtd < ActiveRecord::Migration[7.0]
     end
     add_index :statuses, [:title, :user_id], unique: true
 
-    # remove_reference :next_actions, :context
-    # remove_reference :next_actions, :project
-    rename_table :next_action_relationships :task_relationships
-    rename_table :next_actions :tasks
-
+    remove_reference :next_actions, :context
+    remove_reference :next_actions, :project
+    remove_reference :next_actions, :user
+    rename_table :next_action_relationships, :task_relationships
+    rename_table :next_actions, :tasks
     add_reference :tasks, :list, null: false
     add_reference :tasks, :status, null: false
     add_column :tasks, :delegated, :boolean
-    add_column :tasks, :status, :string, default: 'active'
     add_column :tasks, :status_last_changed_at, :datetime
     add_column :tasks, :deadline_at, :datetime
     add_column :tasks, :task_duration_in_minutes, :integer
 
     drop_table :inbox_items
+    drop_table :waiting_fors
     drop_table :contexts
     drop_table :project_relationships
     drop_table :projects
-    drop_table :waiting_fors
   end
 
   def down

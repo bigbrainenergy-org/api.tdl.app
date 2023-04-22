@@ -21,12 +21,8 @@ class User < ApplicationRecord
   has_many :devices,       dependent: :destroy
   has_many :user_sessions, dependent: :destroy
 
-  has_many :inbox_items,   dependent: :destroy
-  has_many :next_actions,  dependent: :destroy
-  has_many :waiting_fors,  dependent: :destroy
-  has_many :projects,      dependent: :destroy
-
-  has_many :contexts,      dependent: :destroy
+  has_many :lists,         dependent: :destroy
+  has_many :tasks,         through: :lists
 
   ########################
   ## Virtual Attributes ##
@@ -93,8 +89,6 @@ class User < ApplicationRecord
   ## Callbacks ##
   ###############
 
-  after_create :prepopulate_contexts!
-
   ######################
   ## Instance Methods ##
   ######################
@@ -111,16 +105,5 @@ class User < ApplicationRecord
 
   def owner_of?(record)
     record&.user == self
-  end
-
-  def prepopulate_contexts!
-    return if contexts.any?
-
-    DEFAULT_CONTEXTS.each do |context|
-      Context.create!(
-        user: self,
-        title: context[:title]
-      )
-    end
   end
 end

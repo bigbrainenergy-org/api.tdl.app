@@ -1,4 +1,4 @@
-class List < ApplicationRecord
+class Status < ApplicationRecord
   belongs_to :user
 
   has_many :tasks, dependent: :restrict_with_exception
@@ -7,16 +7,17 @@ class List < ApplicationRecord
     presence: true,
     uniqueness: { case_sensitive: false, scope: :user_id }
 
-  validates :order,
-    presence: true
-    
   validates :icon,
     presence: true,
     icon_formatting: true
 
   validates :color,
-    presence: true,
+    presence:             true,
     hex_color_formatting: true
+
+  # TODO: Validate that order is an int >= 0
+  validates :order,
+    presence: true
 
   before_validation :randomize_by_default, only: [:create]
 

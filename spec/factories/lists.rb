@@ -1,9 +1,10 @@
 FactoryBot.define do
   factory :list do
-    user { nil }
-    title { "MyString" }
-    color { "MyString" }
-    icon { "MyString" }
+    user
+
+    title { Faker::String.random }
+    color { Faker::Color.hex_color }
+    icon { ['local_offer'].sample }
     order { 1 }
   end
 end

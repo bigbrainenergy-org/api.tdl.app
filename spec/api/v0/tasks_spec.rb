@@ -1,6 +1,6 @@
 require 'swagger_helper'
 
-RSpec.describe 'Projects' do
+RSpec.describe 'Tasks' do
   let(:user) { create :user }
   let(:user_session) { create :user_session, user: user }
   let(:token) do
@@ -10,17 +10,17 @@ RSpec.describe 'Projects' do
     )
   end
   let(:Authorization) { "Bearer #{token}" }
-  let!(:user_project) { create :project, user: user }
-  let!(:other_project) { create :project }
+  let!(:user_task) { create :task }
+  let!(:other_task) { create :task }
 
-  path '/projects' do
-    get 'Get projects' do
-      tags 'Projects'
-      description 'Returns an array of the current user\'s projects.'
+  path '/tasks' do
+    get 'Get next tasks' do
+      tags 'Next Tasks'
+      description 'Returns an array of the current user\'s next tasks.'
       produces 'application/json'
 
       response '200', 'Success' do
-        schema({ '$ref' => '#/components/schemas/ArrayOfProjects'})
+        schema({ '$ref' => '#/components/schemas/ArrayOfTasks'})
 
         run_test!
       end
@@ -34,19 +34,19 @@ RSpec.describe 'Projects' do
       end
     end
 
-    post 'Create new project' do
-      tags 'Projects'
-      description 'Create a new project for the current user.'
+    post 'Create new next task' do
+      tags 'Next Tasks'
+      description 'Create a new next task for the current user.'
       produces 'application/json'
       consumes 'application/json'
-      parameter name: :project, in: :body, schema: {
-        '$ref' => '#/components/schemas/Project'
+      parameter name: :task, in: :body, schema: {
+        '$ref' => '#/components/schemas/Task'
       }, required: true
 
-      let(:project) { { title: Faker::String.random } }
+      let(:task) { { title: Faker::String.random } }
 
-      response '200', 'Successfully created new project' do
-        schema({ '$ref' => '#/components/schemas/Project'})
+      response '200', 'Successfully created new next task' do
+        schema({ '$ref' => '#/components/schemas/Task'})
 
         run_test!
       end
@@ -54,7 +54,7 @@ RSpec.describe 'Projects' do
       response '400', 'Missing parameters' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:project) { nil }
+        let(:task) { nil }
 
         run_test!
       end
@@ -70,25 +70,25 @@ RSpec.describe 'Projects' do
       response '422', 'The changes requested could not be processed' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:project) { { title: nil, notes: '1337 Notes' } }
+        let(:task) { { title: nil, notes: '1337 Notes' } }
 
         run_test!
       end
     end
   end
 
-  path '/projects/{id}' do
+  path '/tasks/{id}' do
     parameter name: :id, in: :path, type: :string
 
-    let(:id) { user_project.id }
+    let(:id) { user_task.id }
 
-    get 'Show project' do
-      tags 'Projects'
-      description 'Returns the information for a specific project.'
+    get 'Show next task' do
+      tags 'Next Tasks'
+      description 'Returns the information for a specific next task.'
       produces 'application/json'
 
       response '200', 'Success' do
-        schema({ '$ref' => '#/components/schemas/Project'})
+        schema({ '$ref' => '#/components/schemas/NextTask'})
 
         run_test!
       end
@@ -104,7 +104,7 @@ RSpec.describe 'Projects' do
       response '403', 'You don\'t have permission to do that' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:id) { other_project.id }
+        let(:id) { other_task.id }
 
         run_test!
       end
@@ -118,16 +118,16 @@ RSpec.describe 'Projects' do
       end
     end
 
-    patch 'Update project' do
-      tags 'Projects'
-      description 'Update an existing project.'
+    patch 'Update next task' do
+      tags 'Next Tasks'
+      description 'Update an existing task.'
 
-      parameter name: :project, in: :body, schema: {
-        '$ref' => '#/components/schemas/Project'
+      parameter name: :task, in: :body, schema: {
+        '$ref' => '#/components/schemas/NextAction'
       }
       consumes 'application/json'
 
-      let(:project) { { title: Faker::String.random } }
+      let(:task) { { title: Faker::String.random } }
 
       response '200', 'Success' do
         run_test!
@@ -136,7 +136,7 @@ RSpec.describe 'Projects' do
       response '400', 'Missing parameters' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:project) { nil }
+        let(:task) { nil }
 
         run_test!
       end
@@ -152,7 +152,7 @@ RSpec.describe 'Projects' do
       response '403', 'Not authorized' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:id) { other_project.id }
+        let(:id) { other_task.id }
 
         run_test!
       end
@@ -165,18 +165,18 @@ RSpec.describe 'Projects' do
         run_test!
       end
 
-      response '422', 'Failed to process project' do
+      response '422', 'Failed to process next task' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:project) { { title: nil, notes: '1337 Notes' } }
+        let(:task) { { title: nil, notes: '1337 Notes' } }
 
         run_test!
       end
     end
 
-    delete 'Destroy project' do
-      tags 'Projects'
-      description 'Destroy a project.'
+    delete 'Destroy next task' do
+      tags 'Next Tasks'
+      description 'Destroy a next task.'
       produces 'application/json'
 
       response '200', 'Success' do
@@ -196,7 +196,7 @@ RSpec.describe 'Projects' do
       response '403', 'You don\'t have permission to do that' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:id) { other_project.id }
+        let(:id) { other_task.id }
 
         run_test!
       end
@@ -209,11 +209,5 @@ RSpec.describe 'Projects' do
         run_test!
       end
     end
-  end
-
-  path '/projects/{id}/bulk-all' do
-  end
-
-  path '/projects/{id}/bulk-each' do
   end
 end

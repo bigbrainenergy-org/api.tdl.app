@@ -8,7 +8,7 @@ athix = User.create!(
   terms_and_conditions: Time.current
 )
 
-athix.prepopulate_contexts!
+#athix.prepopulate_contexts!
 
 def random_notes
   return nil if [true, false].sample

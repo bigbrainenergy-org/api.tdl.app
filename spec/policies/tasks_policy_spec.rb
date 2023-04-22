@@ -1,25 +1,25 @@
 require 'rails_helper'
 
-RSpec.describe WaitingForPolicy do
+RSpec.describe TaskPolicy do
   describe 'scope' do
     subject(:resolved_scope) do
-      described_class::Scope.new(user, WaitingFor).resolve
+      described_class::Scope.new(user, Task).resolve
     end
 
-    let!(:other_waiting_for) { create :waiting_for }
+    let!(:other_task) { create :task }
 
     context 'when a visitor' do
       let(:user) { nil }
 
-      it { should_not include(other_waiting_for) }
+      it { should_not include(other_task) }
     end
 
     context 'when a user' do
       let(:user) { create :user }
-      let(:waiting_for) { create :waiting_for, user: user }
+      let(:task) { create :task, user: user }
 
-      it { should include(waiting_for) }
-      it { should_not include(other_waiting_for) }
+      it { should include(task) }
+      it { should_not include(other_task) }
     end
   end
 
@@ -29,11 +29,11 @@ RSpec.describe WaitingForPolicy do
   end
 
   describe 'actions' do
-    subject { described_class.new(user, waiting_for) }
+    subject { described_class.new(user, task) }
 
     let(:crud_actions) { [:show, :create, :update, :destroy] }
     let(:user) { create :user }
-    let(:waiting_for) { create :waiting_for }
+    let(:task) { create :task }
 
     context 'when a visitor' do
       let(:user) { nil }
@@ -48,7 +48,8 @@ RSpec.describe WaitingForPolicy do
     end
 
     context 'when the record user' do
-      let(:waiting_for) { create :waiting_for, user: user }
+      let(:list) { create :list, user: user }
+      let(:task) { create :task, list: list }
 
       it { should permit_action(:index) }
       it { should permit_actions(crud_actions) }

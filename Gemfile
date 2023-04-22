@@ -70,7 +70,7 @@ group :development, :test do
   gem 'rubocop-rspec'
 
   # Prevent parser from yelling at us about mismatched ruby versions
-  gem 'parser', '~> 3.1.3.0'
+  gem 'parser', '~> 3.2.1.0'
 end
 
 group :development do
