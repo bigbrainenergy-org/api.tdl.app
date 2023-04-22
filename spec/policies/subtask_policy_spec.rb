@@ -18,7 +18,7 @@ RSpec.describe SubtaskPolicy do
       let(:user) { create :user }
       let(:list) { create :list, user: user }
       let(:task) { create :task, list: list }
-      let(:subtask) { create :subtask, task: task }
+      let!(:subtask) { create :subtask, task: task }
 
       it { should include(subtask) }
       it { should_not include(other_subtask) }

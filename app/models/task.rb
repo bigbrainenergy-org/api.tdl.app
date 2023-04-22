@@ -1,7 +1,7 @@
 class Task < ApplicationRecord
   belongs_to :list
   belongs_to :status
-  
+
   has_many :hard_pre_relationships,
     class_name:  'TaskHardRequisite',
     inverse_of:  :post,
@@ -26,6 +26,8 @@ class Task < ApplicationRecord
 
   has_one :user,
     through: :list
+
+  has_many :subtasks
 
   validates :title, :order,
     presence: true
