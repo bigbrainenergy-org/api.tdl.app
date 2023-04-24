@@ -16,7 +16,8 @@ RSpec.describe TaskPolicy do
 
     context 'when a user' do
       let(:user) { create :user }
-      let(:task) { create :task, user: user }
+      let(:list) { create :list, user: user }
+      let(:task) { create :task, list: list }
 
       it { should include(task) }
       it { should_not include(other_task) }

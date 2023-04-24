@@ -62,20 +62,20 @@ components:
     ##################
     ## Next Actions ##
     ##################
-    ArrayOfNextActions:
+    ArrayOfTasks:
       type: array
       items:
-        $ref: '#/components/schemas/NextAction'
+        $ref: '#/components/schemas/Task'
       uniqueItems: true
-    NextAction:
+    Task:
       type: object
       properties:
         id:
           type: integer
-        context_id:
+        status_id:
           type: integer
           nullable: true
-        project_id:
+        list_id:
           type: integer
           nullable: true
         title:
@@ -340,24 +340,24 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/InboxItem'
-  /next_actions:
+  /tasks:
     post:
       requestBody:
-        description: Next Action to be created
+        description: Task to be created
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NextAction'
-  /next_actions/{id}:
+              $ref: '#/components/schemas/Task'
+  /tasks/{id}:
     patch:
       requestBody:
-        description: Updates for existing next action
+        description: Updates for existing task
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/NextAction'
+              $ref: '#/components/schemas/Task'
   /waiting_fors:
     post:
       requestBody:

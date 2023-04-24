@@ -44,12 +44,12 @@ components:
       required:
       - id
       - title
-    ArrayOfNextActions:
+    ArrayOfTasks:
       type: array
       items:
-        "$ref": "#/components/schemas/NextAction"
+        "$ref": "#/components/schemas/Task"
       uniqueItems: true
-    NextAction:
+    Task:
       type: object
       properties:
         id:

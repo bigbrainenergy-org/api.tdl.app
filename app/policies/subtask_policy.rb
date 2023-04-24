@@ -1,7 +1,7 @@
 class SubtaskPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
-      scope.joins(:task => :list).where(tasks: { lists: { user_id: user&.id } })
+      scope.joins(task: :list).where(tasks: { lists: { user_id: user&.id } })
     end
   end
 

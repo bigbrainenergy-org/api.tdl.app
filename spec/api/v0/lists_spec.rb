@@ -126,7 +126,6 @@ RSpec.describe 'Lists' do
         '$ref' => '#/components/schemas/List'
       }
       consumes 'application/json'
-      let(:id) { @list.id }
       let(:list) { { title: Faker::String.random } }
 
       response '200', 'Success' do

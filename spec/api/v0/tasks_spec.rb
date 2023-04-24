@@ -2,6 +2,7 @@ require 'swagger_helper'
 
 RSpec.describe 'Tasks' do
   let(:user) { create :user }
+  let(:list) { create :list, user: user }
   let(:user_session) { create :user_session, user: user }
   let(:token) do
     # This is dumb and jank, fix it.
@@ -10,7 +11,7 @@ RSpec.describe 'Tasks' do
     )
   end
   let(:Authorization) { "Bearer #{token}" }
-  let!(:user_task) { create :task }
+  let!(:user_task) { create :task, list: list }
   let!(:other_task) { create :task }
 
   path '/tasks' do

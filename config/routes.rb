@@ -24,17 +24,17 @@ Rails.application.routes.draw do
     ## Bulk ##
     ##########
 
-    patch 'next-actions/bulk-all' => 'next_actions#bulk_all_same_vales'
-    patch 'next-actions/bulk-each' => 'next_actions#bulk_each_different_values'
+    # patch 'next-actions/bulk-all' => 'next_actions#bulk_all_same_vales'
+    # patch 'next-actions/bulk-each' => 'next_actions#bulk_each_different_values'
 
-    patch 'waiting-fors/bulk-all' => 'waiting_fors#bulk_all_same_vales'
-    patch 'waiting-fors/bulk-each' => 'waiting_fors#bulk_each_different_values'
+    # patch 'waiting-fors/bulk-all' => 'waiting_fors#bulk_all_same_vales'
+    # patch 'waiting-fors/bulk-each' => 'waiting_fors#bulk_each_different_values'
 
-    patch 'projects/bulk-all' => 'projects#bulk_all_same_vales'
-    patch 'projects/bulk-each' => 'projects#bulk_each_different_values'
+    # patch 'projects/bulk-all' => 'projects#bulk_all_same_vales'
+    # patch 'projects/bulk-each' => 'projects#bulk_each_different_values'
 
-    patch 'contexts/bulk-all' => 'contexts#bulk_all_same_vales'
-    patch 'contexts/bulk-each' => 'contexts#bulk_each_different_values'
+    # patch 'contexts/bulk-all' => 'contexts#bulk_all_same_vales'
+    # patch 'contexts/bulk-each' => 'contexts#bulk_each_different_values'
 
     patch 'subtasks/bulk-all' => 'subtasks#bulk_all_same_vales'
     patch 'subtasks/bulk-each' => 'subtasks#bulk_each_different_values'
@@ -67,15 +67,17 @@ Rails.application.routes.draw do
 
     resources :users, only: [:show, :update]
 
-    resources :projects
-    resources :contexts
+    # resources :projects
+    # resources :contexts
 
-    resources :inbox_items
-    resources :next_actions
-    resources :waiting_fors
+    # resources :inbox_items
+    resources :tasks
+    resources :lists
+    # resources :waiting_fors
 
     # TODO: How should this interact API-wise? Nest under next actions?
     resources :subtasks
+    resources :statuses
 
     # Similarly, these are a little weird in nature
     resources :project_relationships

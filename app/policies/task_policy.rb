@@ -1,7 +1,7 @@
 class TaskPolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
-      scope.where(user: user)
+      scope.includes(:list).where(lists: { user_id: user&.id })
     end
   end
 
@@ -24,18 +24,26 @@ class TaskPolicy < ApplicationPolicy
   end
 
   def show?
-    user_owns_record?
+    user_owns_task?
   end
 
   def create?
-    user_owns_record?
+    user_owns_task?
   end
 
   def update?
-    user_owns_record?
+    user_owns_task?
   end
 
   def destroy?
-    user_owns_record?
+    user_owns_task?
+  end
+
+  private
+
+  def user_owns_task?
+    return false unless record&.list.present? && user.present?
+
+    user.owner_of?(record.list)
   end
 end
