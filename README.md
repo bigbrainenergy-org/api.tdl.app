@@ -1,7 +1,14 @@
 # README
 
-## Installation
+## Dev Container
 ### Prerequisites
+Ensure you have the Dev Containers VS Code extension installed.
+### Launching the Project
+Open the repo in Visual Studio Code. If prompted, click "Open Dev Container." Otherwise, open the command pallete with Ctrl+Shift+P, find and select the option "Dev Containers: Rebuild and Reopen in Container"
+
+## Manual Installation
+### Installation
+#### Prerequisites
 `rvm` [Click here for ArchWiki](https://wiki.archlinux.org/title/RVM#Installing_RVM)
 `postgres` [Click here for ArchWiki](https://wiki.archlinux.org/title/PostgreSQL)
 
