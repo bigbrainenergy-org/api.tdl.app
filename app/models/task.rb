@@ -1,6 +1,6 @@
 class Task < ApplicationRecord
   belongs_to :list
-  belongs_to :status
+  belongs_to :status, optional: true
 
   has_many :hard_pre_relationships,
     class_name:  'TaskHardRequisite',
