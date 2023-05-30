@@ -35,18 +35,20 @@ RSpec.describe 'Tasks' do
       end
     end
 
-    post 'Create new next task' do
-      tags 'Next Tasks'
-      description 'Create a new next task for the current user.'
+    post 'Create new task' do
+      tags 'Tasks'
+      description 'Create a new task for the current user.'
       produces 'application/json'
       consumes 'application/json'
       parameter name: :task, in: :body, schema: {
         '$ref' => '#/components/schemas/Task'
       }, required: true
+      
+      let(:task) { { title: Faker::String.random, list_id: 0 } }
 
-      let(:task) { { title: Faker::String.random } }
+      response '200', 'Successfully created new task' do
+        # pending 'can\'t seem to get Swagger tests to run right. Refactor to response/request tests'
 
-      response '200', 'Successfully created new next task' do
         schema({ '$ref' => '#/components/schemas/Task'})
 
         run_test!
@@ -61,6 +63,7 @@ RSpec.describe 'Tasks' do
       end
 
       response '401', 'Access token is missing or invalid' do
+        # pending 'can\'t seem to get Swagger tests to run right. Refactor to response/request tests'
         schema({ '$ref' => '#/components/schemas/Error'})
 
         let(:Authorization) { nil }
@@ -89,7 +92,7 @@ RSpec.describe 'Tasks' do
       produces 'application/json'
 
       response '200', 'Success' do
-        schema({ '$ref' => '#/components/schemas/NextTask'})
+        schema({ '$ref' => '#/components/schemas/Task'})
 
         run_test!
       end
@@ -128,7 +131,7 @@ RSpec.describe 'Tasks' do
       }
       consumes 'application/json'
 
-      let(:task) { { title: Faker::String.random } }
+      let(:task) { { title: Faker::String.random, list_id: list.id } }
 
       response '200', 'Success' do
         run_test!

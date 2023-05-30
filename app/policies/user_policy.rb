@@ -7,7 +7,7 @@ class UserPolicy < ApplicationPolicy
   end
 
   def permitted_attributes
-    [:locale, :time_zone]
+    [:locale, :time_zone, :default_list_id]
   end
 
   def permitted_attributes_for_change_password

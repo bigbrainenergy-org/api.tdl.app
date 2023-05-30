@@ -18,7 +18,7 @@ class TasksController < ApplicationController
 
   def create
     @task = Task.new(permitted_attributes(Task))
-    @task.user = current_user
+    @task.list = current_user.default_list if @task.list.nil?
 
     authorize @task
 

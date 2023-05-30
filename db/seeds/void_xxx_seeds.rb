@@ -1,3 +1,5 @@
+
+
 void_xxx = User.create!(
   username:             'void_xxx',
   given_name:           'Kurt',
@@ -7,7 +9,10 @@ void_xxx = User.create!(
   terms_and_conditions: Time.current
 )
 
-User.create!(
+void_list = List.create!( title: 'hello lists', user: void_xxx)
+void_xxx.update!(default_list: void_list)
+
+awesome_user = User.create!(
   username:             'awesome',
   given_name:           'awesome',
   family_name:          'username',
@@ -15,6 +20,9 @@ User.create!(
   password:             'awesomelongpassword',
   terms_and_conditions: DateTime.new(1970, 1, 2, 1)
 )
+
+awesome_list = List.create!( title: 'wow cool list', user: awesome_user )
+awesome_user.update!( default_list: awesome_list )
 
 # TODO: Do some seeds
 
@@ -24,9 +32,9 @@ print_interval = (task_count / 10)
 
 task_count.times do |n|
   puts "Creating task #{n + 1}" if ((n + 1) % print_interval).zero?
-  NextAction.create!(
+  Task.create!(
     title: "Task #{n}",
-    user:  void_xxx
+    list: void_xxx.default_list
   )
 end
 
@@ -35,9 +43,8 @@ combo_breaker = 0
 rule_count.times do |n|
   puts "Creating rule #{n + 1}" if ((n + 1) % print_interval).zero?
   loop do
-    random_tasks =
-      NextAction.uncached { NextAction.where(user: void_xxx).order('RANDOM()').first(2) }
-    rule = NextActionHardRequisite.new(
+    random_tasks = Task.uncached { Task.where(list: void_list).order('RANDOM()').first(2) }
+    rule = TaskHardRequisite.new(
       pre: random_tasks.first,
       post: random_tasks.second
     )

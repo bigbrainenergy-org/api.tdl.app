@@ -7,13 +7,18 @@ class TaskPolicy < ApplicationPolicy
 
   def permitted_attributes
     [
-      :context_id,
-      :project_id,
       :title,
       :notes,
+      :order,
+      :completed,
       :remind_me_at,
       :mental_energy_required,
       :physical_energy_required,
+      :list_id,
+      :status_id,
+      :delegated,
+      :deadline_at,
+      :task_duration_in_minutes,
       hard_prereq_ids: [],
       hard_postreq_ids: []
     ]

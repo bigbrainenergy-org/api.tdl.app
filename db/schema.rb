@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_19_054502) do
+ActiveRecord::Schema[7.0].define(version: 2023_05_29_191801) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -128,6 +128,8 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_19_054502) do
     t.datetime "terms_and_conditions", precision: nil, null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.bigint "default_list_id"
+    t.index ["default_list_id"], name: "index_users_on_default_list_id"
   end
 
   add_foreign_key "devices", "users"
@@ -135,4 +137,5 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_19_054502) do
   add_foreign_key "statuses", "users"
   add_foreign_key "subtasks", "tasks"
   add_foreign_key "user_sessions", "users"
+  add_foreign_key "users", "lists", column: "default_list_id"
 end
