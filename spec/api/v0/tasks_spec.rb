@@ -44,7 +44,7 @@ RSpec.describe 'Tasks' do
         '$ref' => '#/components/schemas/Task'
       }, required: true
       
-      let(:task) { { title: Faker::String.random, list_id: 0 } }
+      let(:task) { { title: Faker::String.random, list_id: list.id } }
 
       response '200', 'Successfully created new task' do
         # pending 'can\'t seem to get Swagger tests to run right. Refactor to response/request tests'
@@ -74,7 +74,7 @@ RSpec.describe 'Tasks' do
       response '422', 'The changes requested could not be processed' do
         schema({ '$ref' => '#/components/schemas/Error'})
 
-        let(:task) { { title: nil, notes: '1337 Notes' } }
+        let(:task) { { title: nil, notes: '1337 Notes', list_id: list.id } }
 
         run_test!
       end
