@@ -34,7 +34,7 @@ task_count.times do |n|
   puts "Creating task #{n + 1}" if ((n + 1) % print_interval).zero?
   Task.create!(
     title: "Task #{n}",
-    list: void_xxx.default_list
+    list: void_list
   )
 end
 
