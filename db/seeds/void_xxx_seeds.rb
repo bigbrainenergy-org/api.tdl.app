@@ -64,3 +64,6 @@ rule_count.times do |n|
     end
   end
 end
+
+
+puts "Wow we have a list. #{void_list}"
