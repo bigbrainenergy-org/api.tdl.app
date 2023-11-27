@@ -24,8 +24,8 @@ Rails.application.routes.draw do
     ## Bulk ##
     ##########
 
-    # patch 'next-actions/bulk-all' => 'next_actions#bulk_all_same_vales'
-    # patch 'next-actions/bulk-each' => 'next_actions#bulk_each_different_values'
+    patch 'tasks/bulk-all' => 'tasks#bulk_all_same_vales'
+    patch 'tasks/bulk-each' => 'tasks#bulk_each_different_values'
 
     # patch 'waiting-fors/bulk-all' => 'waiting_fors#bulk_all_same_vales'
     # patch 'waiting-fors/bulk-each' => 'waiting_fors#bulk_each_different_values'

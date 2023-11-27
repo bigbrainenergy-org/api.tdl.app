@@ -13,7 +13,7 @@ gem 'bootsnap', '>= 1.4.4', require: false
 
 gem 'jbuilder', '~> 2.7'
 gem 'pg', '~> 1.2'
-gem 'puma', '~> 5.0'
+gem 'puma', '~> 6.0'
 gem 'rack-cors'
 gem 'rails', '~> 7.0'
 

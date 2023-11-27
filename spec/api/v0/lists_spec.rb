@@ -43,7 +43,7 @@ RSpec.describe 'Lists' do
         '$ref' => '#/components/schemas/List'
       }, required: true
 
-      let(:list) { { title: Faker::String.random } }
+      let(:list) { { title: Faker::String.random, user: user } }
 
       response '200', 'Successfully created new list' do
         schema({ '$ref' => '#/components/schemas/List'})

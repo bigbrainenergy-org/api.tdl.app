@@ -9,7 +9,7 @@ RSpec.describe Task do
 
   describe 'associations' do
     it { should belong_to(:list) }
-    it { should belong_to(:status) }
+    it { should belong_to(:status).optional }
     it { should have_one(:user).through(:list) }
     it { should have_many(:hard_pre_relationships).dependent(:destroy) }
     it { should have_many(:hard_post_relationships).dependent(:destroy) }

@@ -3,6 +3,12 @@ class List < ApplicationRecord
 
   has_many :tasks, dependent: :restrict_with_exception
 
+  has_one :user_who_defaulted_this_list, 
+    class_name: 'User',
+    foreign_key: :default_list_id,
+    inverse_of: :default_list,
+    dependent: :restrict_with_exception
+
   validates :title,
     presence: true,
     uniqueness: { case_sensitive: false, scope: :user_id }

@@ -11,8 +11,8 @@ RSpec.describe User do
     it { should have_many(:devices).dependent(:destroy) }
     it { should have_many(:user_sessions).dependent(:destroy) }
 
-    it { should have_many(:tasks).through(:lists) }
     it { should have_many(:lists).dependent(:destroy) }
+    it { should have_many(:tasks).through(:lists) }
   end
 
   describe 'validations' do

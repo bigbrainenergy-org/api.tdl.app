@@ -135,68 +135,46 @@ components:
         - delegated_to
         - completed
     ##############
-    ## Projects ##
+    ## Lists    ##
     ##############
-    ProjectBulkAll:
+    ListtBulkAll:
       type: object
       properties:
-        project_ids:
+        list_ids:
           type: array
           items:
             type: integer
         title:
           type: string
-        notes:
-          type: string
-          nullable: true
         order:
           type: integer
-        status:
-          type: string
-        status_last_changed_at:
-          type: string
-          nullable: true
-        deadline_at:
-          type: string
-          nullable: true
-        estimated_time_to_complete:
-          type: string
-          nullable: true
       required:
-        - project_ids
-    ArrayOfProjects:
+        - list_ids
+    ArrayOfLists:
       type: array
       items:
-        $ref: '#/components/schemas/Project'
+        $ref: '#/components/schemas/List'
       uniqueItems: true
-    Project:
+    List:
       type: object
       properties:
         id:
           type: integer
         title:
           type: string
-        notes:
-          type: string
-          nullable: true
         order:
           type: integer
-        status:
+        icon:
           type: string
-        status_last_changed_at:
-          type: string
-          nullable: true
-        deadline_at:
-          type: string
-          nullable: true
-        estimated_time_to_complete:
-          type: string
-          nullable: true
+        created_at:
+          type: datetime
+        updated_at:
+          type: datetime
       required:
         - id
         - title
         - order
-        - status
+        - icon
     ##############
     ## Contexts ##
     ##############
