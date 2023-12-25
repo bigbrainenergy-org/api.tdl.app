@@ -38,30 +38,9 @@ components:
           type: string
       required:
         - error
-    #################
-    ## Inbox Items ##
-    #################
-    ArrayOfInboxItems:
-      type: array
-      items:
-        $ref: '#/components/schemas/InboxItem'
-      uniqueItems: true
-    InboxItem:
-      type: object
-      properties:
-        id:
-          type: integer
-        title:
-          type: string
-        notes:
-          type: string
-          nullable: true
-      required:
-        - id
-        - title
-    ##################
-    ## Next Actions ##
-    ##################
+    ###########
+    ## Tasks ##
+    ###########
     ArrayOfTasks:
       type: array
       items:
@@ -101,55 +80,49 @@ components:
         - completed
         - mental_energy_required
         - physical_energy_required
-    ##################
-    ## Waiting Fors ##
-    ##################
-    ArrayOfWaitingFors:
+    ##############
+    ## Subtasks ##
+    ##############
+    ArrayOfSubtasks:
       type: array
       items:
-        $ref: '#/components/schemas/WaitingFor'
+        $ref: '#/components/schemas/Subtask'
       uniqueItems: true
-    WaitingFor:
+    Subtask:
       type: object
       properties:
         id:
           type: integer
-        title:
-          type: string
-        notes:
-          type: string
-          nullable: true
-        order:
+        task_id:
           type: integer
-        next_checkin_at:
-          type: string
-          nullable: true
-        delegated_to:
+        title:
           type: string
         completed:
           type: boolean
-      required:
-        - id
-        - title
-        - order
-        - delegated_to
-        - completed
-    ##############
-    ## Lists    ##
-    ##############
-    ListtBulkAll:
-      type: object
-      properties:
-        list_ids:
-          type: array
-          items:
-            type: integer
-        title:
-          type: string
         order:
           type: integer
       required:
-        - list_ids
+        - id
+        - task_id
+        - title
+        - completed
+        - order
+    ###########
+    ## Lists ##
+    ###########
+    # ArrayOfListIDs:
+    #   type: object
+    #   properties:
+    #     list_ids:
+    #       type: array
+    #       items:
+    #         type: integer
+    #     title:
+    #       type: string
+    #     order:
+    #       type: integer
+    #   required:
+    #     - list_ids
     ArrayOfLists:
       type: array
       items:
@@ -300,24 +273,6 @@ security:
 
 # FIXME: RSwag doesn't support requestBody description
 paths:
-  /inbox_items:
-    post:
-      requestBody:
-        description: Inbox Item to be created
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InboxItem'
-  /inbox_items/{id}:
-    patch:
-      requestBody:
-        description: Updates for existing inbox item
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/InboxItem'
   /tasks:
     post:
       requestBody:
@@ -336,42 +291,24 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/Task'
-  /waiting_fors:
+  /lists:
     post:
       requestBody:
-        description: Waiting For to be created
+        description: List to be created
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/WaitingFor'
-  /waiting_fors/{id}:
+              $ref: '#/components/schemas/List'
+  /lists/{id}:
     patch:
       requestBody:
-        description: Updates for existing waiting for
+        description: Updates for existing list
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/WaitingFor'
-  /projects:
-    post:
-      requestBody:
-        description: Project to be created
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Project'
-  /projects/{id}:
-    patch:
-      requestBody:
-        description: Updates for existing project
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Project'
+              $ref: '#/components/schemas/List'
   /contexts:
     post:
       requestBody:

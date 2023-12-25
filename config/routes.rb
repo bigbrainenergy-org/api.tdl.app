@@ -59,6 +59,7 @@ Rails.application.routes.draw do
     ## Change/Reset Password ##
     ###########################
 
+    # FIXME: This should only be able to change the current user's password
     patch 'users/:user_id/change-password' => 'users#change_password'
 
     ##########
@@ -75,7 +76,7 @@ Rails.application.routes.draw do
     resources :lists
     # resources :waiting_fors
 
-    # TODO: How should this interact API-wise? Nest under next actions?
+    # TODO: How should this interact API-wise? Nest under tasks?
     resources :subtasks
     resources :statuses
 
