@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   mount Rswag::Ui::Engine  => '/docs'
   mount Rswag::Api::Engine => '/docs'
 
-  root to: redirect('https://web.tdl.app')
+  root to: redirect(Rails.configuration.x.frontend_redirect_url.to_s)
 
   # Default to json for all requests
   defaults format: :json do
