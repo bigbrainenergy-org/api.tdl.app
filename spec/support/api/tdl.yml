@@ -149,6 +149,34 @@ components:
         - order
         - icon
     ##############
+    ## Statuses ##
+    ##############
+    ArrayOfStatuses:
+      type: array
+      items:
+        $ref: '#/components/schemas/Status'
+      uniqueItems: true
+    Status:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        order:
+          type: integer
+        icon:
+          type: string
+        created_at:
+          type: datetime
+        updated_at:
+          type: datetime
+      required:
+        - id
+        - title
+        - order
+        - icon
+    ##############
     ## Contexts ##
     ##############
     ArrayOfContexts:
