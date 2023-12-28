@@ -6,7 +6,8 @@ Rails.application.configure do
   # Only allow requests from the official domain
   config.allowed_cors_origins = [
     'https://web.tdl.app',
-    'https://mobile.tdl.app'
+    'https://mobile.tdl.app',
+    'http://192.168.*.*'
   ]
 
   # Code is not reloaded between requests.
