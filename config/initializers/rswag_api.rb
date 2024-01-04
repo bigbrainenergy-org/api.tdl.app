@@ -4,7 +4,7 @@ Rswag::Api.configure do |config|
   # descriptions
   # NOTE: If you're using rswag-specs to generate Swagger, you'll need to ensure
   # that it's configured to generate files in the same folder
-  config.swagger_root = Rails.root.join('swagger').to_s
+  config.openapi_root = Rails.root.join('swagger').to_s
 
   # Inject a lamda function to alter the returned Swagger prior to serialization
   # The function will have access to the rack env for the current request

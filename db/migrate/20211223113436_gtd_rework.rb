@@ -111,14 +111,15 @@ class GtdRework < ActiveRecord::Migration[6.1]
       t.timestamps
     end
 
-    add_index :next_action_relationships, [:first_id, :second_id, :type], unique: true, name: 'unique_next_action_relationships'
+    add_index :next_action_relationships, [:first_id, :second_id, :type],
+      unique: true, name: 'unique_next_action_relationships'
 
     create_table :waiting_fors do |t|
       t.belongs_to :user,            null: false, foreign_key: true
       t.belongs_to :project,         foreign_key: true
       t.string     :title,           null: false
       t.string     :notes
-      t.integer    :order,           null: false, default: 0
+      t.integer    :order, null: false, default: 0
       t.datetime   :next_checkin_at
       t.string     :delegated_to,    null: false
       t.boolean    :completed,       null: false, default: false
@@ -149,17 +150,16 @@ class GtdRework < ActiveRecord::Migration[6.1]
       t.timestamps
     end
 
-    add_index :project_relationships, [:first_id, :second_id, :type], unique: true, name: 'unique_project_relationships'
+    add_index :project_relationships, [:first_id, :second_id, :type],
+      unique: true, name: 'unique_project_relationships'
 
     ##################
     ## Migrate Data ##
     ##################
 
-    User.all.find_each do |user|
-      user.prepopulate_contexts!
-    end
+    User.find_each(&:prepopulate_contexts!)
 
-    Task.all.includes(
+    Task.includes(
       :user,
       :list,
       :tags,
@@ -167,8 +167,8 @@ class GtdRework < ActiveRecord::Migration[6.1]
       :postreqs
     ).find_each do |task|
       notes =
-        "#{task.notes}\n\n"\
-        "--- Metadata ---\n\n"\
+        "#{task.notes}\n\n" \
+        "--- Metadata ---\n\n" \
         "List: #{task.list.title}"
 
       if task.tags.any?
@@ -210,9 +210,9 @@ class GtdRework < ActiveRecord::Migration[6.1]
 
       InboxItem.create!(
         {
-          user:      task.user,
-          title:     task.title,
-          notes:     notes
+          user:  task.user,
+          title: task.title,
+          notes: notes
         }
       )
     end
@@ -230,7 +230,7 @@ class GtdRework < ActiveRecord::Migration[6.1]
 
   def down
     raise ActiveRecord::IrreversibleMigration,
-      'Implementing the inverse of this isn\'t worth the effort at time of '\
+      'Implementing the inverse of this isn\'t worth the effort at time of ' \
       'writing. Update the down and run again if needed.'
   end
 end

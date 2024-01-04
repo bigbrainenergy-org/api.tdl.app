@@ -5,11 +5,11 @@ class TasksController < ApplicationController
     authorize Task
 
     @tasks = policy_scope(Task)
-      .includes(:list)
-      .includes(:status)
-      .includes(:hard_prereqs)
-      .includes(:hard_postreqs)
-      .order(created_at: :asc)
+             .includes(:list)
+             .includes(:status)
+             .includes(:hard_prereqs)
+             .includes(:hard_postreqs)
+             .order(created_at: :asc)
   end
 
   def show

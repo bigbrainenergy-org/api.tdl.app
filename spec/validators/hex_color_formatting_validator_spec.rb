@@ -67,8 +67,8 @@ RSpec.describe HexColorFormattingValidator do
     [
       'red',
       '3.14',
-      'According to all known laws of aviation, there is no way that a bee '\
-      'should be able to fly. Its wings are too small to get its fat little '\
+      'According to all known laws of aviation, there is no way that a bee ' \
+      'should be able to fly. Its wings are too small to get its fat little ' \
       'body off the ground. The bee, of course, flies anyways.'
     ].each do |invalid_color|
       context invalid_color.to_s do
@@ -90,8 +90,8 @@ RSpec.describe HexColorFormattingValidator do
       '# ff00ff',
       '#12345',
       '#',
-      '#According to all known laws of aviation, there is no way that a bee '\
-      'should be able to fly. Its wings are too small to get its fat little '\
+      '#According to all known laws of aviation, there is no way that a bee ' \
+      'should be able to fly. Its wings are too small to get its fat little ' \
       'body off the ground. The bee, of course, flies anyways.'
     ].each do |invalid_color|
       context invalid_color.to_s do

@@ -7,6 +7,5 @@ FactoryBot.define do
     notes { [Faker::Lorem.paragraphs, nil].sample }
     completed { [true, false].sample }
     delegated { [true, false].sample }
-    
   end
 end

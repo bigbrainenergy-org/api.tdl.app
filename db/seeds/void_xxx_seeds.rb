@@ -1,5 +1,3 @@
-
-
 void_xxx = User.create!(
   username:             'void_xxx',
   given_name:           'Kurt',
@@ -9,7 +7,7 @@ void_xxx = User.create!(
   terms_and_conditions: Time.current
 )
 
-void_list = List.create!( title: 'default list', user: void_xxx)
+void_list = List.create!(title: 'default list', user: void_xxx)
 void_xxx.update!(default_list: void_list)
 
 # awesome_user = User.create!(
@@ -21,8 +19,8 @@ void_xxx.update!(default_list: void_list)
 #   terms_and_conditions: DateTime.new(1970, 1, 2, 1)
 # )
 
-# awesome_list = List.create!( title: 'wow cool list', user: awesome_user )
-# awesome_user.update!( default_list: awesome_list )
+# awesome_list = List.create!(title: 'wow cool list', user: awesome_user)
+# awesome_user.update!(default_list: awesome_list)
 
 # TODO: Do some seeds
 
@@ -43,9 +41,11 @@ void_xxx.update!(default_list: void_list)
 # rule_count.times do |n|
 #   puts "Creating rule #{n + 1}" if ((n + 1) % print_interval).zero?
 #   loop do
-#     random_tasks = Task.uncached { Task.where(list: void_list).order('RANDOM()').first(2) }
+#     random_tasks = Task.uncached do
+#       Task.where(list: void_list).order('RANDOM()').first(2)
+#     end
 #     rule = TaskHardRequisite.new(
-#       pre: random_tasks.first,
+#       pre:  random_tasks.first,
 #       post: random_tasks.second
 #     )
 
@@ -64,6 +64,5 @@ void_xxx.update!(default_list: void_list)
 #     end
 #   end
 # end
-
 
 # puts "Wow we have a list. #{void_list}"

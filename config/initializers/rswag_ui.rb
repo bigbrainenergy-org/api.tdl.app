@@ -10,7 +10,7 @@ Rswag::Ui.configure do |config|
   # then the list below should correspond to the relative paths for those
   # endpoints
 
-  config.swagger_endpoint '/docs/v0/tdl.yml', 'API V0 Docs'
+  config.openapi_endpoint '/docs/v0/tdl.yml', 'API V0 Docs'
 
   # Add Basic Auth in case your API is private
   # config.basic_auth_enabled = true

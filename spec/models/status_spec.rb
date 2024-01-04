@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Status do
-  subject(:record) { build :status }
+  subject(:record) { build(:status) }
 
   it 'has valid factory' do
     expect(record).to be_valid
@@ -30,7 +30,7 @@ RSpec.describe Status do
 
       context 'when color value is empty string' do
         subject(:color) do
-          status = build :status, color: ''
+          status = build(:status, color: '')
           status.randomize_color!
           status.color
         end
@@ -40,7 +40,7 @@ RSpec.describe Status do
 
       context 'when color value is nil' do
         subject(:color) do
-          status = build :status, color: nil
+          status = build(:status, color: nil)
           status.randomize_color!
           status.color
         end
@@ -50,7 +50,7 @@ RSpec.describe Status do
 
       context 'when color value is already set' do
         subject(:color) do
-          status = build :status, color: a_random_color
+          status = build(:status, color: a_random_color)
           status.randomize_color!
           status.color
         end

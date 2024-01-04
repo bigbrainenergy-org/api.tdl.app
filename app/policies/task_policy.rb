@@ -5,6 +5,7 @@ class TaskPolicy < ApplicationPolicy
     end
   end
 
+  # rubocop:disable Metrics/MethodLength
   def permitted_attributes
     [
       :title,
@@ -19,10 +20,11 @@ class TaskPolicy < ApplicationPolicy
       :delegated,
       :deadline_at,
       :task_duration_in_minutes,
-      hard_prereq_ids: [],
-      hard_postreq_ids: []
+      { hard_prereq_ids:  [],
+        hard_postreq_ids: [] }
     ]
   end
+  # rubocop:enable Metrics/MethodLength
 
   def index?
     user.present?

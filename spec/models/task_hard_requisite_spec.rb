@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe TaskHardRequisite do
-  subject(:record) { build :task_hard_requisite }
+  subject(:record) { build(:task_hard_requisite) }
 
   it 'has valid factory' do
     expect(record).to be_valid

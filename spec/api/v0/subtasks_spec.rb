@@ -1,7 +1,8 @@
 require 'swagger_helper'
 
-RSpec.describe 'Lists' do
+RSpec.describe 'Subtasks' do
   let(:user) { create(:user) }
+  let(:list) { create(:list, user: user) }
   let(:user_session) { create(:user_session, user: user) }
   let(:token) do
     # This is dumb and jank, fix it.
@@ -10,17 +11,19 @@ RSpec.describe 'Lists' do
     )
   end
   let(:Authorization) { "Bearer #{token}" }
-  let!(:user_list) { create(:list, user: user) }
-  let!(:other_list) { create(:list) }
+  let!(:user_task) { create(:task, list: list) }
+  let!(:other_task) { create(:task) }
+  let!(:user_subtask) { create(:subtask, task: user_task) }
+  let!(:other_subtask) { create(:subtask, task: other_task) }
 
-  path '/lists' do
-    get 'Get lists' do
-      tags 'Lists'
-      description 'Returns an array of the current user\'s lists.'
+  path '/subtasks' do
+    get 'Get subtasks' do
+      tags 'Subtasks'
+      description 'Returns an array of the current user\'s subtasks.'
       produces 'application/json'
 
       response '200', 'Success' do
-        schema({ '$ref' => '#/components/schemas/ArrayOfLists' })
+        schema({ '$ref' => '#/components/schemas/ArrayOfSubtasks' })
 
         run_test!
       end
@@ -34,19 +37,19 @@ RSpec.describe 'Lists' do
       end
     end
 
-    post 'Create new list' do
-      tags 'Lists'
-      description 'Create a new list for the current user.'
+    post 'Create new task' do
+      tags 'Subtasks'
+      description 'Create a new subtask for the current user.'
       produces 'application/json'
       consumes 'application/json'
-      parameter name: :list, in: :body, schema: {
-        '$ref' => '#/components/schemas/List'
+      parameter name: :subtask, in: :body, schema: {
+        '$ref' => '#/components/schemas/Subtask'
       }, required: true
 
-      let(:list) { { title: Faker::String.random, user: user } }
+      let(:subtask) { { title: Faker::String.random, task_id: user_task.id } }
 
-      response '200', 'Successfully created new list' do
-        schema({ '$ref' => '#/components/schemas/List' })
+      response '200', 'Successfully created new subtask' do
+        schema({ '$ref' => '#/components/schemas/Subtask' })
 
         run_test!
       end
@@ -54,7 +57,7 @@ RSpec.describe 'Lists' do
       response '400', 'Missing parameters' do
         schema({ '$ref' => '#/components/schemas/Error' })
 
-        let(:list) { nil }
+        let(:subtask) { nil }
 
         run_test!
       end
@@ -70,25 +73,27 @@ RSpec.describe 'Lists' do
       response '422', 'The changes requested could not be processed' do
         schema({ '$ref' => '#/components/schemas/Error' })
 
-        let(:list) { { title: nil, notes: '1337 Notes' } }
+        let(:subtask) do
+          { title: nil, notes: '1337 Notes', task_id: user_task.id }
+        end
 
         run_test!
       end
     end
   end
 
-  path '/lists/{id}' do
+  path '/subtasks/{id}' do
     parameter name: :id, in: :path, type: :string
 
-    let(:id) { user_list.id }
+    let(:id) { user_subtask.id }
 
-    get 'Show list' do
-      tags 'Lists'
-      description 'Returns the information for a specific list.'
+    get 'Show subtask' do
+      tags 'Subtasks'
+      description 'Returns the information for a specific subtask.'
       produces 'application/json'
 
       response '200', 'Success' do
-        schema({ '$ref' => '#/components/schemas/List' })
+        schema({ '$ref' => '#/components/schemas/Subtask' })
 
         run_test!
       end
@@ -104,7 +109,7 @@ RSpec.describe 'Lists' do
       response '403', 'You don\'t have permission to do that' do
         schema({ '$ref' => '#/components/schemas/Error' })
 
-        let(:id) { other_list.id }
+        let(:id) { other_subtask.id }
 
         run_test!
       end
@@ -118,15 +123,16 @@ RSpec.describe 'Lists' do
       end
     end
 
-    patch 'Update list' do
-      tags 'Lists'
-      description 'Update an existing list.'
+    patch 'Update subtask' do
+      tags 'Subtasks'
+      description 'Update an existing task.'
 
-      parameter name: :list, in: :body, schema: {
-        '$ref' => '#/components/schemas/List'
+      parameter name: :subtask, in: :body, schema: {
+        '$ref' => '#/components/schemas/Subtask'
       }
       consumes 'application/json'
-      let(:list) { { title: Faker::String.random } }
+
+      let(:subtask) { { title: Faker::String.random, task_id: user_task.id } }
 
       response '200', 'Success' do
         run_test!
@@ -135,7 +141,7 @@ RSpec.describe 'Lists' do
       response '400', 'Missing parameters' do
         schema({ '$ref' => '#/components/schemas/Error' })
 
-        let(:list) { nil }
+        let(:subtask) { nil }
 
         run_test!
       end
@@ -151,7 +157,7 @@ RSpec.describe 'Lists' do
       response '403', 'Not authorized' do
         schema({ '$ref' => '#/components/schemas/Error' })
 
-        let(:id) { other_list.id }
+        let(:id) { other_subtask.id }
 
         run_test!
       end
@@ -164,18 +170,18 @@ RSpec.describe 'Lists' do
         run_test!
       end
 
-      response '422', 'Failed to process list' do
+      response '422', 'Failed to process subtask' do
         schema({ '$ref' => '#/components/schemas/Error' })
 
-        let(:list) { { title: nil, notes: '1337 Notes' } }
+        let(:subtask) { { title: nil, notes: '1337 Notes' } }
 
         run_test!
       end
     end
 
-    delete 'Destroy list' do
-      tags 'Lists'
-      description 'Destroy a list.'
+    delete 'Destroy subtask' do
+      tags 'Subtasks'
+      description 'Destroy a subtask.'
       produces 'application/json'
 
       response '200', 'Success' do
@@ -195,7 +201,7 @@ RSpec.describe 'Lists' do
       response '403', 'You don\'t have permission to do that' do
         schema({ '$ref' => '#/components/schemas/Error' })
 
-        let(:id) { other_list.id }
+        let(:id) { other_subtask.id }
 
         run_test!
       end
