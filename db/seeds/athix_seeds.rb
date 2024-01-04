@@ -24,7 +24,8 @@ def random_inbox_item_title
     "Plan a vacation to #{
       [Faker::Space.star, Faker::Address.country].sample
     }",
-    "#{Faker::Company.catch_phrase} to #{Faker::Company.bs} for maximum #{Faker::Company.buzzword} value",
+    "#{Faker::Company.catch_phrase} to #{Faker::Company.bs} for maximum " \
+    "#{Faker::Company.buzzword} value",
     "Call #{Faker::Name.name} about the #{Faker::Space.launch_vehicle} mission",
     "Check out the #{Faker::Science.tool}"
   ].sample
@@ -76,6 +77,7 @@ def populate_next_actions(project)
 end
 
 # Recursive generation goes brrr
+# rubocop:disable Metrics/MethodLength
 def populate_subprojects(superproject, nesting = 0)
   return if nesting >= 3
 
@@ -89,9 +91,13 @@ def populate_subprojects(superproject, nesting = 0)
         title: "#{superproject.title} - #{n}",
         notes: random_project_notes
       )
+    # rubocop:disable Lint/UselessAssignment
     rescue StandardError => e
+      # rubocop:disable Lint/Debugger
       byebug
+      # rubocop:enable Lint/Debugger
     end
+    # rubocop:enable Lint/UselessAssignment
 
     ProjectNesting.create!(
       superproject: superproject,
@@ -102,6 +108,7 @@ def populate_subprojects(superproject, nesting = 0)
     populate_subprojects(subproject, nesting + 1)
   end
 end
+# rubocop:enable Metrics/MethodLength
 
 #################
 ## Inbox Items ##

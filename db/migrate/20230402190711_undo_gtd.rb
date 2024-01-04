@@ -1,4 +1,5 @@
 class UndoGtd < ActiveRecord::Migration[7.0]
+  # rubocop:disable Rails/BulkChangeTable
   def up
     create_table :lists do |t|
       t.references :user, null: false, foreign_key: true
@@ -29,7 +30,7 @@ class UndoGtd < ActiveRecord::Migration[7.0]
     rename_table :next_actions, :tasks
     add_reference :tasks, :list, null: false
     add_reference :tasks, :status, null: false
-    add_column :tasks, :delegated, :boolean
+    add_column :tasks, :delegated, :boolean, null: false, default: false
     add_column :tasks, :status_last_changed_at, :datetime
     add_column :tasks, :deadline_at, :datetime
     add_column :tasks, :task_duration_in_minutes, :integer
@@ -40,6 +41,7 @@ class UndoGtd < ActiveRecord::Migration[7.0]
     drop_table :project_relationships
     drop_table :projects
   end
+  # rubocop:enable Rails/BulkChangeTable
 
   def down
     raise ActiveRecord::IrreversibleMigration,

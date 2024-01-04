@@ -6,7 +6,8 @@ RSpec.describe 'Authentication' do
   path '/login' do
     post 'Creates a session token' do
       tags 'Authentication'
-      description 'Takes login credentials, and returns a JWT session token if successful.'
+      description 'Takes login credentials, and returns a JWT session token ' \
+                  'if successful.'
       consumes 'application/json'
       produces 'application/json'
       parameter name: :login, in: :body, schema: {
@@ -75,7 +76,8 @@ RSpec.describe 'Authentication' do
   path '/logout' do
     delete 'Destroys a session token' do
       tags 'Authentication'
-      description 'Logs out your current session by revoking the JWT token server-side.'
+      description 'Logs out your current session by revoking the JWT token ' \
+                  'server-side.'
       produces 'application/json'
 
       response '200', 'Logged out successfully' do

@@ -10,6 +10,9 @@ inherit_mode:
   merge:
     - Exclude
 
+require:
+  - rubocop-factory_bot
+
 AllCops:
   TargetRubyVersion: 3.0.1
 
@@ -50,7 +53,7 @@ Style/Documentation:
 
 # TODO: Is there a good way to break up specs without it getting unwieldy?
 Metrics/BlockLength:
-  IgnoredMethods:
+  AllowedMethods:
     - 'describe'
     - 'context'
     - 'configure'
@@ -59,5 +62,19 @@ Metrics/BlockLength:
     - 'post'
 
 Layout/LineLength:
-  IgnoredPatterns: ['it { should', 'I18n.t']
+  AllowedPatterns: ['it { should', 'I18n.t']
   Max: 80
+
+# This doesn't play nicely with single line specs, and doesn't matter enough to
+# enforce, imo.
+RSpec/PendingWithoutReason:
+  Enabled: false
+
+I18n/RailsI18n/DecorateString:
+  Exclude:
+    - 'db/seeds.rb'
+
+# This is triggering on associations, and setting a default association of id 1
+# seems really stupid (and potentially dangerous). I'd rather just disable this.
+Rails/NotNullColumn:
+  Enabled: false

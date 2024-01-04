@@ -11,6 +11,8 @@ class ApplicationRecord < ActiveRecord::Base
 
   # TODO: Code smell indicates this can be extracted into a new object.
   # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Metrics/ParameterLists
+  # rubocop:disable I18n/RailsI18n/DecorateString
   def recursive_relationship_find(klass:, join_table:, join_type:,
     starting_id:, finding:, klass_table: nil)
     # Allow overwriting table name if it doesn't follow convention
@@ -44,4 +46,6 @@ class ApplicationRecord < ActiveRecord::Base
     klass.find_by_sql(sql)
   end
   # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Metrics/ParameterLists
+  # rubocop:enable I18n/RailsI18n/DecorateString
 end

@@ -1,4 +1,5 @@
 class RedundantRelationshipValidator < RelationshipValidator
+  # rubocop:disable Metrics/MethodLength
   def validate(record)
     return unless relationship_persisted?(record)
 
@@ -20,4 +21,5 @@ class RedundantRelationshipValidator < RelationshipValidator
       relationship: @second
     )
   end
+  # rubocop:enable Metrics/MethodLength
 end

@@ -47,8 +47,6 @@ RSpec.describe 'Tasks' do
       let(:task) { { title: Faker::String.random, list_id: list.id } }
 
       response '200', 'Successfully created new task' do
-        # pending 'can\'t seem to get Swagger tests to run right. Refactor to response/request tests'
-
         schema({ '$ref' => '#/components/schemas/Task' })
 
         run_test!
@@ -63,7 +61,6 @@ RSpec.describe 'Tasks' do
       end
 
       response '401', 'Access token is missing or invalid' do
-        # pending 'can\'t seem to get Swagger tests to run right. Refactor to response/request tests'
         schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:Authorization) { nil }

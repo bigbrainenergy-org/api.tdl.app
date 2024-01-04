@@ -28,7 +28,8 @@ Rails.application.routes.draw do
     patch 'tasks/bulk-each' => 'tasks#bulk_each_different_values'
 
     # patch 'waiting-fors/bulk-all' => 'waiting_fors#bulk_all_same_vales'
-    # patch 'waiting-fors/bulk-each' => 'waiting_fors#bulk_each_different_values'
+    # patch 'waiting-fors/bulk-each' =>
+    #   'waiting_fors#bulk_each_different_values'
 
     # patch 'projects/bulk-all' => 'projects#bulk_all_same_vales'
     # patch 'projects/bulk-each' => 'projects#bulk_each_different_values'

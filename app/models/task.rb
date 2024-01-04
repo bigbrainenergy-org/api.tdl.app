@@ -27,7 +27,8 @@ class Task < ApplicationRecord
   has_one :user,
     through: :list
 
-  has_many :subtasks
+  has_many :subtasks,
+    dependent: :destroy
 
   validates :title, :order,
     presence: true

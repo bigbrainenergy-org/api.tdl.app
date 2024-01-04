@@ -1,4 +1,5 @@
 class AcyclicRelationshipValidator < RelationshipValidator
+  # rubocop:disable Metrics/MethodLength
   def validate(record)
     return unless relationship_persisted?(record)
     # pre is already a post of post
@@ -15,4 +16,5 @@ class AcyclicRelationshipValidator < RelationshipValidator
       )
     )
   end
+  # rubocop:enable Metrics/MethodLength
 end

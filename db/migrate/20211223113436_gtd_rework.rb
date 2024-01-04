@@ -157,11 +157,9 @@ class GtdRework < ActiveRecord::Migration[6.1]
     ## Migrate Data ##
     ##################
 
-    User.all.find_each do |user|
-      user.prepopulate_contexts!
-    end
+    User.find_each(&:prepopulate_contexts!)
 
-    Task.all.includes(
+    Task.includes(
       :user,
       :list,
       :tags,

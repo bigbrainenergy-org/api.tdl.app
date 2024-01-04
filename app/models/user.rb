@@ -13,12 +13,12 @@ class User < ApplicationRecord
     { title: 'Errands' },
     { title: 'Agenda' },
     { title: 'Inbox' }
-  ]
+  ].freeze
 
   DEFAULT_STATUSES = [
     { title: 'TODO' },
     { title: 'Done' }
-  ]
+  ].freeze
 
   ##################
   ## Associations ##

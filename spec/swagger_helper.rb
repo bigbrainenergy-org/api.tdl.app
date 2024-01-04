@@ -16,7 +16,7 @@ RSpec.configure do |config|
   # describe '...', swagger_doc: 'v2/swagger.json'
   config.openapi_specs = {
     'v0/tdl.yml' => ActiveSupport::HashWithIndifferentAccess.new(
-      YAML.safe_load(File.read(Rails.root.join('spec/support/api/tdl.yml')))
+      YAML.safe_load(Rails.root.join('spec/support/api/tdl.yml').read)
     )
   }
 

@@ -20,7 +20,7 @@ RSpec.describe AccessRequest do
 
     context 'with good version' do
       %w[alpha beta release].each do |version|
-        context "\"#{version}\"" do
+        context "when \"#{version}\"" do
           subject(:record) { build(:access_request, version: version) }
 
           it { should be_valid }
@@ -36,7 +36,7 @@ RSpec.describe AccessRequest do
 
     context 'with bad version' do
       %w[fake rELeAsE Beta].each do |version|
-        context "\"#{version}\"" do
+        context "when \"#{version}\"" do
           subject(:record) { build(:access_request, version: version) }
 
           it 'raises an ArgumentError' do

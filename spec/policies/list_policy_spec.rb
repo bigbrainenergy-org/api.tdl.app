@@ -24,11 +24,6 @@ RSpec.describe ListPolicy do
     end
   end
 
-  describe 'permitted_attributes' do
-    # TODO: What's the ideal way to test permitted attributes?
-    # For reference, see: https://github.com/chrisalley/pundit-matchers#testing-the-mass-assignment-of-attributes-for-particular-actions
-  end
-
   describe 'actions' do
     subject { described_class.new(user, list) }
 
