@@ -19,8 +19,8 @@ class TaskPolicy < ApplicationPolicy
       :delegated,
       :deadline_at,
       :task_duration_in_minutes,
-      hard_prereq_ids: [],
-      hard_postreq_ids: []
+      { hard_prereq_ids:  [],
+        hard_postreq_ids: [] }
     ]
   end
 

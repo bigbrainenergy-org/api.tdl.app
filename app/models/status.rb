@@ -4,11 +4,11 @@ class Status < ApplicationRecord
   has_many :tasks, dependent: :restrict_with_exception
 
   validates :title,
-    presence: true,
+    presence:   true,
     uniqueness: { case_sensitive: false, scope: :user_id }
 
   validates :icon,
-    presence: true,
+    presence:        true,
     icon_formatting: true
 
   validates :color,

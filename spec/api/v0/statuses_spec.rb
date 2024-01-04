@@ -1,8 +1,8 @@
 require 'swagger_helper'
 
 RSpec.describe 'Statuses' do
-  let(:user) { create :user }
-  let(:user_session) { create :user_session, user: user }
+  let(:user) { create(:user) }
+  let(:user_session) { create(:user_session, user: user) }
   let(:token) do
     # This is dumb and jank, fix it.
     UserSessionsController.new.issue_jwt_token(
@@ -10,8 +10,8 @@ RSpec.describe 'Statuses' do
     )
   end
   let(:Authorization) { "Bearer #{token}" }
-  let!(:user_status) { create :status, user: user }
-  let!(:other_status) { create :status }
+  let!(:user_status) { create(:status, user: user) }
+  let!(:other_status) { create(:status) }
 
   path '/statuses' do
     get 'Get statuses' do
@@ -20,13 +20,13 @@ RSpec.describe 'Statuses' do
       produces 'application/json'
 
       response '200', 'Success' do
-        schema({ '$ref' => '#/components/schemas/ArrayOfStatuses'})
+        schema({ '$ref' => '#/components/schemas/ArrayOfStatuses' })
 
         run_test!
       end
 
       response '401', 'Access token is missing or invalid' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:Authorization) { nil }
 
@@ -46,13 +46,13 @@ RSpec.describe 'Statuses' do
       let(:status) { { title: Faker::String.random, user: user } }
 
       response '200', 'Successfully created new status' do
-        schema({ '$ref' => '#/components/schemas/Status'})
+        schema({ '$ref' => '#/components/schemas/Status' })
 
         run_test!
       end
 
       response '400', 'Missing parameters' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:status) { nil }
 
@@ -60,7 +60,7 @@ RSpec.describe 'Statuses' do
       end
 
       response '401', 'Access token is missing or invalid' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:Authorization) { nil }
 
@@ -68,7 +68,7 @@ RSpec.describe 'Statuses' do
       end
 
       response '422', 'The changes requested could not be processed' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:status) { { title: nil, notes: '1337 Notes' } }
 
@@ -88,13 +88,13 @@ RSpec.describe 'Statuses' do
       produces 'application/json'
 
       response '200', 'Success' do
-        schema({ '$ref' => '#/components/schemas/Status'})
+        schema({ '$ref' => '#/components/schemas/Status' })
 
         run_test!
       end
 
       response '401', 'Access token is missing or invalid' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:Authorization) { nil }
 
@@ -102,7 +102,7 @@ RSpec.describe 'Statuses' do
       end
 
       response '403', 'You don\'t have permission to do that' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:id) { other_status.id }
 
@@ -110,7 +110,7 @@ RSpec.describe 'Statuses' do
       end
 
       response '404', 'The specified resource was not found' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:id) { 1337 }
 
@@ -133,7 +133,7 @@ RSpec.describe 'Statuses' do
       end
 
       response '400', 'Missing parameters' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:status) { nil }
 
@@ -141,7 +141,7 @@ RSpec.describe 'Statuses' do
       end
 
       response '401', 'Not authenticated' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:Authorization) { nil }
 
@@ -149,7 +149,7 @@ RSpec.describe 'Statuses' do
       end
 
       response '403', 'Not authorized' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:id) { other_status.id }
 
@@ -157,7 +157,7 @@ RSpec.describe 'Statuses' do
       end
 
       response '404', 'Not Found' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:id) { 1337 }
 
@@ -165,7 +165,7 @@ RSpec.describe 'Statuses' do
       end
 
       response '422', 'Failed to process status' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:status) { { title: nil, notes: '1337 Notes' } }
 
@@ -179,13 +179,13 @@ RSpec.describe 'Statuses' do
       produces 'application/json'
 
       response '200', 'Success' do
-        # TODO schema for `head :ok`?
+        # TODO: schema for `head :ok`?
 
         run_test!
       end
 
       response '401', 'Access token is missing or invalid' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:Authorization) { nil }
 
@@ -193,7 +193,7 @@ RSpec.describe 'Statuses' do
       end
 
       response '403', 'You don\'t have permission to do that' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:id) { other_status.id }
 
@@ -201,7 +201,7 @@ RSpec.describe 'Statuses' do
       end
 
       response '404', 'The specified resource was not found' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:id) { 1337 }
 

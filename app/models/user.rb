@@ -26,9 +26,8 @@ class User < ApplicationRecord
 
   belongs_to :default_list,
     class_name: 'List',
-    foreign_key: :default_list_id,
     inverse_of: :user_who_defaulted_this_list,
-    optional: true
+    optional:   true
 
   has_many :devices,       dependent: :destroy
   has_many :user_sessions, dependent: :destroy

@@ -1,7 +1,7 @@
 require 'swagger_helper'
 
 RSpec.describe 'Authentication' do
-  let(:user) { create :user, password: 'correcthorsebatterystaple' }
+  let(:user) { create(:user, password: 'correcthorsebatterystaple') }
 
   path '/login' do
     post 'Creates a session token' do
@@ -15,7 +15,7 @@ RSpec.describe 'Authentication' do
       security []
 
       response '200', 'Logged in successfully' do
-        schema({ '$ref' => '#/components/schemas/SessionToken'})
+        schema({ '$ref' => '#/components/schemas/SessionToken' })
 
         let(:login) do
           { username: user.username, password: 'correcthorsebatterystaple' }
@@ -25,7 +25,7 @@ RSpec.describe 'Authentication' do
       end
 
       response '400', 'Invalid params' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:login) { nil }
 
@@ -33,7 +33,7 @@ RSpec.describe 'Authentication' do
       end
 
       response '400', 'Failed to login' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:login) { { username: user.username, password: 'wrong' } }
 
@@ -50,7 +50,7 @@ RSpec.describe 'Authentication' do
       security []
 
       response '501', 'Not implemented yet' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         run_test!
       end
@@ -65,7 +65,7 @@ RSpec.describe 'Authentication' do
       security []
 
       response '501', 'Not implemented yet' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         run_test!
       end
@@ -79,7 +79,7 @@ RSpec.describe 'Authentication' do
       produces 'application/json'
 
       response '200', 'Logged out successfully' do
-        let(:user_session) { create :user_session, user: user }
+        let(:user_session) { create(:user_session, user: user) }
         let(:token) do
           # This is dumb and jank, fix it.
           UserSessionsController.new.issue_jwt_token(
@@ -92,7 +92,7 @@ RSpec.describe 'Authentication' do
       end
 
       response '401', 'Not authenticated' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:Authorization) { nil }
 

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe User do
-  subject(:record) { build :user }
+  subject(:record) { build(:user) }
 
   it 'has valid factory' do
     expect(record).to be_valid
@@ -44,7 +44,7 @@ RSpec.describe User do
     describe 'bypass_password?' do
       context 'when bypass_password is true' do
         subject(:bypass_password?) do
-          user = build :user
+          user = build(:user)
           user.bypass_password = true
           user.bypass_password?
         end
@@ -54,7 +54,7 @@ RSpec.describe User do
 
       context 'when bypass_password is an arbitrary string' do
         subject(:bypass_password?) do
-          user = build :user
+          user = build(:user)
           user.bypass_password = Faker::String.random
           user.bypass_password?
         end
@@ -64,7 +64,7 @@ RSpec.describe User do
 
       context 'when bypass_password is false' do
         subject(:bypass_password?) do
-          user = build :user
+          user = build(:user)
           user.bypass_password = false
           user.bypass_password?
         end
@@ -74,7 +74,7 @@ RSpec.describe User do
 
       context 'when bypass_password is nil' do
         subject(:bypass_password?) do
-          user = build :user
+          user = build(:user)
           user.bypass_password = nil
           user.bypass_password?
         end

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe List do
-  subject(:record) { build :list }
+  subject(:record) { build(:list) }
 
   it 'has valid factory' do
     expect(record).to be_valid
@@ -29,7 +29,7 @@ RSpec.describe List do
 
       context 'when color value is empty string' do
         subject(:color) do
-          list = build :list, color: ''
+          list = build(:list, color: '')
           list.randomize_color!
           list.color
         end
@@ -39,7 +39,7 @@ RSpec.describe List do
 
       context 'when color value is nil' do
         subject(:color) do
-          list = build :list, color: nil
+          list = build(:list, color: nil)
           list.randomize_color!
           list.color
         end
@@ -49,7 +49,7 @@ RSpec.describe List do
 
       context 'when color value is already set' do
         subject(:color) do
-          list = build :list, color: a_random_color
+          list = build(:list, color: a_random_color)
           list.randomize_color!
           list.color
         end

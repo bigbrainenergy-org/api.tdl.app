@@ -2,7 +2,9 @@ class AcyclicRelationshipValidator < RelationshipValidator
   def validate(record)
     return unless relationship_persisted?(record)
     # pre is already a post of post
-    return unless record.try(@first).try(@all_firsts).include?(record.try(@second))
+    unless record.try(@first).try(@all_firsts).include?(record.try(@second))
+      return
+    end
 
     record.errors.add(
       :base,

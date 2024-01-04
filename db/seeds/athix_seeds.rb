@@ -8,7 +8,7 @@ athix = User.create!(
   terms_and_conditions: Time.current
 )
 
-#athix.prepopulate_contexts!
+# athix.prepopulate_contexts!
 
 def random_notes
   return nil if [true, false].sample
@@ -65,12 +65,12 @@ end
 def populate_next_actions(project)
   next_actions_count = [0, rand(1..3), rand(4..7), 69].sample
 
-  next_actions_count.times do |n|
+  next_actions_count.times do |_n|
     NextAction.create!(
-      user: project.user,
+      user:    project.user,
       project: project,
-      title: random_next_action_title,
-      notes: random_next_action_notes
+      title:   random_next_action_title,
+      notes:   random_next_action_notes
     )
   end
 end
@@ -78,23 +78,24 @@ end
 # Recursive generation goes brrr
 def populate_subprojects(superproject, nesting = 0)
   return if nesting >= 3
+
   # There must be at least one zero, otherwise this will run indefinitely
   subproject_count = [0, 0, 0, 1, 2, 3].sample
 
   subproject_count.times do |n|
     begin
-    subproject = Project.create!(
-      user: superproject.user,
-      title: "#{superproject.title} - #{n}",
-      notes: random_project_notes
-    )
+      subproject = Project.create!(
+        user:  superproject.user,
+        title: "#{superproject.title} - #{n}",
+        notes: random_project_notes
+      )
     rescue StandardError => e
       byebug
     end
 
     ProjectNesting.create!(
       superproject: superproject,
-      subproject: subproject
+      subproject:   subproject
     )
 
     populate_next_actions(subproject)
@@ -108,7 +109,7 @@ end
 
 25.times do |n|
   InboxItem.create!(
-    user: athix,
+    user:  athix,
     title: "#{random_inbox_item_title} - #{n}",
     notes: random_inbox_item_notes
   )
@@ -120,7 +121,7 @@ end
 
 20.times do |n|
   NextAction.create!(
-    user: athix,
+    user:  athix,
     title: "#{random_next_action_title} - #{n}",
     notes: random_next_action_notes
   )
@@ -132,9 +133,9 @@ end
 
 15.times do |n|
   WaitingFor.create!(
-    user: athix,
-    title: "#{random_waiting_for_title} - #{n}",
-    notes: random_waiting_for_notes,
+    user:         athix,
+    title:        "#{random_waiting_for_title} - #{n}",
+    notes:        random_waiting_for_notes,
     delegated_to: Faker::Name.name
   )
 end
@@ -145,7 +146,7 @@ end
 
 10.times do |n|
   superproject = Project.create!(
-    user: athix,
+    user:  athix,
     title: "#{random_project_title} - #{n}",
     notes: random_project_notes
   )

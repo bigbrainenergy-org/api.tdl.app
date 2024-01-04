@@ -5,8 +5,8 @@ class StatusesController < ApplicationController
     authorize Status
 
     @statuses = policy_scope(Status)
-      .includes(:tasks)
-      .order(order: :asc)
+                .includes(:tasks)
+                .order(order: :asc)
   end
 
   def show

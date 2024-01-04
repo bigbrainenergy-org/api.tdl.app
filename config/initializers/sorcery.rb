@@ -9,7 +9,7 @@ Sorcery.configure do |config|
   config.load_plugin(:brute_force_protection)
   config.load_plugin(:jwt, {
     controller: {
-      jwt_secret: ENV['SECRET_KEY_BASE']
+      jwt_secret: ENV.fetch('SECRET_KEY_BASE', nil)
     }
   })
 end

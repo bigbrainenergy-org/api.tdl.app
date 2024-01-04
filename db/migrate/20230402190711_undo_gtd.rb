@@ -43,7 +43,7 @@ class UndoGtd < ActiveRecord::Migration[7.0]
 
   def down
     raise ActiveRecord::IrreversibleMigration,
-      'Implementing the inverse of this isn\'t worth the effort at time of '\
+      'Implementing the inverse of this isn\'t worth the effort at time of ' \
       'writing. Update the down and run again if needed.'
   end
 end

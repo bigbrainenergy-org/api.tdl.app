@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Subtask do
-  subject(:record) { build :subtask }
+  subject(:record) { build(:subtask) }
 
   it 'has valid factory' do
     expect(record).to be_valid

@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe AccessRequest do
-  subject(:record) { build :access_request }
+  subject(:record) { build(:access_request) }
 
   it 'has valid factory' do
     expect(record).to be_valid
@@ -21,7 +21,7 @@ RSpec.describe AccessRequest do
     context 'with good version' do
       %w[alpha beta release].each do |version|
         context "\"#{version}\"" do
-          subject(:record) { build :access_request, version: version }
+          subject(:record) { build(:access_request, version: version) }
 
           it { should be_valid }
         end
@@ -29,7 +29,7 @@ RSpec.describe AccessRequest do
     end
 
     context 'with no version' do
-      subject(:record) { build :access_request, version: nil }
+      subject(:record) { build(:access_request, version: nil) }
 
       it { should be_invalid }
     end
@@ -37,7 +37,7 @@ RSpec.describe AccessRequest do
     context 'with bad version' do
       %w[fake rELeAsE Beta].each do |version|
         context "\"#{version}\"" do
-          subject(:record) { build :access_request, version: version }
+          subject(:record) { build(:access_request, version: version) }
 
           it 'raises an ArgumentError' do
             expect { record }.to raise_error ArgumentError

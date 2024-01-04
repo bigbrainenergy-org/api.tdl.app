@@ -1,9 +1,9 @@
 require 'swagger_helper'
 
 RSpec.describe 'Subtasks' do
-  let(:user) { create :user }
-  let(:list) { create :list, user: user }
-  let(:user_session) { create :user_session, user: user }
+  let(:user) { create(:user) }
+  let(:list) { create(:list, user: user) }
+  let(:user_session) { create(:user_session, user: user) }
   let(:token) do
     # This is dumb and jank, fix it.
     UserSessionsController.new.issue_jwt_token(
@@ -11,10 +11,10 @@ RSpec.describe 'Subtasks' do
     )
   end
   let(:Authorization) { "Bearer #{token}" }
-  let!(:user_task) { create :task, list: list }
-  let!(:other_task) { create :task }
-  let!(:user_subtask) { create :subtask, task: user_task }
-  let!(:other_subtask) { create :subtask, task: other_task }
+  let!(:user_task) { create(:task, list: list) }
+  let!(:other_task) { create(:task) }
+  let!(:user_subtask) { create(:subtask, task: user_task) }
+  let!(:other_subtask) { create(:subtask, task: other_task) }
 
   path '/subtasks' do
     get 'Get subtasks' do
@@ -23,13 +23,13 @@ RSpec.describe 'Subtasks' do
       produces 'application/json'
 
       response '200', 'Success' do
-        schema({ '$ref' => '#/components/schemas/ArrayOfSubtasks'})
+        schema({ '$ref' => '#/components/schemas/ArrayOfSubtasks' })
 
         run_test!
       end
 
       response '401', 'Access token is missing or invalid' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:Authorization) { nil }
 
@@ -49,13 +49,13 @@ RSpec.describe 'Subtasks' do
       let(:subtask) { { title: Faker::String.random, task_id: user_task.id } }
 
       response '200', 'Successfully created new subtask' do
-        schema({ '$ref' => '#/components/schemas/Subtask'})
+        schema({ '$ref' => '#/components/schemas/Subtask' })
 
         run_test!
       end
 
       response '400', 'Missing parameters' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:subtask) { nil }
 
@@ -63,7 +63,7 @@ RSpec.describe 'Subtasks' do
       end
 
       response '401', 'Access token is missing or invalid' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:Authorization) { nil }
 
@@ -71,9 +71,11 @@ RSpec.describe 'Subtasks' do
       end
 
       response '422', 'The changes requested could not be processed' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
-        let(:subtask) { { title: nil, notes: '1337 Notes', task_id: user_task.id } }
+        let(:subtask) do
+          { title: nil, notes: '1337 Notes', task_id: user_task.id }
+        end
 
         run_test!
       end
@@ -91,13 +93,13 @@ RSpec.describe 'Subtasks' do
       produces 'application/json'
 
       response '200', 'Success' do
-        schema({ '$ref' => '#/components/schemas/Subtask'})
+        schema({ '$ref' => '#/components/schemas/Subtask' })
 
         run_test!
       end
 
       response '401', 'Access token is missing or invalid' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:Authorization) { nil }
 
@@ -105,7 +107,7 @@ RSpec.describe 'Subtasks' do
       end
 
       response '403', 'You don\'t have permission to do that' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:id) { other_subtask.id }
 
@@ -113,7 +115,7 @@ RSpec.describe 'Subtasks' do
       end
 
       response '404', 'The specified resource was not found' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:id) { 1337 }
 
@@ -137,7 +139,7 @@ RSpec.describe 'Subtasks' do
       end
 
       response '400', 'Missing parameters' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:subtask) { nil }
 
@@ -145,7 +147,7 @@ RSpec.describe 'Subtasks' do
       end
 
       response '401', 'Not authenticated' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:Authorization) { nil }
 
@@ -153,7 +155,7 @@ RSpec.describe 'Subtasks' do
       end
 
       response '403', 'Not authorized' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:id) { other_subtask.id }
 
@@ -161,7 +163,7 @@ RSpec.describe 'Subtasks' do
       end
 
       response '404', 'Not Found' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:id) { 1337 }
 
@@ -169,7 +171,7 @@ RSpec.describe 'Subtasks' do
       end
 
       response '422', 'Failed to process subtask' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:subtask) { { title: nil, notes: '1337 Notes' } }
 
@@ -183,13 +185,13 @@ RSpec.describe 'Subtasks' do
       produces 'application/json'
 
       response '200', 'Success' do
-        # TODO schema for `head :ok`?
+        # TODO: schema for `head :ok`?
 
         run_test!
       end
 
       response '401', 'Access token is missing or invalid' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:Authorization) { nil }
 
@@ -197,7 +199,7 @@ RSpec.describe 'Subtasks' do
       end
 
       response '403', 'You don\'t have permission to do that' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:id) { other_subtask.id }
 
@@ -205,7 +207,7 @@ RSpec.describe 'Subtasks' do
       end
 
       response '404', 'The specified resource was not found' do
-        schema({ '$ref' => '#/components/schemas/Error'})
+        schema({ '$ref' => '#/components/schemas/Error' })
 
         let(:id) { 1337 }
 
