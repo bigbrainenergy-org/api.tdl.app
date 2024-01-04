@@ -8,7 +8,7 @@ athix = User.create!(
   terms_and_conditions: Time.current
 )
 
-#athix.prepopulate_contexts!
+# athix.prepopulate_contexts!
 
 def random_notes
   return nil if [true, false].sample
@@ -24,7 +24,8 @@ def random_inbox_item_title
     "Plan a vacation to #{
       [Faker::Space.star, Faker::Address.country].sample
     }",
-    "#{Faker::Company.catch_phrase} to #{Faker::Company.bs} for maximum #{Faker::Company.buzzword} value",
+    "#{Faker::Company.catch_phrase} to #{Faker::Company.bs} for maximum " \
+    "#{Faker::Company.buzzword} value",
     "Call #{Faker::Name.name} about the #{Faker::Space.launch_vehicle} mission",
     "Check out the #{Faker::Science.tool}"
   ].sample
@@ -65,42 +66,49 @@ end
 def populate_next_actions(project)
   next_actions_count = [0, rand(1..3), rand(4..7), 69].sample
 
-  next_actions_count.times do |n|
+  next_actions_count.times do |_n|
     NextAction.create!(
-      user: project.user,
+      user:    project.user,
       project: project,
-      title: random_next_action_title,
-      notes: random_next_action_notes
+      title:   random_next_action_title,
+      notes:   random_next_action_notes
     )
   end
 end
 
 # Recursive generation goes brrr
+# rubocop:disable Metrics/MethodLength
 def populate_subprojects(superproject, nesting = 0)
   return if nesting >= 3
+
   # There must be at least one zero, otherwise this will run indefinitely
   subproject_count = [0, 0, 0, 1, 2, 3].sample
 
   subproject_count.times do |n|
     begin
-    subproject = Project.create!(
-      user: superproject.user,
-      title: "#{superproject.title} - #{n}",
-      notes: random_project_notes
-    )
+      subproject = Project.create!(
+        user:  superproject.user,
+        title: "#{superproject.title} - #{n}",
+        notes: random_project_notes
+      )
+    # rubocop:disable Lint/UselessAssignment
     rescue StandardError => e
+      # rubocop:disable Lint/Debugger
       byebug
+      # rubocop:enable Lint/Debugger
     end
+    # rubocop:enable Lint/UselessAssignment
 
     ProjectNesting.create!(
       superproject: superproject,
-      subproject: subproject
+      subproject:   subproject
     )
 
     populate_next_actions(subproject)
     populate_subprojects(subproject, nesting + 1)
   end
 end
+# rubocop:enable Metrics/MethodLength
 
 #################
 ## Inbox Items ##
@@ -108,7 +116,7 @@ end
 
 25.times do |n|
   InboxItem.create!(
-    user: athix,
+    user:  athix,
     title: "#{random_inbox_item_title} - #{n}",
     notes: random_inbox_item_notes
   )
@@ -120,7 +128,7 @@ end
 
 20.times do |n|
   NextAction.create!(
-    user: athix,
+    user:  athix,
     title: "#{random_next_action_title} - #{n}",
     notes: random_next_action_notes
   )
@@ -132,9 +140,9 @@ end
 
 15.times do |n|
   WaitingFor.create!(
-    user: athix,
-    title: "#{random_waiting_for_title} - #{n}",
-    notes: random_waiting_for_notes,
+    user:         athix,
+    title:        "#{random_waiting_for_title} - #{n}",
+    notes:        random_waiting_for_notes,
     delegated_to: Faker::Name.name
   )
 end
@@ -145,7 +153,7 @@ end
 
 10.times do |n|
   superproject = Project.create!(
-    user: athix,
+    user:  athix,
     title: "#{random_project_title} - #{n}",
     notes: random_project_notes
   )

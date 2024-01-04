@@ -6,8 +6,8 @@ RSpec.describe ListPolicy do
       described_class::Scope.new(user, List).resolve
     end
 
-    let(:list) { create :list }
-    let!(:other_list) { create :list }
+    let(:list) { create(:list) }
+    let!(:other_list) { create(:list) }
 
     context 'when a visitor' do
       let(:user) { nil }
@@ -16,25 +16,20 @@ RSpec.describe ListPolicy do
     end
 
     context 'when a user' do
-      let(:user) { create :user }
-      let(:list) { create :list, user: user }
+      let(:user) { create(:user) }
+      let(:list) { create(:list, user: user) }
 
       it { should include(list) }
       it { should_not include(other_list) }
     end
   end
 
-  describe 'permitted_attributes' do
-    # TODO: What's the ideal way to test permitted attributes?
-    # For reference, see: https://github.com/chrisalley/pundit-matchers#testing-the-mass-assignment-of-attributes-for-particular-actions
-  end
-
   describe 'actions' do
     subject { described_class.new(user, list) }
 
     let(:crud_actions) { [:show, :create, :update, :destroy] }
-    let(:user) { create :user }
-    let(:list) { create :list }
+    let(:user) { create(:user) }
+    let(:list) { create(:list) }
 
     context 'when a visitor' do
       let(:user) { nil }
@@ -49,7 +44,7 @@ RSpec.describe ListPolicy do
     end
 
     context 'when the record user' do
-      let(:list) { create :list, user: user }
+      let(:list) { create(:list, user: user) }
 
       it { should permit_action(:index) }
       it { should permit_actions(crud_actions) }

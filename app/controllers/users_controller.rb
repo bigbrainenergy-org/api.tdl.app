@@ -13,6 +13,10 @@ class UsersController < ApplicationController
     render :show
   end
 
+  # FIXME: Complexity too high
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
+  # rubocop:disable Layout/LineLength
   def change_password
     authorize @user
 
@@ -38,6 +42,9 @@ class UsersController < ApplicationController
 
     render :show
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
+  # rubocop:enable Layout/LineLength
 
   private
 

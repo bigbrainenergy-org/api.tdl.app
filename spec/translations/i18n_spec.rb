@@ -10,21 +10,21 @@ RSpec.describe I18n do
 
   it 'does not have missing keys' do
     error_message =
-      "Missing #{missing_keys.leaves.count} i18n keys.\n"\
+      "Missing #{missing_keys.leaves.count} i18n keys.\n" \
       'Run `i18n-tasks missing` to show them.'
     expect(missing_keys).to be_empty, error_message
   end
 
   it 'does not have unused keys' do
     error_message =
-      "#{unused_keys.leaves.count} unused i18n keys.\n"\
+      "#{unused_keys.leaves.count} unused i18n keys.\n" \
       'Run `i18n-tasks unused` to show them.'
     expect(unused_keys).to be_empty, error_message
   end
 
   it 'files are normalized' do
     error_message =
-      "The following files need to be normalized:\n"\
+      "The following files need to be normalized:\n" \
       "#{non_normalized.map { |path| "\t#{path}" }.join("\n")}\n" \
       'Run `i18n-tasks normalize` to automatically fix these.'
     expect(non_normalized).to be_empty, error_message
@@ -32,8 +32,8 @@ RSpec.describe I18n do
 
   it 'does not have inconsistent interpolations' do
     error_message =
-      "#{inconsistent_interpolations.leaves.count} i18n keys have "\
-      "inconsistent interpolations.\n"\
+      "#{inconsistent_interpolations.leaves.count} i18n keys have " \
+      "inconsistent interpolations.\n" \
       'Run `i18n-tasks check-consistent-interpolations` to show them.'
     expect(inconsistent_interpolations).to be_empty, error_message
   end

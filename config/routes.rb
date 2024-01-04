@@ -4,7 +4,7 @@ Rails.application.routes.draw do
   mount Rswag::Ui::Engine  => '/docs'
   mount Rswag::Api::Engine => '/docs'
 
-  root to: redirect('https://web.tdl.app')
+  root to: redirect(Rails.configuration.x.frontend_redirect_url.to_s)
 
   # Default to json for all requests
   defaults format: :json do
@@ -28,7 +28,8 @@ Rails.application.routes.draw do
     patch 'tasks/bulk-each' => 'tasks#bulk_each_different_values'
 
     # patch 'waiting-fors/bulk-all' => 'waiting_fors#bulk_all_same_vales'
-    # patch 'waiting-fors/bulk-each' => 'waiting_fors#bulk_each_different_values'
+    # patch 'waiting-fors/bulk-each' =>
+    #   'waiting_fors#bulk_each_different_values'
 
     # patch 'projects/bulk-all' => 'projects#bulk_all_same_vales'
     # patch 'projects/bulk-each' => 'projects#bulk_each_different_values'
@@ -59,6 +60,7 @@ Rails.application.routes.draw do
     ## Change/Reset Password ##
     ###########################
 
+    # FIXME: This should only be able to change the current user's password
     patch 'users/:user_id/change-password' => 'users#change_password'
 
     ##########
@@ -75,7 +77,7 @@ Rails.application.routes.draw do
     resources :lists
     # resources :waiting_fors
 
-    # TODO: How should this interact API-wise? Nest under next actions?
+    # TODO: How should this interact API-wise? Nest under tasks?
     resources :subtasks
     resources :statuses
 

@@ -32,3 +32,7 @@ Open the repo in Visual Studio Code. If prompted, click "Open Dev Container." Ot
 
 * `RAILS_ENV=test rake rswag`
   * Generates specs from OpenAPI docs
+
+## Troubleshooting
+
+Can't connect to GitHub when fetching dependencies in the devcontainer? Turn off wireguard. (wtf?)

@@ -13,7 +13,6 @@ class SubtasksController < ApplicationController
 
   def create
     @subtask = Subtask.new(permitted_attributes(Subtask))
-    @subtask.user = current_user
 
     authorize @subtask
 

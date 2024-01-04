@@ -47,6 +47,8 @@ module ApiTdlApp
     config.i18n.available_locales = [:en, :ja]
     config.i18n.fallbacks = [:en]
 
+    config.x.frontend_redirect_url = 'https://web.tdl.app'
+
     # Configure rails generators
     config.generators do |g|
       g.test_framework :rspec

@@ -6,7 +6,7 @@ RSpec.describe UserPolicy do
       described_class::Scope.new(current_user, User).resolve
     end
 
-    let!(:other_user) { create :user }
+    let!(:other_user) { create(:user) }
 
     context 'when a visitor' do
       let(:current_user) { nil }
@@ -15,7 +15,7 @@ RSpec.describe UserPolicy do
     end
 
     context 'when a user' do
-      let(:current_user) { create :user }
+      let(:current_user) { create(:user) }
       let(:user) { current_user }
 
       it { should include(user) }
@@ -23,17 +23,12 @@ RSpec.describe UserPolicy do
     end
   end
 
-  describe 'permitted_attributes' do
-    # TODO: What's the ideal way to test permitted attributes?
-    # For reference, see: https://github.com/chrisalley/pundit-matchers#testing-the-mass-assignment-of-attributes-for-particular-actions
-  end
-
   describe 'actions' do
     subject { described_class.new(current_user, user) }
 
     let(:crud_actions) { [:show, :update] }
-    let(:current_user) { create :user }
-    let(:user) { create :user }
+    let(:current_user) { create(:user) }
+    let(:user) { create(:user) }
 
     context 'when a visitor' do
       let(:current_user) { nil }
