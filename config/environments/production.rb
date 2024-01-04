@@ -4,11 +4,18 @@ Rails.application.configure do
   # Settings specified here will take precedence over those in
   # config/application.rb.
 
+  # Because we are moving to allow clients to connect to an abritrary backend,
+  # we are intentionally disabling the CORS protection. This may be re-enabled
+  # if we find a way to allow clients to connect to the backend from a
+  # consistent domain. This means anyone can ping the API from anywhere now,
+  # which should be considered when doing threat assessment.
+  config.allowed_cors_origins = ['*']
+
   # Only allow requests from the official domain
-  config.allowed_cors_origins = [
-    'https://web.tdl.app',
-    'https://mobile.tdl.app'
-  ]
+  # config.allowed_cors_origins = [
+  #   'https://web.tdl.app',
+  #   'https://mobile.tdl.app'
+  # ]
 
   # Code is not reloaded between requests.
   config.cache_classes = true
