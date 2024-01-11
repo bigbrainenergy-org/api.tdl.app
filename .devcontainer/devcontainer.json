@@ -6,5 +6,6 @@
 
   "forwardPorts": [3000],
 
+  "initializeCommand": "bash .devcontainer/init.sh",
   "postCreateCommand": "bash .devcontainer/postcreate.sh"
 }
