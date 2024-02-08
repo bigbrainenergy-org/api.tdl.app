@@ -2,7 +2,9 @@ require 'swagger_helper'
 
 RSpec.describe 'Tasks' do
   let(:user) { create(:user) }
+  let(:other_user) { create(:user) }
   let(:list) { create(:list, user: user) }
+  let(:other_user_list) { create(:list, user: other_user) }
   let(:user_session) { create(:user_session, user: user) }
   let(:token) do
     # This is dumb and jank, fix it.
@@ -74,6 +76,106 @@ RSpec.describe 'Tasks' do
         let(:task) { { title: nil, notes: '1337 Notes', list_id: list.id } }
 
         run_test!
+      end
+    end
+  end
+
+  path '/tasks/bulk' do
+    post 'Create multiple new tasks' do
+      tags 'Tasks'
+      description 'Create multiple new tasks for the current user.'
+      produces 'application/json'
+      consumes 'application/json'
+      parameter name: :tasks, in: :body, schema: {
+        '$ref' => '#/components/schemas/ArrayOfTasks'
+      }, required: true
+      let(:tasks) { [ 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id } ] }
+      response '200', 'Successfully created multiple new tasks' do
+        schema({ 'ref' => '#/components/schemas/ArrayOfTasks' })
+        run_test!
+      end
+      response '400', 'Missing parameters' do
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:tasks) { nil }
+        run_test!
+      end
+      response '401', 'Access token is missing or invalid' do
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:Authorization) { nil }
+        run_test!
+      end
+      response '403', 'Not authorized' do
+        # if any fail authorization, 403 all (for now)
+        # todo: possible to fail some and pass others using custom response type?
+        # todo: possible to fail some and pass others on failed circular ref validation?
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:tasks) { [
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: other_user_list.id } ] }
+        run_test!
+      end
+      response '422', 'The changes requested could not be processed' do
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:tasks) { [ { title: nil, notes: '1337 notes', list_id: list.id } ] }
+        run_test!
+      end
+    end
+
+    patch 'Update multiple tasks' do
+      tags 'Tasks'
+      description 'Update multiple existing tasks.'
+      parameter name: :tasks, in: :body, schema: {
+        '$ref' => '#/components/schemas/ArrayOfTasks'
+      }
+      consumes 'application/json'
+      produces 'application/json'
+      let(:tasks) { [
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id } ] }
+      response '200', 'Success' do
+        run_test!
+      end
+      response '400', 'Missing parameters' do
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:tasks) { nil }
+        run_test!
+      end
+      response '401', 'Not authenticated' do
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:Authorization) { nil }
+        run_test!
+      end
+      response '403', 'Not authorized' do
+        # if any fail authorization, 403 all (for now)
+        # todo: possible to fail some and pass others using custom response type?
+        # todo: possible to fail some and pass others on failed circular ref validation?
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:tasks) { [
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: other_user_list.id } ] }
+        run_test!
+      end
+      response '422', 'The changes requested could not be processed' do
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:tasks) { [ { title: nil, notes: '1337 notes', list_id: list.id } ] }
       end
     end
   end

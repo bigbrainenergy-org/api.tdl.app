@@ -43,6 +43,17 @@ class TasksController < ApplicationController
     head :ok
   end
 
+  def bulk
+    case request.method_symbol
+    when :get
+      # Fetch and return a collection of tasks.
+    when :patch
+      # Update multiple tasks.
+    when :post
+      # Create multiple tasks.
+    end
+  end
+
   private
 
   def set_task
