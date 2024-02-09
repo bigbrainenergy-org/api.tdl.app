@@ -15,6 +15,11 @@ RSpec.describe 'Tasks' do
   let(:Authorization) { "Bearer #{token}" }
   let!(:user_task) { create(:task, list: list) }
   let!(:other_task) { create(:task) }
+  let!(:tasks) { [
+    create(:task, list: list),
+    create(:task, list: list),
+    create(:task, list: list)
+  ] }
 
   path '/tasks' do
     get 'Get next tasks' do
@@ -81,6 +86,26 @@ RSpec.describe 'Tasks' do
   end
 
   path '/tasks/bulk' do
+    get 'Get all tasks' do
+      tags 'All Tasks'
+      description 'Returns an array of the current user\'s tasks.'
+      produces 'application/json'
+
+      response '200', 'Success' do
+        schema({ '$ref' => '#/components/schemas/ArrayOfTasks' })
+
+        run_test!
+      end
+
+      response '401', 'Access token is missing or invalid' do
+        schema({ '$ref' => '#/components/schemas/Error' })
+
+        let(:Authorization) { nil }
+
+        run_test!
+      end
+    end
+    
     post 'Create multiple new tasks' do
       tags 'Tasks'
       description 'Create multiple new tasks for the current user.'
@@ -89,13 +114,6 @@ RSpec.describe 'Tasks' do
       parameter name: :tasks, in: :body, schema: {
         '$ref' => '#/components/schemas/ArrayOfTasks'
       }, required: true
-      let(:tasks) { [ 
-        { title: Faker::String.random, list_id: list.id }, 
-        { title: Faker::String.random, list_id: list.id }, 
-        { title: Faker::String.random, list_id: list.id }, 
-        { title: Faker::String.random, list_id: list.id }, 
-        { title: Faker::String.random, list_id: list.id }, 
-        { title: Faker::String.random, list_id: list.id } ] }
       response '200', 'Successfully created multiple new tasks' do
         schema({ 'ref' => '#/components/schemas/ArrayOfTasks' })
         run_test!
@@ -139,14 +157,11 @@ RSpec.describe 'Tasks' do
       }
       consumes 'application/json'
       produces 'application/json'
-      let(:tasks) { [
-        { title: Faker::String.random, list_id: list.id }, 
-        { title: Faker::String.random, list_id: list.id }, 
-        { title: Faker::String.random, list_id: list.id }, 
-        { title: Faker::String.random, list_id: list.id }, 
-        { title: Faker::String.random, list_id: list.id }, 
-        { title: Faker::String.random, list_id: list.id } ] }
       response '200', 'Success' do
+        let(:updated_tasks) { [
+          { id: tasks[0].id, title: Faker::String.random }, 
+          { id: tasks[1].id, title: Faker::String.random }, 
+          { id: tasks[2].id, title: Faker::String.random } ] }
         run_test!
       end
       response '400', 'Missing parameters' do
