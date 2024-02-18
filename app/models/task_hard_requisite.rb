@@ -20,8 +20,8 @@ class TaskHardRequisite < TaskRelationship
   validates_with RedundantRelationshipValidator,
     first:       :pre,
     second:      :post,
-    all_firsts:  :all_hard_prereqs,
-    all_seconds: :all_hard_postreqs
+    all_firsts:  :all_hard_prereqs_excl_completed,
+    all_seconds: :all_hard_postreqs_excl_completed
 
   validates_with UselessRelationshipValidator,
     first:  :pre,

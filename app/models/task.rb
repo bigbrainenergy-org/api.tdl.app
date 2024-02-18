@@ -40,6 +40,9 @@ class Task < ApplicationRecord
       less_than_or_equal_to:    100
     }
 
+  validates :hard_prereqs, :hard_postreqs,
+    same_user: true
+
   def all_hard_prereqs
     recursive_relationship_find(
       klass:       Task,
@@ -57,6 +60,26 @@ class Task < ApplicationRecord
       join_type:   'TaskHardRequisite',
       starting_id: id,
       finding:     :second
+    )
+  end
+
+  def all_hard_prereqs_excl_completed
+    recursive_relationship_find_excl_completed(
+      klass: Task,
+      join_table: 'task_relationships',
+      join_type: 'TaskHardRequisite',
+      starting_id: id,
+      finding: :first
+    )
+  end
+
+  def all_hard_postreqs_excl_completed
+    recursive_relationship_find_excl_completed(
+      klass: Task,
+      join_table: 'task_relationships',
+      join_type: 'TaskHardRequisite',
+      starting_id: id,
+      finding: :second
     )
   end
 end
