@@ -13,6 +13,9 @@ RSpec.describe 'Tasks' do
   let(:Authorization) { "Bearer #{token}" }
   let!(:user_task) { create(:task, list: list) }
   let!(:other_task) { create(:task) }
+  let!(:bulk_task_a) { create(:task, list: list) }
+  let!(:bulk_task_b) { create(:task, list: list) }
+  let!(:bulk_task_c) { create(:task, list: list) }
 
   path '/tasks' do
     get 'Get next tasks' do
@@ -74,6 +77,119 @@ RSpec.describe 'Tasks' do
         let(:task) { { title: nil, notes: '1337 Notes', list_id: list.id } }
 
         run_test!
+      end
+    end
+  end
+
+  path '/tasks/bulk' do
+    get 'Get all tasks' do
+      tags 'All Tasks'
+      description 'Returns an array of the current user\'s tasks.'
+      produces 'application/json'
+
+      response '200', 'Success' do
+        schema({ '$ref' => '#/components/schemas/ArrayOfTasks' })
+
+        run_test!
+      end
+
+      response '401', 'Access token is missing or invalid' do
+        schema({ '$ref' => '#/components/schemas/Error' })
+
+        let(:Authorization) { nil }
+
+        run_test!
+      end
+    end
+    
+    post 'Create multiple new tasks' do
+      tags 'Tasks'
+      description 'Create multiple new tasks for the current user.'
+      produces 'application/json'
+      consumes 'application/json'
+      parameter name: :tasks, in: :body, schema: {
+        '$ref' => '#/components/schemas/ArrayOfTasks'
+      }, required: true
+      response '200', 'Successfully created multiple new tasks' do
+        schema({ 'ref' => '#/components/schemas/ArrayOfTasks' })
+        let(:tasks) { [
+          create(:task, list: list)
+        ] }
+        run_test!
+      end
+      response '400', 'Missing parameters' do
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:tasks) { nil }
+        run_test!
+      end
+      response '401', 'Access token is missing or invalid' do
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:Authorization) { nil }
+        run_test!
+      end
+      response '403', 'Not authorized' do
+        # if any fail authorization, 403 all (for now)
+        # todo: possible to fail some and pass others using custom response type?
+        # todo: possible to fail some and pass others on failed circular ref validation?
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:tasks) { [
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: other_user_list.id } ] }
+        run_test!
+      end
+      response '422', 'The changes requested could not be processed' do
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:tasks) { [ { title: nil, notes: '1337 notes', list_id: list.id } ] }
+        run_test!
+      end
+    end
+
+    patch 'Update multiple tasks' do
+      tags 'Tasks'
+      description 'Update multiple existing tasks.'
+      parameter name: :tasks, in: :body, schema: {
+        '$ref' => '#/components/schemas/ArrayOfTasks'
+      }
+      consumes 'application/json'
+      produces 'application/json'
+      response '200', 'Success' do
+        let(:updated_tasks) { [
+          { id: tasks[0].id, title: Faker::String.random }, 
+          { id: tasks[1].id, title: Faker::String.random }, 
+          { id: tasks[2].id, title: Faker::String.random } ] }
+        run_test!
+      end
+      response '400', 'Missing parameters' do
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:tasks) { nil }
+        run_test!
+      end
+      response '401', 'Not authenticated' do
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:Authorization) { nil }
+        run_test!
+      end
+      response '403', 'Not authorized' do
+        # if any fail authorization, 403 all (for now)
+        # todo: possible to fail some and pass others using custom response type?
+        # todo: possible to fail some and pass others on failed circular ref validation?
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:tasks) { [
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: list.id }, 
+        { title: Faker::String.random, list_id: other_user_list.id } ] }
+        run_test!
+      end
+      response '422', 'The changes requested could not be processed' do
+        schema({ '$ref' => '#/components/schemas/Error' })
+        let(:tasks) { [ { title: nil, notes: '1337 notes', list_id: list.id } ] }
       end
     end
   end
