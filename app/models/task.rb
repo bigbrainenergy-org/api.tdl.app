@@ -40,9 +40,6 @@ class Task < ApplicationRecord
       less_than_or_equal_to:    100
     }
 
-  validates :hard_prereqs, :hard_postreqs,
-    same_user: true
-
   def all_hard_prereqs
     recursive_relationship_find(
       klass:       Task,
