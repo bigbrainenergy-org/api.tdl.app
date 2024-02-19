@@ -3,22 +3,28 @@ class RedundantRelationshipValidator < RelationshipValidator
   def validate(record)
     return unless relationship_persisted?(record)
 
-    if record.try(@second).try(@all_firsts)&.include?(@first)
-      I18n.t(
-        'validators.redundant_relationship.invalid',
-        first_title:  @first,
-        second_title: @second,
-        relationship: @first
+    if record.try(@second).try(@all_firsts)&.include?(record.try(@first))
+      record.errors.add(
+        :base,
+        I18n.t(
+          'validators.redundant_relationship.invalid',
+          first_title:  @first,
+          second_title: @second,
+          relationship: @first
+        )
       )
     end
 
-    return unless record.try(@first).try(@all_seconds)&.include?(@second)
+    return unless record.try(@first).try(@all_seconds)&.include?(record.try(@second))
 
-    I18n.t(
-      'validators.redundant_relationship.invalid',
-      first_title:  @second,
-      second_title: @first,
-      relationship: @second
+    record.errors.add(
+      :base,
+      I18n.t(
+        'validators.redundant_relationship.invalid',
+        first_title:  @second,
+        second_title: @first,
+        relationship: @second
+      )
     )
   end
   # rubocop:enable Metrics/MethodLength

@@ -66,10 +66,10 @@ class TasksController < ApplicationController
       # Create multiple tasks.
       Task.transaction do
         params.each do |task_param|
-          @current_task = Task.new(permitted_attributes(Task))
-          @current_task.list = current_user.default_list if @current_task.list.nil?
-          authorize @current_task
-          @current_task.save!
+          current_task = Task.new(permitted_attributes(Task))
+          current_task.list = current_user.default_list if current_task.list.nil?
+          authorize current_task
+          current_task.save!
         end
       end
       render :show

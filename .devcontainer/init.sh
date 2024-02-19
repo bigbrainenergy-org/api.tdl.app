@@ -1,1 +1,1 @@
-# cp ./.env.sample ./.env
+cp -n ./.env.sample ./.env

@@ -2,7 +2,9 @@ require 'swagger_helper'
 
 RSpec.describe 'Tasks' do
   let(:user) { create(:user) }
+  let(:other_user) { create(:user) }
   let(:list) { create(:list, user: user) }
+  let(:other_user_list) { create(:list, user: other_user) }
   let(:user_session) { create(:user_session, user: user) }
   let(:token) do
     # This is dumb and jank, fix it.

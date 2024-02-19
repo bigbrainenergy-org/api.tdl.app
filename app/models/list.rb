@@ -1,7 +1,8 @@
 class List < ApplicationRecord
   belongs_to :user
 
-  has_many :tasks, dependent: :restrict_with_exception
+  has_many :tasks, 
+    dependent: :restrict_with_exception
 
   has_one :user_who_defaulted_this_list,
     class_name:  'User',
@@ -23,6 +24,9 @@ class List < ApplicationRecord
   validates :color,
     presence:             true,
     hex_color_formatting: true
+
+  validates :tasks,
+    same_user: true
 
   before_validation :randomize_by_default, only: [:create]
 

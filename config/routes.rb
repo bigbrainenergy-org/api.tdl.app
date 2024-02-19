@@ -73,7 +73,13 @@ Rails.application.routes.draw do
     # resources :contexts
 
     # resources :inbox_items
-    resources :tasks
+    resources :tasks do
+      collection do
+        get 'bulk'
+        patch 'bulk'
+        post 'bulk'
+      end
+    end
     resources :lists
     # resources :waiting_fors
 
