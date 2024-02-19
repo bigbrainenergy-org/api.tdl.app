@@ -50,10 +50,6 @@ class TaskPolicy < ApplicationPolicy
 
   def user_owns_task?
     return false unless record&.list.present? && user.present?
-    if user.owner_of?(record.list)
-      return true
-    else
-      record.errors.add(:base, I18n.t('validators.same_user.invalid')) 
-    end
+    user.owner_of?(record.list)
   end
 end
