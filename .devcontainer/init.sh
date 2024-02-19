@@ -1,1 +1,3 @@
-cp -n ./.env.sample ./.env
+if [ ! -e ./.env ]; then
+    cp ./.env.sample ./.env
+fi
