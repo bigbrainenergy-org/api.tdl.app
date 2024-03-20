@@ -2,15 +2,17 @@ require 'rails_helper'
 
 RSpec.describe SameUserValidator do
   subject(:validator) { described_class.new(attributes: [:validated_field]) }
+
   class DummyModel
     include ActiveModel::Validations
     attr_accessor :user, :validated_field
-  
+
     validates :validated_field, same_user: true
   end
   let(:user) { User.new }
   let(:other_user) { User.new }
   let(:record) { DummyModel.new }
+
   context 'when record value is blank' do
     it 'does not add any error and should exit the validator' do
       record.validated_field = nil
@@ -18,6 +20,7 @@ RSpec.describe SameUserValidator do
       expect(record.errors[:validated_field]).to be_empty
     end
   end
+
   context 'when the field value user is the same as the record user' do
     it 'does not add any error and should exit the validator' do
       record.user = user
@@ -26,6 +29,7 @@ RSpec.describe SameUserValidator do
       expect(record.errors[:validated_field]).to be_empty
     end
   end
+
   context 'when the field value user DIFFERS from the record user' do
     it 'adds an error' do
       record.user = user

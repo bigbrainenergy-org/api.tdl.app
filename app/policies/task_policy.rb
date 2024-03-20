@@ -50,6 +50,7 @@ class TaskPolicy < ApplicationPolicy
 
   def user_owns_task?
     return false unless record&.list.present? && user.present?
+
     user.owner_of?(record.list)
   end
 end
