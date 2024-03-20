@@ -1,5 +1,8 @@
 require 'rails_helper'
 
+# FIXME
+# rubocop:disable RSpec
+# rubocop:disable Layout/LineLength
 RSpec.describe RedundantRelationshipValidator do
   subject(:validator) { validator_model_mock }
 
@@ -197,3 +200,5 @@ RSpec.describe RedundantRelationshipValidator do
     end
   end
 end
+# rubocop:enable RSpec
+# rubocop:enable Layout/LineLength

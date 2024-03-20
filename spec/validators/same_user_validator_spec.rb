@@ -1,5 +1,11 @@
 require 'rails_helper'
 
+# FIXME: Why are we using doubles?
+# rubocop:disable RSpec/VerifiedDoubles
+# FIXME: Why are we using doubles??
+# rubocop:disable RSpec/LeakyConstantDeclaration
+# FIXME: WHY ARE WE USING DOUBLES?!?!
+# rubocop:disable Lint/ConstantDefinitionInBlock
 RSpec.describe SameUserValidator do
   subject(:validator) { described_class.new(attributes: [:validated_field]) }
 
@@ -30,6 +36,7 @@ RSpec.describe SameUserValidator do
     end
   end
 
+  # rubocop:disable RSpec/ExampleLength
   context 'when the field value user DIFFERS from the record user' do
     it 'adds an error' do
       record.user = user
@@ -43,4 +50,8 @@ RSpec.describe SameUserValidator do
       )
     end
   end
+  # rubocop:enable RSpec/ExampleLength
 end
+# rubocop:enable RSpec/VerifiedDoubles
+# rubocop:enable RSpec/LeakyConstantDeclaration
+# rubocop:enable Lint/ConstantDefinitionInBlock

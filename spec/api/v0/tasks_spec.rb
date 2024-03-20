@@ -1,5 +1,6 @@
 require 'swagger_helper'
 
+# rubocop:disable Layout/LineLength
 RSpec.describe 'Tasks' do
   let(:user) { create(:user) }
   let(:other_user) { create(:user) }
@@ -330,3 +331,4 @@ RSpec.describe 'Tasks' do
     end
   end
 end
+# rubocop:enable Layout/LineLength

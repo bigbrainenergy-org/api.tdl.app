@@ -43,6 +43,9 @@ class TasksController < ApplicationController
     head :ok
   end
 
+  # FIXME: The complexity is TOO DAMN HIGH!
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def bulk
     case request.method_symbol
     when :get
@@ -77,6 +80,8 @@ class TasksController < ApplicationController
       render :show
     end
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   private
 
