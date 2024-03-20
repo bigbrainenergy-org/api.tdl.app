@@ -25,23 +25,23 @@ RSpec.describe RedundantRelationshipValidator do
     end
 
     it 'adds validation error due to redundancy' do
-      expect(value.valid?).to be_falsy
-      expect(value.errors[:base].include?(
+      expect(value).not_to be_valid
+      expect(value.errors[:base]).to include(
         I18n.t(
           'validators.redundant_relationship.invalid',
           first_title:  :pre,
           second_title: :post,
           relationship: :pre
         )
-      )).to be_truthy
-      expect(value.errors[:base].include?(
+      )
+      expect(value.errors[:base]).to include(
         I18n.t(
           'validators.redundant_relationship.invalid',
           first_title:  :post,
           second_title: :pre,
           relationship: :post
         )
-      )).to be_truthy
+      )
     end
     # it { should have_validation_error(I18n.t('validators.redundant_relationship.invalid', first_title:  task_a.title,
     # second_title: task_c.title,
@@ -63,7 +63,7 @@ RSpec.describe RedundantRelationshipValidator do
     end
 
     it 'adds the rule without error because B, a prereq, is completed and its rules are NULL AND VOIDDDD' do
-      expect(value.valid?).to be_truthy
+      expect(value).to be_valid
     end
     # it { should be_valid }
   end
@@ -80,7 +80,7 @@ RSpec.describe RedundantRelationshipValidator do
     end
 
     it 'adds the rule despite the fact that one of the tasks is already done' do
-      expect(value.valid?).to be_truthy
+      expect(value).to be_valid
     end
   end
 
@@ -99,7 +99,7 @@ RSpec.describe RedundantRelationshipValidator do
     end
 
     it 'adds the rule despite the fact that both of the tasks are already done' do
-      expect(value.valid?).to be_truthy
+      expect(value).to be_valid
     end
   end
 
@@ -121,7 +121,7 @@ RSpec.describe RedundantRelationshipValidator do
     end
 
     it 'adds the rule without error because B does not conflict with the new rule A --> D' do
-      expect(value.valid?).to be_truthy
+      expect(value).to be_valid
     end
     # it { should be_valid }
   end
@@ -156,7 +156,7 @@ RSpec.describe RedundantRelationshipValidator do
     end
 
     it 'errors because rule is redundant' do
-      expect(value.valid?).to be_falsy
+      expect(value).not_to be_valid
     end
   end
 
@@ -193,7 +193,7 @@ RSpec.describe RedundantRelationshipValidator do
     end
 
     it 'allows the rule because there is no path between A and F that does not contain completed tasks' do
-      expect(value.valid?).to be_truthy
+      expect(value).to be_valid
     end
   end
 end
