@@ -8,10 +8,10 @@ neo = User.create!(
   terms_and_conditions: Time.current
 )
 
-inbox_list = List.create!(title: 'Inbox', user: neo)
-next_action_list = List.create!(title: 'Next Actions', user: neo)
-waiting_for_list = List.create!(title: 'Waiting Fors', user: neo)
-project_list = List.create!(title: 'Projects', user: neo)
+inbox_list = List.create!(title: 'Inbox', color: '#bdbdbd', user: neo)
+next_action_list = List.create!(title: 'Next Actions', color: '#72b2ed', user: neo)
+waiting_for_list = List.create!(title: 'Waiting Fors', color: '#bdbdbd', user: neo)
+project_list = List.create!(title: 'Projects', color: '#8e62bd', user: neo)
 
 neo.update!(default_list: inbox_list)
 
