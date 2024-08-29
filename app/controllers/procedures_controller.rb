@@ -3,7 +3,9 @@ class ProceduresController < ApplicationController
 
   def index
     authorize Procedure
-    @procedures = policy_scope(Procedure).order(created_at: :asc)
+    @procedures = policy_scope(Procedure)
+      .includes(:tasks)
+      .order(created_at: :asc)
   end
 
   def show
@@ -28,5 +30,12 @@ class ProceduresController < ApplicationController
     authorize @procedure
     @procedure.destroy!
     head :ok
+  end
+
+  def reset
+    authorize @procedure
+    @procedure = Procedure.find(params[:id])
+    @procedure.tasks.update_all(completed: false)
+    render :show
   end
 end
