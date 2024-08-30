@@ -34,8 +34,15 @@ class ProceduresController < ApplicationController
 
   def reset
     authorize @procedure
-    @procedure = Procedure.find(params[:id])
-    @procedure.tasks.update_all(completed: false)
-    render :show
+    @tasks = @procedure.tasks
+    @tasks.update_all(completed: false)
+    head :ok
+  end
+
+  private
+
+  def set_procedure
+    procedure_id = params[:procedure_id] || params[:id]
+    @procedure = Procedure.find(procedure_id)
   end
 end

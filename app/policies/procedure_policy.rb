@@ -9,7 +9,10 @@ class ProcedurePolicy < ApplicationPolicy
     [
       :title,
       :color,
-      :icon
+      :icon,
+      {
+        task_ids: []
+      }
     ]
   end
 
@@ -30,6 +33,10 @@ class ProcedurePolicy < ApplicationPolicy
   end
 
   def destroy?
+    user_owns_record?
+  end
+
+  def reset?
     user_owns_record?
   end
 end

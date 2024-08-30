@@ -90,11 +90,9 @@ Rails.application.routes.draw do
     # Similarly, these are a little weird in nature
     resources :project_relationships
     resources :next_action_relationships
-    resources :procedures do
-      member do
-        post 'reset'
-      end
-    end
+    resources :procedures
+
+    post 'procedures/reset/:id' => 'procedures#reset'
 
     #########
     ## 404 ##

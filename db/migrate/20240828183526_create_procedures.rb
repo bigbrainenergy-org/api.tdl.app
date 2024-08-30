@@ -11,7 +11,7 @@ class CreateProcedures < ActiveRecord::Migration[7.1]
 
     add_index :procedures, [:title, :user_id], unique: true
 
-    create_table :task_procedures do |t|
+    create_table :task_procedures, id: false do |t|
       t.belongs_to :procedure, null: false, foreign_key: true
       t.belongs_to :task, null: false, foreign_key: true
     end

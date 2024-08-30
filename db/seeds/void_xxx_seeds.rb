@@ -24,17 +24,28 @@ void_xxx.update!(default_list: void_list)
 
 # TODO: Do some seeds
 
-# task_count = 100
-# rule_count = (task_count.to_f * 1.5).to_i
-# print_interval = (task_count / 10)
+task_count = 100
+rule_count = (task_count.to_f * 1.5).to_i
+print_interval = (task_count / 10)
 
-# task_count.times do |n|
-#   puts "Creating task #{n + 1}" if ((n + 1) % print_interval).zero?
-#   Task.create!(
-#     title: "Task #{n}",
-#     list: void_list
-#   )
-# end
+proc = Procedure.create!(
+  user: void_xxx,
+  title: "Daily Routine",
+  icon: "local_offer",
+  color: "#FF0000"
+)
+
+task_count.times do |n|
+  puts "Creating task #{n + 1}" if ((n + 1) % print_interval).zero?
+  tmp_task = Task.create!(
+    title: "Task #{n}",
+    list: void_list
+  )
+  if n % 10 == 0
+    tmp_task.procedures.push(proc)
+  end
+  tmp_task.save!
+end
 
 # combo_breaker = 0
 

@@ -1,8 +1,15 @@
 class Procedure < ApplicationRecord
   belongs_to :user
 
-  has_many :tasks,
+  has_many :task_relationships,
+    class_name: 'TaskProcedure',
+    foreign_key: :procedure_id,
     dependent: :restrict_with_exception
+
+  has_many :tasks,
+    class_name: 'Task',
+    through: :task_relationships,
+    source: :task
 
   validates :title,
     presence: true,
@@ -16,10 +23,7 @@ class Procedure < ApplicationRecord
     presence: true,
     hex_color_formatting: true
 
-  validates :tasks,
-    same_user: true
-
-  before_validation: :randomize_by_default, only: [:create]
+  before_validation :randomize_by_default, only: [:create]
 
   def randomize_icon!
     # Chosen by fair dice roll, guaranteed to be random.
