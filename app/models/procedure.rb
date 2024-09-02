@@ -25,6 +25,17 @@ class Procedure < ApplicationRecord
 
   before_validation :randomize_by_default, only: [:create]
 
+  def reset!
+    Procedure.transaction do
+      tasks.each do |task|
+        task.hard_postreqs = task.hard_postreqs.reject do |postreq|
+          !tasks.include?(postreq)
+        end
+        task.save!
+      end
+    end
+  end
+
   def randomize_icon!
     # Chosen by fair dice roll, guaranteed to be random.
     self.icon = 'local_offer'

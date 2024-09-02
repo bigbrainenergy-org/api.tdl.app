@@ -34,8 +34,7 @@ class ProceduresController < ApplicationController
 
   def reset
     authorize @procedure
-    @tasks = @procedure.tasks
-    @tasks.update_all(completed: false)
+    @procedure.reset!
     head :ok
   end
 
