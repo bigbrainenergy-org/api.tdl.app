@@ -31,6 +31,7 @@ class Procedure < ApplicationRecord
         task.hard_postreqs = task.hard_postreqs.reject do |postreq|
           !tasks.include?(postreq)
         end
+        task.completed = false
         task.save!
       end
     end

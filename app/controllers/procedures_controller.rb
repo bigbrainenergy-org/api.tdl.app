@@ -35,7 +35,7 @@ class ProceduresController < ApplicationController
   def reset
     authorize @procedure
     @procedure.reset!
-    head :ok
+    render :show
   end
 
   private
