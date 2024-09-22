@@ -3,6 +3,29 @@
     {
       "warning_type": "SQL Injection",
       "warning_code": 0,
+      "fingerprint": "5b564f0a24cd3e7ef276cb8b834f5b76fcec5eb206fb2dd6da06365d29fa31d5",
+      "check_name": "SQL",
+      "message": "Possible SQL injection",
+      "file": "app/models/application_record.rb",
+      "line": 78,
+      "link": "https://brakemanscanner.org/docs/warning_types/sql_injection/",
+      "code": "klass.find_by_sql(\"      WITH RECURSIVE full_tree(id, rtree) AS (\\n        SELECT record.id, ARRAY[record.id] FROM #{klass.name.underscore.pluralize} record\\n          INNER JOIN #{join_table} relationship \\n            ON record.id = relationship.#{:BRAKEMAN_SAFE_LITERAL}_id\\n          WHERE #{(\"second\" or \"first\")}_id = #{starting_id}\\n            AND relationship.type = '#{join_type}'\\n            AND record.completed != true\\n        UNION ALL\\n        SELECT record.id, rtree || record.id FROM #{klass.name.underscore.pluralize} record\\n          INNER JOIN #{join_table} relationship \\n            ON record.id = relationship.#{:BRAKEMAN_SAFE_LITERAL}_id\\n          INNER JOIN full_tree ptree \\n            ON relationship.#{(\"second\" or \"first\")}_id = ptree.id\\n          WHERE record.completed != true\\n          AND NOT (record.id = ANY(ptree.rtree))\\n          AND relationship.type = '#{join_type}'\\n      )\\n      SELECT * FROM #{klass.name.underscore.pluralize} WHERE id IN (SELECT DISTINCT(id) FROM full_tree);\\n\".squish)",
+      "render_path": null,
+      "location": {
+        "type": "method",
+        "class": "ApplicationRecord",
+        "method": "recursive_relationship_find_excl_completed"
+      },
+      "user_input": "klass.name.underscore.pluralize",
+      "confidence": "Weak",
+      "cwe_id": [
+        89
+      ],
+      "note": "To SQL inject this, you would need to have control over the class name being passed in, which reduces our risk to the point I'm not super concerned about this in the short term"
+    },
+    {
+      "warning_type": "SQL Injection",
+      "warning_code": 0,
       "fingerprint": "8235330e98a7df0705e4f657aed63e5459be0668480f425b41ba9031c3cba86b",
       "check_name": "SQL",
       "message": "Possible SQL injection",
@@ -24,6 +47,6 @@
       "note": "To SQL inject this, you would need to have control over the class name being passed in, which reduces our risk to the point I'm not super concerned about this in the short term"
     }
   ],
-  "updated": "2024-01-04 20:48:16 +0000",
-  "brakeman_version": "6.1.1"
+  "updated": "2024-03-20 23:58:20 +0000",
+  "brakeman_version": "6.1.2"
 }

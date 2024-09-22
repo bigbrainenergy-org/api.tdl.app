@@ -1,7 +1,7 @@
 class List < ApplicationRecord
   belongs_to :user
 
-  has_many :tasks, 
+  has_many :tasks,
     dependent: :restrict_with_exception
 
   has_one :user_who_defaulted_this_list,

@@ -44,6 +44,9 @@ class TasksController < ApplicationController
     head :ok
   end
 
+  # FIXME: The complexity is TOO DAMN HIGH!
+  # rubocop:disable Metrics/AbcSize
+  # rubocop:disable Metrics/MethodLength
   def bulk
     case request.method_symbol
     when :get
@@ -67,9 +70,11 @@ class TasksController < ApplicationController
     when :post
       # Create multiple tasks.
       Task.transaction do
-        params.each do |task_param|
+        params.each do |_task_param|
           current_task = Task.new(permitted_attributes(Task))
-          current_task.list = current_user.default_list if current_task.list.nil?
+          if current_task.list.nil?
+            current_task.list = current_user.default_list
+          end
           authorize current_task
           current_task.save!
         end
@@ -77,6 +82,8 @@ class TasksController < ApplicationController
       render :show
     end
   end
+  # rubocop:enable Metrics/AbcSize
+  # rubocop:enable Metrics/MethodLength
 
   private
 

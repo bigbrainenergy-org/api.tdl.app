@@ -15,7 +15,9 @@ class RedundantRelationshipValidator < RelationshipValidator
       )
     end
 
-    return unless record.try(@first).try(@all_seconds)&.include?(record.try(@second))
+    unless record.try(@first).try(@all_seconds)&.include?(record.try(@second))
+      return
+    end
 
     record.errors.add(
       :base,
