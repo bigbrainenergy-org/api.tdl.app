@@ -64,6 +64,8 @@ group :development, :test do
   gem 'rspec-rails'
   gem 'rswag-specs'
   gem 'rubocop-athix'
+  # FIXME: https://github.com/rubocop/rubocop-factory_bot/issues/129
+  gem 'rubocop-factory_bot', '~> 2.25.0'
   gem 'rubocop-i18n'
   gem 'rubocop-rails'
   gem 'rubocop-rake'

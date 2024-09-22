@@ -72,21 +72,21 @@ class Task < ApplicationRecord
 
   def all_hard_prereqs_excl_completed
     recursive_relationship_find_excl_completed(
-      klass: Task,
-      join_table: 'task_relationships',
-      join_type: 'TaskHardRequisite',
+      klass:       Task,
+      join_table:  'task_relationships',
+      join_type:   'TaskHardRequisite',
       starting_id: id,
-      finding: :first
+      finding:     :first
     )
   end
 
   def all_hard_postreqs_excl_completed
     recursive_relationship_find_excl_completed(
-      klass: Task,
-      join_table: 'task_relationships',
-      join_type: 'TaskHardRequisite',
+      klass:       Task,
+      join_table:  'task_relationships',
+      join_type:   'TaskHardRequisite',
       starting_id: id,
-      finding: :second
+      finding:     :second
     )
   end
 end

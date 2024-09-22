@@ -36,3 +36,4 @@ Open the repo in Visual Studio Code. If prompted, click "Open Dev Container." Ot
 ## Troubleshooting
 
 Can't connect to GitHub when fetching dependencies in the devcontainer? Turn off wireguard. (wtf?)
+If sorcery-rework doesn't download, also try deleting vendor/bundle (clearing gem cache)
