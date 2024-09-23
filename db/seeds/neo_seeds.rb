@@ -1,9 +1,77 @@
-TASK_COMPLETION_CHANCE = 0.2
+############
+## Layers ##
+############
+TASK_COMPLETION_CHANCE = 0.1
 MINIMUM_LAYER_RATIO = 0.0
 MAXIMUM_LAYER_RATIO = 1.2
 MAXIMUM_TOTAL_LAYERS = 5
+##########
+## Pres ##
+##########
+PRE_MEAN_COUNT = 2.0
+PRE_STANDARD_DEVIATION = 1.5
 MINIMUM_PRES = 1
 MAXIMUM_PRES = 5
+###########
+## Posts ##
+###########
+POST_MEAN_COUNT = 2.0
+POST_STANDARD_DEVIATION = 2.0
+MINIMUM_POSTS = 0
+MAXIMUM_POSTS = 5
+
+# From: https://stackoverflow.com/a/6178290/1424662
+class RandomGaussian
+  def initialize(mean: 0.0, standard_deviation: 1.0)
+    @mean = mean
+    @standard_deviation = standard_deviation
+    @valid = false
+    @next = 0
+  end
+
+  def rand
+    if @valid then
+      @valid = false
+      return @next
+    else
+      @valid = true
+      x, y = self.class.gaussian(@mean, @standard_deviation)
+      @next = y
+      return x
+    end
+  end
+
+  private
+
+  def self.gaussian(mean, standard_deviation)
+    theta = 2 * Math::PI * rand
+    rho = Math.sqrt(-2 * Math.log(1 - rand))
+    scale = standard_deviation.to_f * rho
+    x = mean.to_f + scale * Math.cos(theta)
+    y = mean.to_f + scale * Math.sin(theta)
+    return x, y
+  end
+end
+
+PRE_COUNT_GENERATOR = RandomGaussian.new(
+  mean: PRE_MEAN_COUNT,
+  standard_deviation: PRE_STANDARD_DEVIATION
+)
+
+POST_COUNT_GENERATOR = RandomGaussian.new(
+  mean: POST_MEAN_COUNT,
+  standard_deviation: POST_STANDARD_DEVIATION
+)
+
+def random_pre_count
+  PRE_COUNT_GENERATOR.rand.round.clamp(MINIMUM_PRES, MAXIMUM_PRES)
+end
+
+def random_post_count
+  POST_COUNT_GENERATOR.rand.round.clamp(MINIMUM_POSTS, MAXIMUM_POSTS)
+end
+
+# 10_000_000.times.collect { random_pre_count }.sort.tally
 
 neo = User.create!(
   username:             'neo',
@@ -82,7 +150,7 @@ def generate_task_tree(user:, list:, layer_zero_count:)
     )
     break if next_layer_count <= 0
     total_layers += 1
-    puts "Generating layer of size: #{next_layer_count}"
+    puts "Generating layer #{total_layers} of size: #{next_layer_count}"
     next_layer = generate_layer(user: user, list: list, count: next_layer_count)
     entangle_layers(tasks: current_layer, posts: next_layer)
     current_layer = next_layer
@@ -115,22 +183,48 @@ end
 
 def entangle_layers(tasks:, posts:)
   posts.each do |post|
-    pres_count = rand(MINIMUM_PRES..MAXIMUM_PRES).ceil
-    tasks.shuffle.first(pres_count).each do |task|
+    pre_count = random_pre_count
+    tasks.shuffle.first(pre_count).each do |task|
       TaskHardRequisite.create!(
         pre: task,
         post: post
       )
-      post.update!(completed: true) if task.completed?
+      post.update!(completed: true) if task.completed? && !post.completed?
     end
   end
+
+  # TODO: Not totally happy with this
+  # tasks.each do |task|
+  #   current_post_count = task.hard_postreqs.count
+  #   desired_post_count = random_post_count
+  #   posts_needed = (desired_post_count - current_post_count).clamp(MINIMUM_POSTS, MAXIMUM_POSTS)
+  #   next if posts_needed.zero?
+  #   valid_posts = posts.reject{ |post| task.hard_postreqs.include?(post) }
+  #   valid_posts.shuffle.first(posts_needed).each do |post|
+  #     TaskHardRequisite.create!(
+  #       pre: task,
+  #       post: post
+  #     )
+  #   end
+  # end
 end
 
 ####################
 ## Generate Tasks ##
 ####################
 
-generate_task_tree(user: neo, list: inbox_list,       layer_zero_count: 8)
-generate_task_tree(user: neo, list: next_action_list, layer_zero_count: 165)
+time_before = Time.current
+
+generate_task_tree(user: neo, list: inbox_list,       layer_zero_count: 10)
+generate_task_tree(user: neo, list: next_action_list, layer_zero_count: 25)
 generate_task_tree(user: neo, list: waiting_for_list, layer_zero_count: 5)
-generate_task_tree(user: neo, list: project_list,     layer_zero_count: 127)
+generate_task_tree(user: neo, list: project_list,     layer_zero_count: 20)
+
+time_after = Time.current
+time_taken = (time_after - time_before).round
+task_count = neo.tasks.count
+rule_count = TaskHardRequisite.joins(pre: [list: :user]).where(pre: { lists: { user: neo }}).count
+
+puts "Total time to generate seeds: #{time_taken} seconds"
+puts "Total tasks generated: #{task_count}"
+puts "Total rules generated: #{rule_count}"
