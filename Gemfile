@@ -58,6 +58,7 @@ group :development, :test do
   gem 'brakeman'
   gem 'bundler-audit'
   gem 'byebug'
+  # gem 'dependency-timeline-audit'
   gem 'factory_bot_rails'
   gem 'faker' # So faker can be used for both test data and development seeds
   gem 'i18n-tasks'
