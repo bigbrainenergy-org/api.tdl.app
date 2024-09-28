@@ -9,6 +9,7 @@ class TasksController < ApplicationController
              .includes(:status)
              .includes(:hard_prereqs)
              .includes(:hard_postreqs)
+             .includes(:procedures)
              .order(created_at: :asc)
   end
 
@@ -55,6 +56,7 @@ class TasksController < ApplicationController
                .includes(:status)
                .includes(:hard_prereqs)
                .includes(:hard_postreqs)
+               .includes(:procedures)
                .order(created_at: :asc)
     when :patch
       # validate all before processing

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_05_29_191801) do
+ActiveRecord::Schema[7.1].define(version: 2024_08_28_183526) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -49,6 +49,17 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_29_191801) do
     t.index ["user_id"], name: "index_lists_on_user_id"
   end
 
+  create_table "procedures", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.string "title", null: false
+    t.string "color", null: false
+    t.string "icon", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["title", "user_id"], name: "index_procedures_on_title_and_user_id", unique: true
+    t.index ["user_id"], name: "index_procedures_on_user_id"
+  end
+
   create_table "statuses", force: :cascade do |t|
     t.bigint "user_id", null: false
     t.string "title", null: false
@@ -69,6 +80,14 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_29_191801) do
     t.datetime "updated_at", null: false
     t.bigint "task_id", null: false
     t.index ["task_id"], name: "index_subtasks_on_task_id"
+  end
+
+  create_table "task_procedures", force: :cascade do |t|
+    t.bigint "procedure_id", null: false
+    t.bigint "task_id", null: false
+    t.index ["procedure_id", "task_id"], name: "index_task_procedures_on_procedure_id_and_task_id", unique: true
+    t.index ["procedure_id"], name: "index_task_procedures_on_procedure_id"
+    t.index ["task_id"], name: "index_task_procedures_on_task_id"
   end
 
   create_table "task_relationships", force: :cascade do |t|
@@ -134,8 +153,11 @@ ActiveRecord::Schema[7.0].define(version: 2023_05_29_191801) do
 
   add_foreign_key "devices", "users"
   add_foreign_key "lists", "users"
+  add_foreign_key "procedures", "users"
   add_foreign_key "statuses", "users"
   add_foreign_key "subtasks", "tasks"
+  add_foreign_key "task_procedures", "procedures"
+  add_foreign_key "task_procedures", "tasks"
   add_foreign_key "user_sessions", "users"
   add_foreign_key "users", "lists", column: "default_list_id"
 end

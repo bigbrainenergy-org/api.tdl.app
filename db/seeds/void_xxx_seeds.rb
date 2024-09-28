@@ -28,12 +28,21 @@ task_count = 100
 rule_count = (task_count.to_f * 1.5).to_i
 print_interval = (task_count / 10)
 
+proc = Procedure.create!(
+  user:  void_xxx,
+  title: 'Daily Routine',
+  icon:  'local_offer',
+  color: '#FF0000'
+)
+
 task_count.times do |n|
   puts "Creating task #{n + 1}" if ((n + 1) % print_interval).zero?
-  Task.create!(
+  tmp_task = Task.create!(
     title: "Task #{n}",
     list:  void_list
   )
+  tmp_task.procedures.push(proc) if (n % 10).zero?
+  tmp_task.save!
 end
 
 combo_breaker = 0

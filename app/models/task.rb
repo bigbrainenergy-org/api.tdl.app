@@ -14,6 +14,10 @@ class Task < ApplicationRecord
     foreign_key: :first_id,
     dependent:   :destroy
 
+  has_many :procedure_relationships,
+    class_name: 'TaskProcedure',
+    dependent:  :destroy
+
   has_many :hard_prereqs,
     class_name: 'Task',
     through:    :hard_pre_relationships,
@@ -23,6 +27,11 @@ class Task < ApplicationRecord
     class_name: 'Task',
     through:    :hard_post_relationships,
     source:     :post
+
+  has_many :procedures,
+    class_name: 'Procedure',
+    through:    :procedure_relationships,
+    source:     :procedure
 
   has_one :user,
     through: :list
