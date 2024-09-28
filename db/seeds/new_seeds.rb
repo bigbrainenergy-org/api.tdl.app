@@ -1,9 +1,10 @@
+# rubocop:disable Layout
 generic_user = User.create!(
-  username: 'user',
-  given_name: 'John',
-  family_name: 'Smith',
-  email: 'username@domain',
-  password: 'correcthorsebatterystaple',
+  username:             'user',
+  given_name:           'John',
+  family_name:          'Smith',
+  email:                'username@domain',
+  password:             'correcthorsebatterystaple',
   terms_and_conditions: Time.current
 )
 
@@ -14,7 +15,7 @@ generic_user.update!(default_list: generic_user_list)
 task_count = 1000 # default: 10000
 
 # not used yet - TODO
-incomplete_task_count = (task_count.to_f * 0.4).to_i # default: (task_count.to_f * 0.4).to_i
+(task_count.to_f * 0.4).to_i # default: (task_count.to_f * 0.4).to_i
 
 # from the task at layer zero to the deepest task, how long is that chain of tasks?
 max_dependency_depth = (task_count.to_f * 0.003).to_i # default: (task_count.to_f * 0.003).to_i
@@ -31,10 +32,10 @@ total_rules_count = task_count * 2 # default: task_count * 2
 print_interval = (task_count / 42)
 
 proc = Procedure.create!(
-  user: generic_user,
-  title: "Daily Routine",
-  icon: "local_offer",
-  color: "#FF0000"
+  user:  generic_user,
+  title: 'Daily Routine',
+  icon:  'local_offer',
+  color: '#FF0000'
 )
 
 # make all tasks in bulk
@@ -43,11 +44,9 @@ task_count.times do |n|
   puts "Creating task #{n + 1}" if ((n + 1) % print_interval).zero?
   tmp_task = Task.create!(
     title: "Task #{n}",
-    list: generic_user_list
+    list:  generic_user_list
   )
-  if n % 1000 == 0
-    tmp_task.procedures.push(proc)
-  end
+  tmp_task.procedures.push(proc) if (n % 1000).zero?
   tmp_task.save!
 end
 
@@ -62,10 +61,11 @@ loop do
   end
   random_tasks = all_tasks_randomized.first(random_task_depth)
   break unless random_tasks.length == random_task_depth
+
   puts "making chain #{random_tasks.length} deep - #{all_tasks_randomized.length} remaining"
   random_tasks.each_cons(2) do |task, next_task|
     rule = TaskHardRequisite.new(
-      pre: task,
+      pre:  task,
       post: next_task
     )
     # should be unnecessary but eh
@@ -97,12 +97,10 @@ tasks_to_make_max_width.each do |big_task|
     end
     random_postreqs.each do |post_task|
       rule = TaskHardRequisite.new(
-        pre: big_task,
+        pre:  big_task,
         post: post_task
       )
-      if rule.valid?
-        rule.save!
-      end
+      rule.save! if rule.valid?
     end
     break unless big_task.hard_postreqs.length < max_postreqs_width
   end
@@ -157,7 +155,7 @@ end
 #         rule.save!
 #         combo_breaker = 0
 #       end
-  
+
 #       if combo_breaker >= 100
 #         puts 'C-C-C-COMBO BREAKER!'
 #         raise StandardError, 'Something broke while generating the rules'
@@ -169,7 +167,4 @@ end
 #     break unless TaskHardRequisite.where().count < total_rules_count
 #   end
 # end
-
-
-
-# 
+# rubocop:enable Layout

@@ -3,24 +3,23 @@ class Procedure < ApplicationRecord
 
   has_many :task_relationships,
     class_name: 'TaskProcedure',
-    foreign_key: :procedure_id,
-    dependent: :restrict_with_exception
+    dependent:  :restrict_with_exception
 
   has_many :tasks,
     class_name: 'Task',
-    through: :task_relationships,
-    source: :task
+    through:    :task_relationships,
+    source:     :task
 
   validates :title,
-    presence: true,
+    presence:   true,
     uniqueness: { case_sensitive: false, scope: :user_id }
 
   validates :icon,
-    presence: true,
+    presence:        true,
     icon_formatting: true
 
   validates :color,
-    presence: true,
+    presence:             true,
     hex_color_formatting: true
 
   before_validation :randomize_by_default, only: [:create]
@@ -28,8 +27,8 @@ class Procedure < ApplicationRecord
   def reset!
     Procedure.transaction do
       tasks.each do |task|
-        task.hard_postreqs = task.hard_postreqs.reject do |postreq|
-          !tasks.include?(postreq)
+        task.hard_postreqs = task.hard_postreqs.select do |postreq|
+          tasks.include?(postreq)
         end
         task.completed = false
         task.save!

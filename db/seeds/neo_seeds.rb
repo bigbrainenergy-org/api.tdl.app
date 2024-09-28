@@ -1,3 +1,4 @@
+# rubocop:disable Metrics
 ############
 ## Layers ##
 ############
@@ -30,36 +31,34 @@ class RandomGaussian
   end
 
   def rand
-    if @valid then
+    if @valid
       @valid = false
-      return @next
+      @next
     else
       @valid = true
       x, y = self.class.gaussian(@mean, @standard_deviation)
       @next = y
-      return x
+      x
     end
   end
-
-  private
 
   def self.gaussian(mean, standard_deviation)
     theta = 2 * Math::PI * rand
     rho = Math.sqrt(-2 * Math.log(1 - rand))
     scale = standard_deviation.to_f * rho
-    x = mean.to_f + scale * Math.cos(theta)
-    y = mean.to_f + scale * Math.sin(theta)
-    return x, y
+    x = mean.to_f + (scale * Math.cos(theta))
+    y = mean.to_f + (scale * Math.sin(theta))
+    [x, y]
   end
 end
 
 PRE_COUNT_GENERATOR = RandomGaussian.new(
-  mean: PRE_MEAN_COUNT,
+  mean:               PRE_MEAN_COUNT,
   standard_deviation: PRE_STANDARD_DEVIATION
 )
 
 POST_COUNT_GENERATOR = RandomGaussian.new(
-  mean: POST_MEAN_COUNT,
+  mean:               POST_MEAN_COUNT,
   standard_deviation: POST_STANDARD_DEVIATION
 )
 
@@ -121,10 +120,10 @@ end
 
 def create_task(user:, list:, title_key:, completed:)
   Task.create!(
-    user:  user,
-    list:  list,
-    title: "#{random_title} - #{title_key}",
-    notes: random_notes,
+    user:      user,
+    list:      list,
+    title:     "#{random_title} - #{title_key}",
+    notes:     random_notes,
     completed: completed
   )
 end
@@ -134,21 +133,26 @@ def random_completed_chance
 end
 
 def calculate_next_layer_count(total_layers:, tasks_count:)
-  random_count = (tasks_count * rand(MINIMUM_LAYER_RATIO..MAXIMUM_LAYER_RATIO)).ceil
-  falloff = 1-(((total_layers-1)/(MAXIMUM_TOTAL_LAYERS-1).to_f) ** 2)
+  random_count = (
+    tasks_count * rand(MINIMUM_LAYER_RATIO..MAXIMUM_LAYER_RATIO)
+  ).ceil
+  falloff = 1 - (((total_layers - 1) / (MAXIMUM_TOTAL_LAYERS - 1).to_f)**2)
   (random_count * falloff).floor
 end
 
 def generate_task_tree(user:, list:, layer_zero_count:)
-  puts "Generating tree for #{list.title} with a layer zero of #{layer_zero_count} incomplete tasks."
-  current_layer = generate_layer_zero(user: user, list: list, count: layer_zero_count)
+  puts "Generating tree for #{list.title} with a layer zero of " \
+       "#{layer_zero_count} incomplete tasks."
+  current_layer = generate_layer_zero(user: user, list: list,
+    count: layer_zero_count)
   total_layers = 1
   loop do
     next_layer_count = calculate_next_layer_count(
       total_layers: total_layers,
-      tasks_count: current_layer.count
+      tasks_count:  current_layer.count
     )
     break if next_layer_count <= 0
+
     total_layers += 1
     puts "Generating layer #{total_layers} of size: #{next_layer_count}"
     next_layer = generate_layer(user: user, list: list, count: next_layer_count)
@@ -162,12 +166,14 @@ def generate_layer_zero(user:, list:, count:)
   layer = []
   # Ensure we have exactly the desired layer zero count
   count.times do |n|
-    layer.push(create_task(user: user, list: list, title_key: n, completed: false))
+    layer.push(create_task(user: user, list: list, title_key: n,
+      completed: false))
   end
 
   # Create some completed tasks in layer zero to feed off of
-  (TASK_COMPLETION_CHANCE*count).ceil.times do |n|
-    layer.push(create_task(user: user, list: list, title_key: n, completed: true))
+  (TASK_COMPLETION_CHANCE * count).ceil.times do |n|
+    layer.push(create_task(user: user, list: list, title_key: n,
+      completed: true))
   end
 
   layer
@@ -176,7 +182,8 @@ end
 def generate_layer(user:, list:, count:)
   layer = []
   count.times do |n|
-    layer.push(create_task(user: user, list: list, title_key: n, completed: random_completed_chance))
+    layer.push(create_task(user: user, list: list, title_key: n,
+      completed: random_completed_chance))
   end
   layer
 end
@@ -184,9 +191,9 @@ end
 def entangle_layers(tasks:, posts:)
   posts.each do |post|
     pre_count = random_pre_count
-    tasks.shuffle.first(pre_count).each do |task|
+    tasks.sample(pre_count).each do |task|
       TaskHardRequisite.create!(
-        pre: task,
+        pre:  task,
         post: post
       )
       post.update!(completed: true) if task.completed? && !post.completed?
@@ -197,7 +204,9 @@ def entangle_layers(tasks:, posts:)
   # tasks.each do |task|
   #   current_post_count = task.hard_postreqs.count
   #   desired_post_count = random_post_count
-  #   posts_needed = (desired_post_count - current_post_count).clamp(MINIMUM_POSTS, MAXIMUM_POSTS)
+  #   posts_needed = (
+  #     desired_post_count - current_post_count
+  #   ).clamp(MINIMUM_POSTS, MAXIMUM_POSTS)
   #   next if posts_needed.zero?
   #   valid_posts = posts.reject{ |post| task.hard_postreqs.include?(post) }
   #   valid_posts.shuffle.first(posts_needed).each do |post|
@@ -223,8 +232,11 @@ generate_task_tree(user: neo, list: project_list,     layer_zero_count: 20)
 time_after = Time.current
 time_taken = (time_after - time_before).round
 task_count = neo.tasks.count
-rule_count = TaskHardRequisite.joins(pre: [list: :user]).where(pre: { lists: { user: neo }}).count
+rule_count = TaskHardRequisite
+             .joins(pre: [list: :user])
+             .where(pre: { lists: { user: neo } }).count
 
 puts "Total time to generate seeds: #{time_taken} seconds"
 puts "Total tasks generated: #{task_count}"
 puts "Total rules generated: #{rule_count}"
+# rubocop:enable Metrics

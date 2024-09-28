@@ -22,7 +22,7 @@ class TaskPolicy < ApplicationPolicy
       :task_duration_in_minutes,
       { hard_prereq_ids:  [],
         hard_postreq_ids: [],
-        procedure_ids: [] }
+        procedure_ids:    [] }
     ]
   end
   # rubocop:enable Metrics/MethodLength

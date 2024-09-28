@@ -16,8 +16,7 @@ class Task < ApplicationRecord
 
   has_many :procedure_relationships,
     class_name: 'TaskProcedure',
-    foreign_key: :task_id,
-    dependent: :destroy
+    dependent:  :destroy
 
   has_many :hard_prereqs,
     class_name: 'Task',
@@ -31,8 +30,8 @@ class Task < ApplicationRecord
 
   has_many :procedures,
     class_name: 'Procedure',
-    through: :procedure_relationships,
-    source: :procedure
+    through:    :procedure_relationships,
+    source:     :procedure
 
   has_one :user,
     through: :list

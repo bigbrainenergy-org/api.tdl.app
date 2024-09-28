@@ -4,8 +4,8 @@ class ProceduresController < ApplicationController
   def index
     authorize Procedure
     @procedures = policy_scope(Procedure)
-      .includes(:tasks)
-      .order(created_at: :asc)
+                  .includes(:tasks)
+                  .order(created_at: :asc)
   end
 
   def show
