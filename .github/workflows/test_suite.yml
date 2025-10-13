@@ -1,8 +1,13 @@
 name: Test Suite
 
 # Run against all commits and pull requests.
-# on: [ push, pull_request ]
-on: [ push ]
+on:
+  # Schedule will always run against the latest commit on the default branch (main)
+  schedule:
+   - cron: '0 0 * * MON' # Once a week on monday
+  push:
+  # Redundant when we're running against literally all commits (including PRs)
+  # pull_request:
 
 jobs:
   specs:
