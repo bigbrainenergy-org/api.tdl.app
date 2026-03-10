@@ -2,14 +2,14 @@ class Task < ApplicationRecord
   belongs_to :list
   belongs_to :status, optional: true
 
-  has_many :hard_pre_relationships,
-    class_name:  'TaskHardRequisite',
+  has_many :pre_relationships,
+    class_name:  'TaskDependency',
     inverse_of:  :post,
     foreign_key: :second_id,
     dependent:   :destroy
 
-  has_many :hard_post_relationships,
-    class_name:  'TaskHardRequisite',
+  has_many :post_relationships,
+    class_name:  'TaskDependency',
     inverse_of:  :pre,
     foreign_key: :first_id,
     dependent:   :destroy
@@ -19,14 +19,14 @@ class Task < ApplicationRecord
     foreign_key: :task_id,
     dependent: :destroy
 
-  has_many :hard_prereqs,
+  has_many :prereqs,
     class_name: 'Task',
-    through:    :hard_pre_relationships,
+    through:    :pre_relationships,
     source:     :pre
 
-  has_many :hard_postreqs,
+  has_many :postreqs,
     class_name: 'Task',
-    through:    :hard_post_relationships,
+    through:    :post_relationships,
     source:     :post
 
   has_many :procedures,
@@ -50,41 +50,41 @@ class Task < ApplicationRecord
       less_than_or_equal_to:    100
     }
 
-  def all_hard_prereqs
+  def all_prereqs
     recursive_relationship_find(
       klass:       Task,
       join_table:  'task_relationships',
-      join_type:   'TaskHardRequisite',
+      join_type:   'TaskDependency',
       starting_id: id,
       finding:     :first
     )
   end
 
-  def all_hard_postreqs
+  def all_postreqs
     recursive_relationship_find(
       klass:       Task,
       join_table:  'task_relationships',
-      join_type:   'TaskHardRequisite',
+      join_type:   'TaskDependency',
       starting_id: id,
       finding:     :second
     )
   end
 
-  def all_hard_prereqs_excl_completed
+  def all_prereqs_excl_completed
     recursive_relationship_find_excl_completed(
       klass:       Task,
       join_table:  'task_relationships',
-      join_type:   'TaskHardRequisite',
+      join_type:   'TaskDependency',
       starting_id: id,
       finding:     :first
     )
   end
 
-  def all_hard_postreqs_excl_completed
+  def all_postreqs_excl_completed
     recursive_relationship_find_excl_completed(
       klass:       Task,
       join_table:  'task_relationships',
-      join_type:   'TaskHardRequisite',
+      join_type:   'TaskDependency',
       starting_id: id,
       finding:     :second
     )

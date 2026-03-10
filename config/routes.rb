@@ -89,6 +89,7 @@ Rails.application.routes.draw do
 
     # Similarly, these are a little weird in nature
     resources :project_relationships
+    resources :task_dependencies
     resources :next_action_relationships
     resources :procedures
 

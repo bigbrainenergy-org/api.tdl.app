@@ -11,10 +11,10 @@ RSpec.describe Task do
     it { should belong_to(:list) }
     it { should belong_to(:status).optional }
     it { should have_one(:user).through(:list) }
-    it { should have_many(:hard_pre_relationships).dependent(:destroy) }
-    it { should have_many(:hard_post_relationships).dependent(:destroy) }
-    it { should have_many(:hard_prereqs).through(:hard_pre_relationships) }
-    it { should have_many(:hard_postreqs).through(:hard_post_relationships) }
+    it { should have_many(:pre_relationships).dependent(:destroy) }
+    it { should have_many(:post_relationships).dependent(:destroy) }
+    it { should have_many(:prereqs).through(:pre_relationships) }
+    it { should have_many(:postreqs).through(:post_relationships) }
   end
 
   describe 'validations' do

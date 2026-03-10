@@ -1,5 +1,5 @@
 FactoryBot.define do
-  factory :task_hard_requisite do
+  factory :task_dependency do
     # FIXME: This code is shit, do not use it as an example.
     transient do
       # Create a common user so we don't trip the "different users" validation

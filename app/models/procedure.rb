@@ -28,7 +28,7 @@ class Procedure < ApplicationRecord
   def reset!
     Procedure.transaction do
       tasks.each do |task|
-        task.hard_postreqs = task.hard_postreqs.reject do |postreq|
+        task.postreqs = task.postreqs.reject do |postreq|
           !tasks.include?(postreq)
         end
         task.completed = false
