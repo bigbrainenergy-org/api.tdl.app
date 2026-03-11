@@ -17,21 +17,25 @@ class TaskDependency < TaskRelationship
     first:       :pre,
     second:      :post,
     all_firsts:  :all_prereqs_excl_completed,
-    all_seconds: :all_postreqs_excl_completed
+    all_seconds: :all_postreqs_excl_completed,
+    on: :create
 
   validates_with RedundantRelationshipValidator,
     first:       :pre,
     second:      :post,
     all_firsts:  :all_prereqs_excl_completed,
-    all_seconds: :all_postreqs_excl_completed
+    all_seconds: :all_postreqs_excl_completed,
+    on: :create
 
   validates_with UselessRelationshipValidator,
     first:  :pre,
-    second: :post
+    second: :post,
+    on: :create
 
   validates_with UniqueRelationshipValidator,
     first:  :pre,
-    second: :post
+    second: :post,
+    on: :create
 
   validates_with SameUsersRelationshipValidator,
     first:  :pre,

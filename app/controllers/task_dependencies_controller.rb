@@ -12,9 +12,6 @@ class TaskDependenciesController < ApplicationController
   end
 
   def create
-    def create
-    Rails.logger.error("=== PARAMS: #{params.inspect}")
-    Rails.logger.error("=== PERMITTED: #{permitted_attributes(TaskDependency).inspect}")
     @task_dependency = TaskDependency.new(permitted_attributes(TaskDependency))
 
     authorize @task_dependency

@@ -5,10 +5,17 @@ class TaskDependencyPolicy < ApplicationPolicy
     end
   end
 
-  def permitted_attributes
+  def permitted_attributes_for_create
     [
       :first_id,
       :second_id,
+      :degree,
+      :notes
+    ]
+  end
+
+  def permitted_attributes_for_update
+    [
       :degree,
       :notes
     ]
