@@ -1,5 +1,6 @@
 class List < ApplicationRecord
   belongs_to :user
+  belongs_to :schedule, optional: true
 
   has_many :tasks,
     dependent: :restrict_with_exception

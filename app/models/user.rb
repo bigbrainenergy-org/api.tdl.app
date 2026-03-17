@@ -36,6 +36,7 @@ class User < ApplicationRecord
   has_many :tasks,         through: :lists
   has_many :subtasks,      through: :tasks
   has_many :procedures
+  has_many :schedules,    dependent: :destroy
 
   ########################
   ## Virtual Attributes ##

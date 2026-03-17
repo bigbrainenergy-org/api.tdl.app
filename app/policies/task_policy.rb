@@ -20,6 +20,7 @@ class TaskPolicy < ApplicationPolicy
       :delegated,
       :deadline_at,
       :task_duration_in_minutes,
+      :schedule_id,
       { procedure_ids: [] }
     ]
   end

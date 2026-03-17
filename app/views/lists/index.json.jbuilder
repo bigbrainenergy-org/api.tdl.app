@@ -1,4 +1,4 @@
 json.array! @lists do |list|
-  json.call(list, :id, :title, :order, :icon, :color)
+  json.call(list, :id, :title, :order, :icon, :color, :schedule_id)
   # Necessary because of no front-end support for join model relationships
 end

@@ -1,4 +1,4 @@
-class ListPolicy < ApplicationPolicy
+class SchedulePolicy < ApplicationPolicy
   class Scope < Scope
     def resolve
       scope.where(user: user)
@@ -8,10 +8,8 @@ class ListPolicy < ApplicationPolicy
   def permitted_attributes
     [
       :title,
-      :color,
-      :icon,
-      :order,
-      :schedule_id
+      :default,
+      :blocks
     ]
   end
 

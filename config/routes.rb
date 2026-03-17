@@ -92,6 +92,7 @@ Rails.application.routes.draw do
     resources :task_dependencies
     resources :next_action_relationships
     resources :procedures
+    resources :schedules
 
     post 'procedures/reset/:id' => 'procedures#reset'
 

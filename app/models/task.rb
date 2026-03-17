@@ -1,6 +1,7 @@
 class Task < ApplicationRecord
   belongs_to :list
   belongs_to :status, optional: true
+  belongs_to :schedule, optional: true
 
   has_many :pre_relationships,
     class_name:  'TaskDependency',
