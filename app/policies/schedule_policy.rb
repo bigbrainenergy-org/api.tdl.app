@@ -9,7 +9,7 @@ class SchedulePolicy < ApplicationPolicy
     [
       :title,
       :default,
-      :blocks
+      { blocks: [:day_of_week, :start, :end] }
     ]
   end
 
